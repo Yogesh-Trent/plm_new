@@ -12,24 +12,47 @@ import {
   DotsThreeVertical,
   DownloadSimple,
   FileText,
+  HandPalm,
   Info,
   List,
   Lock,
   MagnifyingGlass,
   Pause,
+  PencilSimple,
   Question,
+  Robot,
   ShieldCheck,
+  SidebarSimple,
   TShirt,
   User,
   Warning,
   WarningCircle,
 } from "@phosphor-icons/react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import data from "./data/prototype.json";
 
 type Status = "complete" | "active" | "waiting" | "interrupted";
 
 const classNames = (...items: Array<string | false | undefined>) =>
   items.filter(Boolean).join(" ");
+
+const missingMarkers = [
+  "Required from Excel",
+  "Not provided",
+  "Confirmation required",
+];
+
+function isMissingValue(value?: string) {
+  return !value || missingMarkers.includes(value.trim());
+}
+
+function visibleValue(value?: string) {
+  if (isMissingValue(value)) return "";
+  return (value ?? "")
+    .replace(/Required from Excel/g, "")
+    .replace(/[·—:\-]\s*$/g, "")
+    .trim();
+}
 
 function downloadFile(
   filename: string,
@@ -102,10 +125,14 @@ function StatusIcon({
 function Header({
   mode,
   setMode,
+  sidebarCollapsed,
+  setSidebarCollapsed,
   notify,
 }: {
   mode: "automation" | "manual";
   setMode: (mode: "automation" | "manual") => void;
+  sidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
   notify: (message: string) => void;
 }) {
   const [panel, setPanel] = useState<
@@ -131,43 +158,87 @@ function Header({
       >
         <List size={24} />
       </button>
-      <div className="divider" />
-      <div className="breadcrumbs">
-        <strong>{data.run.season}</strong>
-        <span>/</span>
-        <strong>{data.run.division}</strong>
-        <span>/</span>
-        <strong>{data.run.source}</strong>
-        {mode === "automation" && (
-          <>
-            <span>/</span>
-            <strong>{data.run.id}</strong>
-          </>
-        )}
+      <div className="product-brand">
+        <span className="product-mark">PLM</span>
+        <span className="product-copy">
+          <strong>PLM workspace</strong>
+        </span>
       </div>
       <div className="top-actions">
-        <div className="mode-switch" role="group" aria-label="Process mode">
+        <button
+          className="icon-button sidebar-toggle"
+          aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
+          title={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
+          aria-pressed={sidebarCollapsed}
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        >
+          <motion.span
+            animate={{ rotate: sidebarCollapsed ? 180 : 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <SidebarSimple size={21} />
+          </motion.span>
+        </button>
+        <div
+          className="dashboard-switch"
+          role="group"
+          aria-label="Switch dashboard"
+        >
           <button
             className={mode === "automation" ? "selected" : ""}
+            aria-pressed={mode === "automation"}
+            aria-label="Open Automation dashboard"
+            title="Automation dashboard"
             onClick={() => setMode("automation")}
           >
-            Automation run
+            {mode === "automation" && (
+              <motion.span
+                className="switch-thumb"
+                layoutId="dashboard-switch-thumb"
+                transition={{ type: "spring", stiffness: 430, damping: 34 }}
+              />
+            )}
+            <Robot
+              size={19}
+              weight={mode === "automation" ? "fill" : "regular"}
+            />
           </button>
           <button
             className={mode === "manual" ? "selected" : ""}
+            aria-pressed={mode === "manual"}
+            aria-label="Open Manual dashboard"
+            title="Manual dashboard"
             onClick={() => setMode("manual")}
           >
-            Manual process
+            {mode === "manual" && (
+              <motion.span
+                className="switch-thumb"
+                layoutId="dashboard-switch-thumb"
+                transition={{ type: "spring", stiffness: 430, damping: 34 }}
+              />
+            )}
+            <HandPalm
+              size={19}
+              weight={mode === "manual" ? "fill" : "regular"}
+            />
           </button>
         </div>
         <span
-          className={mode === "manual" ? "sync-not-started" : "sync-current"}
+          className="sync-indicator"
+          role="status"
+          aria-label={mode === "manual" ? "PLM not synced" : "PLM current"}
+          title={
+            mode === "manual"
+              ? "PLM not synced"
+              : `PLM current · ${data.run.synced}`
+          }
         >
-          ●
+          <span
+            className={mode === "manual" ? "sync-not-started" : "sync-current"}
+          >
+            ●
+          </span>
         </span>
-        <span>PLM sync</span>
-        <span>·</span>
-        <span>{mode === "manual" ? "Not started" : data.run.synced}</span>
         <button
           className="icon-button"
           aria-label="Notifications"
@@ -248,7 +319,11 @@ function Header({
           )}
           {panel === "profile" && (
             <>
-              <h3>Automation operator</h3>
+              <h3>
+                {mode === "automation"
+                  ? "Automation operator"
+                  : "Manual operator"}
+              </h3>
               <p>Prototype workspace · local session</p>
               <button
                 onClick={() => {
@@ -270,13 +345,41 @@ function Header({
 function PhaseRail({
   phase,
   setPhase,
+  collapsed,
 }: {
   phase: number;
   setPhase: (id: number) => void;
+  collapsed: boolean;
 }) {
   return (
-    <aside className="phase-rail">
-      <div className="rail-title">RUN PHASES</div>
+    <motion.aside
+      layout="size"
+      initial={false}
+      transition={{ type: "spring", stiffness: 420, damping: 38 }}
+      className={classNames(
+        "phase-rail automation-rail",
+        collapsed && "is-collapsed",
+      )}
+    >
+      <div className="sidebar-heading">
+        <span className="sidebar-mode-icon" title="Automation dashboard">
+          <Robot size={20} weight="fill" />
+        </span>
+        <div className="sidebar-heading-copy">
+          <span>Automation dashboard</span>
+          <strong>{data.run.id}</strong>
+          <small>
+            {Math.max(0, phase - 1)} of {data.phases.length} phases complete
+          </small>
+          <div className="sidebar-progress" aria-hidden="true">
+            <i
+              style={{
+                width: `${(Math.max(0, phase - 1) / data.phases.length) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
+      </div>
       <nav>
         {data.phases.map((item) => {
           const status: Status =
@@ -327,21 +430,21 @@ function PhaseRail({
         <div>
           <span>Writes</span>
           <strong>
-            {phase === 5
+            {phase >= 5
               ? "7 completed"
               : phase > 2
                 ? "2 completed"
                 : "Not started"}
           </strong>
         </div>
-        {phase === 5 && (
+        {phase >= 5 && (
           <div>
             <span>Last write</span>
             <strong>{data.run.synced}</strong>
           </div>
         )}
       </div>
-    </aside>
+    </motion.aside>
   );
 }
 
@@ -401,40 +504,70 @@ function OperationStrip({ phase }: { phase: number }) {
 
 function SourcePanel({
   title = "Source record",
-  required = true,
+  rows,
+  actions,
 }: {
   title?: string;
-  required?: boolean;
+  rows?: string[][];
+  actions?: React.ReactNode;
 }) {
+  const visibleRows = (rows ?? data.sourceRecord).filter(([, value]) =>
+    Boolean(visibleValue(value)),
+  );
   return (
-    <aside className="context-panel">
-      <h3>{title}</h3>
-      <dl>
-        {data.sourceRecord.map(([label, value]) => (
-          <div key={label}>
-            <dt>{label}</dt>
-            <dd>{value}</dd>
-          </div>
-        ))}
-      </dl>
-      {required && (
-        <>
-          <h3 className="panel-section-title">Required source fields</h3>
+    <aside
+      className={classNames(
+        "context-panel",
+        Boolean(actions) && "manual-context-panel",
+      )}
+    >
+      <div className="context-scroll">
+        <h3>{title}</h3>
+        {visibleRows.length ? (
           <dl>
-            {data.requiredFields.map((item) => (
-              <div key={item}>
-                <dt>{item}</dt>
-                <dd className="warning-text">
-                  {item === "Size ratio"
-                    ? "Policy required"
-                    : "Required from Excel"}
-                </dd>
+            {visibleRows.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{visibleValue(value)}</dd>
               </div>
             ))}
           </dl>
-        </>
+        ) : (
+          <div className="context-empty">
+            <Info size={18} />
+            <span>No values filled in this phase yet.</span>
+          </div>
+        )}
+      </div>
+      {actions && (
+        <section className="manual-panel-actions automation-panel-actions">
+          <span>Workspace actions</span>
+          {actions}
+        </section>
       )}
     </aside>
+  );
+}
+
+function ManualStatusBar({
+  ready,
+  title,
+  subtitle,
+}: {
+  ready: boolean;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <footer className={classNames("manual-status-bar", ready && "is-ready")}>
+      {ready ? (
+        <CheckCircle size={15} weight="fill" />
+      ) : (
+        <Warning size={15} weight="fill" />
+      )}
+      <strong>{title}</strong>
+      {subtitle && <span>{subtitle}</span>}
+    </footer>
   );
 }
 
@@ -534,7 +667,7 @@ function ImportMap({
                     return (
                       <tr key={row[0]}>
                         {row.slice(0, 4).map((cell, index) => (
-                          <td key={index}>{cell}</td>
+                          <td key={index}>{visibleValue(cell)}</td>
                         ))}
                         <td
                           className={classNames(
@@ -584,7 +717,56 @@ function ImportMap({
             </button>
           </div>
         </main>
-        <RunPreview />
+        <RunPreview
+          actions={
+            <>
+              <button
+                className="ghost-link"
+                onClick={() => {
+                  exportJson("source-to-plm-mapping.json", {
+                    mapping: data.mapping.map((row) => [
+                      ...row.slice(0, 4),
+                      effectiveStatus(row),
+                    ]),
+                    sourceResolved,
+                    ratioApproved,
+                  });
+                  notify("Mapping JSON downloaded.");
+                }}
+              >
+                Export mapping
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  saveLocalDraft("plm-automation-draft", {
+                    sourceResolved,
+                    ratioApproved,
+                  });
+                  notify("Automation draft saved locally.");
+                }}
+              >
+                Save draft
+              </button>
+              <button
+                className={classNames("primary", !ready && "disabled")}
+                aria-disabled={!ready}
+                onClick={() => {
+                  if (ready) {
+                    localStorage.setItem("plm-automation-mapped", "true");
+                    onComplete();
+                  } else {
+                    notify(
+                      `Resolve ${sourceResolved ? 0 : 16} source values and ${ratioApproved ? 0 : 1} ratio policy first.`,
+                    );
+                  }
+                }}
+              >
+                Validate mapping
+              </button>
+            </>
+          }
+        />
       </div>
       <ActionBar
         icon={ready ? "safe" : "warning"}
@@ -647,66 +829,57 @@ function ImportMap({
   );
 }
 
-function RunPreview() {
+function RunPreview({ actions }: { actions?: React.ReactNode }) {
   return (
-    <aside className="context-panel preview-panel">
-      <h3>RUN OUTPUT PREVIEW</h3>
-      <p>8 operations from this row</p>
-      <div className="preview-list">
-        {data.operations.map((item, index) => (
-          <div key={item}>
-            <span
-              className={classNames(
-                "preview-number",
-                index === 5 && "warning",
-                index === 7 && "blocked",
-              )}
-            >
-              {index + 1}
-            </span>
-            <span>
-              <strong>{item}</strong>
-              <small>
-                {
-                  [
-                    "Create or find",
-                    "BLACK",
-                    "FKn01144",
-                    "Silver Seal Request Template",
-                    "₹100 · HSN 62033300",
-                    "Waiting for ratio",
-                    "15,511 · Domestic",
-                    "Policy gated",
-                  ][index]
+    <aside className="context-panel preview-panel manual-context-panel">
+      <div className="context-scroll">
+        <h3>RUN OUTPUT PREVIEW</h3>
+        <p>8 operations from this row</p>
+        <div className="preview-list">
+          {data.operations.map((item, index) => (
+            <div key={item}>
+              <span
+                className={classNames(
+                  "preview-number",
+                  index === 5 && "warning",
+                  index === 7 && "blocked",
+                )}
+              >
+                {index + 1}
+              </span>
+              <span>
+                <strong>{item}</strong>
+                <small>
+                  {
+                    [
+                      "Create or find",
+                      "BLACK",
+                      "FKn01144",
+                      "Silver Seal Request Template",
+                      "₹100 · HSN 62033300",
+                      "Waiting for ratio",
+                      "15,511 · Domestic",
+                      "Policy gated",
+                    ][index]
+                  }
+                </small>
+              </span>
+              <StatusIcon
+                kind={
+                  index === 5 ? "Warning" : index === 7 ? "Blocked" : "complete"
                 }
-              </small>
-            </span>
-            <StatusIcon
-              kind={
-                index === 5 ? "Warning" : index === 7 ? "Blocked" : "complete"
-              }
-              size={20}
-            />
-          </div>
-        ))}
+                size={20}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="vendor-card">
-        <strong>11301069 · NZ SEASONAL WEAR PRIVATE LIMITED</strong>
-        <dl>
-          <div>
-            <dt>Ex-factory</dt>
-            <dd>02 Dec 2026</dd>
-          </div>
-          <div>
-            <dt>Shipment</dt>
-            <dd>02 Dec 2026</dd>
-          </div>
-          <div>
-            <dt>Launch</dt>
-            <dd>17 Dec 2026</dd>
-          </div>
-        </dl>
-      </div>
+      {actions && (
+        <section className="manual-panel-actions automation-panel-actions">
+          <span>Workspace actions</span>
+          {actions}
+        </section>
+      )}
     </aside>
   );
 }
@@ -783,7 +956,7 @@ function Plan({
                         className={cell === "Blocked" ? "warning-text" : ""}
                         key={index}
                       >
-                        {cell}
+                        {visibleValue(cell)}
                       </td>
                     ))}
                   </tr>
@@ -810,7 +983,7 @@ function Plan({
               ).map((x) => (
                 <p className="compact-line" key={x}>
                   <WarningCircle size={13} weight="fill" />
-                  {x}
+                  {visibleValue(x)}
                 </p>
               ))}
               <h4 className="warning-text">Warnings (2)</h4>
@@ -858,7 +1031,40 @@ function Plan({
             </section>
           </div>
         </main>
-        <SourcePanel />
+        <SourcePanel
+          title="Planning inputs"
+          rows={data.sourceRecord.filter(([label]) =>
+            ["Material", "Colour", "Vendor", "Total Qty"].includes(label),
+          )}
+          actions={
+            <>
+              <button className="ghost-link" onClick={() => setPhase(1)}>
+                Back to mapping
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  exportJson("dry-run-plan.json", {
+                    operations: data.planRows,
+                    blockers: data.blockers,
+                    warnings: data.warnings,
+                  });
+                  notify("Dry-run plan downloaded.");
+                }}
+              >
+                <DownloadSimple size={18} />
+                Export plan
+              </button>
+              <button
+                className={classNames("primary", !mapped && "disabled")}
+                aria-disabled={!mapped}
+                onClick={approvePlan}
+              >
+                {approved ? "Plan approved" : "Approve run plan"}
+              </button>
+            </>
+          }
+        />
       </div>
       <ActionBar
         icon={mapped ? "safe" : "warning"}
@@ -1041,7 +1247,35 @@ function Execute({
             </table>
           </section>
         </main>
-        <ExecutePanel />
+        <ExecutePanel
+          actions={
+            <>
+              <button
+                className="secondary"
+                onClick={() => {
+                  exportJson("automation-event-log.json", {
+                    progress,
+                    paused,
+                    events: data.eventLog,
+                  });
+                  notify("Full event log downloaded.");
+                }}
+              >
+                View full log
+              </button>
+              <button
+                className="primary"
+                onClick={() => (finished ? onComplete() : setPaused(!paused))}
+              >
+                {finished
+                  ? "Continue to recovery"
+                  : paused
+                    ? "Resume run"
+                    : "Pause after current action"}
+              </button>
+            </>
+          }
+        />
       </div>
       <ActionBar
         icon="safe"
@@ -1093,45 +1327,33 @@ function Execute({
   );
 }
 
-function ExecutePanel() {
+function ExecutePanel({ actions }: { actions?: React.ReactNode }) {
   return (
-    <aside className="context-panel">
-      <h3>Source & objects</h3>
-      <dl>
-        {data.sourceRecord.slice(0, 12).map(([a, b]) => (
-          <div key={a}>
-            <dt>{a}</dt>
-            <dd>{b}</dd>
-          </div>
-        ))}
-      </dl>
-      <h3 className="panel-section-title">Current object inventory</h3>
-      <dl>
-        {[
-          ["Style", "STY-26-004781 · Draft"],
-          ["Color", "CC-004781-BLK · Complete"],
-          ["BOM", "BOM-004781 · Writing"],
-        ].map(([a, b], i) => (
-          <div key={a}>
-            <dt>{a}</dt>
-            <dd>
-              {b}
-              <i className={i === 2 ? "red-dot" : "green-dot"} />
-            </dd>
-          </div>
-        ))}
-      </dl>
-      <h3 className="panel-section-title">Policy-gated source</h3>
-      <dl>
-        {data.requiredFields.map((x) => (
-          <div key={x}>
-            <dt>{x}</dt>
-            <dd className="warning-text">
-              {x === "Size ratio" ? "Policy required" : "Required from Excel"}
-            </dd>
-          </div>
-        ))}
-      </dl>
+    <aside className="context-panel manual-context-panel">
+      <div className="context-scroll">
+        <h3>Current object inventory</h3>
+        <dl>
+          {[
+            ["Style", "STY-26-004781 · Draft"],
+            ["Color", "CC-004781-BLK · Complete"],
+            ["BOM", "BOM-004781 · Writing"],
+          ].map(([a, b], i) => (
+            <div key={a}>
+              <dt>{a}</dt>
+              <dd>
+                {b}
+                <i className={i === 2 ? "red-dot" : "green-dot"} />
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      {actions && (
+        <section className="manual-panel-actions automation-panel-actions">
+          <span>Workspace actions</span>
+          {actions}
+        </section>
+      )}
     </aside>
   );
 }
@@ -1165,7 +1387,11 @@ function Resolve({
               <div className="compare-fields">
                 <label>
                   Excel value
-                  <input value="Required from Excel" readOnly />
+                  <input
+                    value=""
+                    aria-label="Missing Excel strategy value"
+                    readOnly
+                  />
                 </label>
                 <ArrowRight size={22} />
                 <label>
@@ -1234,7 +1460,7 @@ function Resolve({
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Required from Excel</td>
+                        <td />
                         <td>{strategy}</td>
                         <td>Active enum key required</td>
                       </tr>
@@ -1307,7 +1533,50 @@ function Resolve({
             </div>
           </div>
         </main>
-        <SourcePanel title="Source data" />
+        <SourcePanel
+          title="Recovery values"
+          rows={[
+            ["Colour", "BLACK"],
+            ["Selected strategy", strategy],
+            ["Recovery state", resolved ? "Validated" : "Pending apply"],
+          ]}
+          actions={
+            <>
+              <button
+                className="secondary"
+                onClick={() => {
+                  saveLocalDraft("plm-recovery-note", {
+                    strategy,
+                    resolved,
+                    note: "Active enum correction",
+                  });
+                  notify("Recovery note saved locally.");
+                }}
+              >
+                Save note
+              </button>
+              <button
+                className="secondary"
+                onClick={() => notify("Run paused.")}
+              >
+                Pause run
+              </button>
+              <button
+                className="primary"
+                onClick={() => {
+                  setResolved(true);
+                  localStorage.setItem("plm-automation-recovered", "true");
+                  notify(
+                    "Fix applied. Five operations revalidated successfully.",
+                  );
+                  window.setTimeout(onComplete, 450);
+                }}
+              >
+                Apply fix & resume
+              </button>
+            </>
+          }
+        />
       </div>
       <ActionBar
         icon="warning"
@@ -1375,7 +1644,7 @@ function ExceptionInbox() {
               />
               <span>
                 {a}
-                <small>{b}</small>
+                <small>{visibleValue(b)}</small>
               </span>
             </button>
           ))}
@@ -1385,7 +1654,13 @@ function ExceptionInbox() {
   );
 }
 
-function Review({ notify }: { notify: (text: string) => void }) {
+function Review({
+  notify,
+  onBackToReview,
+}: {
+  notify: (text: string) => void;
+  onBackToReview: () => void;
+}) {
   const [approvalIndex, setApprovalIndex] = useState(1);
   const [issued, setIssued] = useState(false);
   const approvals = useMemo(
@@ -1429,7 +1704,7 @@ function Review({ notify }: { notify: (text: string) => void }) {
     <>
       <div className="review-layout">
         <main className="workspace review-workspace">
-          <ScreenHeading phase={5} />
+          <ScreenHeading phase={6} />
           <div className="review-columns">
             <section>
               <h3>Final object inventory</h3>
@@ -1531,45 +1806,87 @@ function Review({ notify }: { notify: (text: string) => void }) {
                 </p>
               </div>
             </section>
-            <section className="approval-route">
-              <div className="approval-title">
-                <h2>Approval route</h2>
-                <span>Waiting for approvals</span>
-              </div>
-              {approvals.map((r, i) => (
-                <button
-                  onClick={() => approveStep(i)}
-                  aria-label={
-                    i === approvalIndex && i < 4
-                      ? `Approve ${r[0]}`
-                      : "Approval status for " + r[0]
-                  }
-                  key={r[0]}
-                  className={classNames("approval-step", r[1].toLowerCase())}
-                >
-                  <span className="approval-icon">
-                    {r[1] === "Locked" ? <Lock /> : <User />}
-                  </span>
-                  <span>
-                    <strong>{r[0]}</strong>
-                    <small>{r[1]}</small>
-                    {r[2] && <em>{r[2]}</em>}
-                  </span>
-                  <StatusIcon kind={r[1]} size={22} />
-                </button>
-              ))}
-              <h3 className="panel-section-title">Downstream delivery</h3>
-              {data.deliveries.map((r) => (
-                <div className="delivery" key={r[0]}>
-                  <FileText size={18} />
-                  <b>{r[0]}</b>
-                  <span>{r[1]}</span>
-                  <em>{r[2]}</em>
-                </div>
-              ))}
-            </section>
           </div>
         </main>
+
+        <aside className="final-review-panel approval-issue-panel">
+          <div className="final-review-panel-scroll">
+            <section>
+              <div className="approval-title">
+                <h2>Approval route</h2>
+                <span>Waiting</span>
+              </div>
+              <div className="approval-route-steps">
+                {approvals.map((r, i) => (
+                  <button
+                    onClick={() => approveStep(i)}
+                    aria-label={
+                      i === approvalIndex && i < 4
+                        ? `Approve ${r[0]}`
+                        : "Approval status for " + r[0]
+                    }
+                    key={r[0]}
+                    className={classNames("approval-step", r[1].toLowerCase())}
+                  >
+                    <span className="approval-icon">
+                      {r[1] === "Locked" ? <Lock /> : <User />}
+                    </span>
+                    <span>
+                      <strong>{r[0]}</strong>
+                      <small>{r[1]}</small>
+                      {r[2] && <em>{r[2]}</em>}
+                    </span>
+                    <StatusIcon kind={r[1]} size={22} />
+                  </button>
+                ))}
+              </div>
+            </section>
+            <section>
+              <h2>Downstream delivery</h2>
+              <div className="approval-deliveries">
+                {data.deliveries.map((r) => (
+                  <div className="delivery" key={r[0]}>
+                    <FileText size={18} />
+                    <b>{r[0]}</b>
+                    <span>{r[1]}</span>
+                    <em>{r[2]}</em>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+          <section className="review-panel-actions approval-issue-actions">
+            <span>Approval actions</span>
+            <button
+              className="ghost-link"
+              onClick={() => {
+                exportJson("automation-audit.json", {
+                  approvals,
+                  issued,
+                  inventory: data.inventory,
+                  reconciliation: data.reconciliation,
+                });
+                notify("Audit JSON downloaded.");
+              }}
+            >
+              Export audit
+            </button>
+            <button className="secondary" onClick={onBackToReview}>
+              Back to final review
+            </button>
+            <button
+              className={classNames(
+                "primary",
+                (approvalIndex < 4 || issued) && "disabled",
+              )}
+              aria-disabled={approvalIndex < 4 || issued}
+              onClick={issuePo}
+            >
+              <Lock size={18} />
+              {issued ? "Supplier PO issued" : "Issue supplier PO"}
+            </button>
+          </section>
+        </aside>
       </div>
       <ActionBar
         icon="warning"
@@ -1594,6 +1911,10 @@ function Review({ notify }: { notify: (text: string) => void }) {
         >
           Export audit
         </button>
+        <button className="secondary" onClick={onBackToReview}>
+          Back to final review
+          <ArrowRight size={17} />
+        </button>
         <button
           className={classNames(
             "primary",
@@ -1610,32 +1931,469 @@ function Review({ notify }: { notify: (text: string) => void }) {
   );
 }
 
-function ManualOperationStrip({ phase }: { phase: number }) {
-  const activeMap = [0, 1, 3, 5, 7];
+type DashboardMode = "automation" | "manual";
+
+function FinalReview({
+  mode,
+  notify,
+  onContinue,
+}: {
+  mode: DashboardMode;
+  notify: (text: string) => void;
+  onContinue: () => void;
+}) {
+  const storageKey = `plm-final-review-${mode}`;
+  const initialRows = data.finalReview.fields.map((row) => [...row]);
+  const suggestions: Record<string, string> = data.finalReview.suggestions;
+  const [rows, setRows] = useState<string[][]>(initialRows);
+  const [editMode, setEditMode] = useState(mode === "manual");
+  const [restored, setRestored] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          const payload = parsed.payload ?? parsed;
+          if (Array.isArray(payload.rows)) setRows(payload.rows);
+        } catch {
+          localStorage.removeItem(storageKey);
+        }
+      }
+      setRestored(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [storageKey]);
+
+  const validatedRows = useMemo(
+    () =>
+      rows.map((row) => {
+        const value = row[3]?.trim();
+        const status =
+          value && value.toLowerCase() !== "not provided" ? "Pass" : "Missing";
+        return [row[0], row[1], row[2], row[3], status];
+      }),
+    [rows],
+  );
+  const issueCount = validatedRows.filter((row) => row[4] !== "Pass").length;
+  const passCount = validatedRows.length - issueCount;
+  const categories = Array.from(new Set(validatedRows.map((row) => row[0])));
+  const manualRecordRows = [
+    "Style Name",
+    "Department",
+    "Colour",
+    "Main material",
+    "Vendor",
+    "Total quantity",
+  ]
+    .map((field) => validatedRows.find((row) => row[1] === field))
+    .filter((row): row is string[] => Boolean(row && visibleValue(row[3])));
+
+  const updateValue = (field: string, value: string) => {
+    setRows((current) =>
+      current.map((row) =>
+        row[1] === field ? [row[0], row[1], row[2], value, row[4]] : row,
+      ),
+    );
+  };
+  const saveCorrections = () => {
+    saveLocalDraft(storageKey, { rows });
+    notify("Final-review corrections saved locally.");
+  };
+  const applySuggestions = () => {
+    setRows((current) =>
+      current.map((row) =>
+        suggestions[row[1]] &&
+        (!row[3] || row[3].toLowerCase() === "not provided")
+          ? [row[0], row[1], row[2], suggestions[row[1]], row[4]]
+          : row,
+      ),
+    );
+    setEditMode(true);
+    notify("Suggested corrections applied. Review and save them.");
+  };
+  const continueToApproval = () => {
+    if (issueCount > 0) {
+      notify(
+        `Resolve ${issueCount} validation issue${issueCount === 1 ? "" : "s"} first.`,
+      );
+      return;
+    }
+    saveCorrections();
+    onContinue();
+  };
+
   return (
-    <div className="operation-strip manual-operations">
-      {data.operations.map((operation, index) => {
-        const active = activeMap[phase - 1];
-        const complete = index < active;
-        const state = complete
-          ? "complete"
-          : index === active || (phase === 3 && index === 4)
-            ? "active"
-            : "waiting";
-        return (
-          <div className={classNames("operation-chip", state)} key={operation}>
-            <span className="op-circle">
-              {complete ? <Check size={15} weight="bold" /> : index + 1}
-            </span>
-            <span className="op-copy">
-              <span>{operation}</span>
-              {phase === 2 && index === 2 && <small>Next</small>}
-              {phase === 5 && index === 7 && <small>Waiting</small>}
-            </span>
+    <>
+      <div className="final-review-layout">
+        <main className="final-review-main">
+          <header className="final-review-heading">
+            <div>
+              <span className="eyebrow">
+                {mode === "automation"
+                  ? `Automated run · ${data.run.id}`
+                  : "Manual workspace · Final check"}
+              </span>
+              <h1>Final review & correction</h1>
+              <p>
+                {mode === "manual"
+                  ? "Check the values entered in each manual step and fix anything missing before approval."
+                  : "Review every PLM object and correct exceptions before the record enters approval."}
+              </p>
+            </div>
+            <button
+              type="button"
+              className={classNames(
+                "edit-mode-toggle",
+                editMode && "is-active",
+              )}
+              aria-pressed={editMode}
+              onClick={() => setEditMode((current) => !current)}
+            >
+              <PencilSimple size={17} />
+              {editMode ? "Editing enabled" : "Edit corrections"}
+              <i aria-hidden="true" />
+            </button>
+          </header>
+
+          <section className="review-summary-grid" aria-label="Review summary">
+            <div>
+              <strong>{validatedRows.length}</strong>
+              <span>Fields reviewed</span>
+            </div>
+            <div className="is-positive">
+              <strong>{passCount}</strong>
+              <span>Validated</span>
+            </div>
+            <div className={issueCount ? "is-warning" : "is-positive"}>
+              <strong>{issueCount}</strong>
+              <span>Needs attention</span>
+            </div>
+            <div>
+              <strong>{categories.length}</strong>
+              <span>Review sections</span>
+            </div>
+          </section>
+
+          <div
+            className="review-table"
+            role="table"
+            aria-label="Source and PLM field comparison"
+          >
+            <div className="review-table-head" role="row">
+              <span>Field</span>
+              <span>Source value</span>
+              <span>PLM value</span>
+              <span>Validation</span>
+              <span>Action</span>
+            </div>
+            {categories.map((category) => (
+              <section className="review-category" key={category}>
+                <div className="review-category-title">
+                  <span>{category}</span>
+                  <small>
+                    {validatedRows.filter(
+                      (row) => row[0] === category && row[4] !== "Pass",
+                    ).length || "All"}{" "}
+                    {validatedRows.some(
+                      (row) => row[0] === category && row[4] !== "Pass",
+                    )
+                      ? "issues"
+                      : "clear"}
+                  </small>
+                </div>
+                {validatedRows
+                  .filter((row) => row[0] === category)
+                  .map((row) => (
+                    <div
+                      className={classNames(
+                        "review-field-row",
+                        row[4] !== "Pass" && "has-issue",
+                      )}
+                      role="row"
+                      key={row[1]}
+                    >
+                      <strong>{row[1]}</strong>
+                      <span
+                        className={classNames(
+                          row[2] === "Not provided" && "empty-value",
+                        )}
+                      >
+                        {visibleValue(row[2])}
+                      </span>
+                      <span>
+                        {editMode ? (
+                          <input
+                            aria-label={`PLM value for ${row[1]}`}
+                            value={visibleValue(row[3])}
+                            onChange={(event) =>
+                              updateValue(row[1], event.target.value)
+                            }
+                          />
+                        ) : (
+                          <span
+                            className={classNames(
+                              row[3] === "Not provided" && "empty-value",
+                            )}
+                          >
+                            {visibleValue(row[3])}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className={classNames(
+                          "review-validation",
+                          row[4].toLowerCase(),
+                        )}
+                      >
+                        <StatusIcon kind={row[4]} size={16} />
+                        {row[4]}
+                      </span>
+                      <button
+                        type="button"
+                        className="row-edit-button"
+                        onClick={() => {
+                          setEditMode(true);
+                          if (suggestions[row[1]] && row[4] !== "Pass")
+                            updateValue(row[1], suggestions[row[1]]);
+                        }}
+                      >
+                        <PencilSimple size={15} />
+                        {row[4] !== "Pass" && suggestions[row[1]]
+                          ? "Fix"
+                          : "Edit"}
+                      </button>
+                    </div>
+                  ))}
+              </section>
+            ))}
           </div>
-        );
-      })}
-    </div>
+        </main>
+
+        <aside className="final-review-panel">
+          <div className="final-review-panel-scroll">
+            {mode === "manual" ? (
+              <section className="manual-review-record">
+                <h2>Review values</h2>
+                <div className="manual-record-list">
+                  {manualRecordRows.map((row) => (
+                    <div className="manual-record-row" key={row[1]}>
+                      <strong>{row[1]}</strong>
+                      <span>{visibleValue(row[3])}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
+              <>
+                <section>
+                  <div className="panel-heading-row">
+                    <h2>Review readiness</h2>
+                    <span>{issueCount ? "Blocked" : "Ready"}</span>
+                  </div>
+                  <div className="review-readiness-list">
+                    <div>
+                      <CheckCircle size={18} weight="fill" />
+                      <span>
+                        <strong>Source comparison complete</strong>
+                        <small>{validatedRows.length} fields reviewed</small>
+                      </span>
+                    </div>
+                    <div>
+                      <CheckCircle size={18} weight="fill" />
+                      <span>
+                        <strong>PLM values loaded</strong>
+                        <small>{passCount} values currently valid</small>
+                      </span>
+                    </div>
+                    <div className={issueCount ? "has-issue" : "is-clear"}>
+                      <StatusIcon
+                        kind={issueCount ? "Missing" : "Pass"}
+                        size={18}
+                      />
+                      <span>
+                        <strong>
+                          {issueCount
+                            ? `${issueCount} corrections required`
+                            : "No blockers remain"}
+                        </strong>
+                        <small>
+                          {issueCount
+                            ? "Apply or enter corrections to continue"
+                            : "Record can enter approval"}
+                        </small>
+                      </span>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h2>Next stage</h2>
+                  <div className="next-stage-card">
+                    <span>6</span>
+                    <div>
+                      <strong>Approval & issue</strong>
+                      <small>
+                        Merchandiser, Sourcing, Accounts, Ready, then supplier
+                        PO issue.
+                      </small>
+                    </div>
+                    <ArrowRight size={18} />
+                  </div>
+                </section>
+
+                <section>
+                  <h2>Audit preview</h2>
+                  <div className="compact-delivery-list">
+                    {[
+                      "Field corrections",
+                      "Validation result",
+                      "Source snapshot",
+                    ].map((item) => (
+                      <div key={item}>
+                        <FileText size={17} />
+                        <span>
+                          <strong>{item}</strong>
+                          <small>Included in final-review audit</small>
+                        </span>
+                        <em>Ready</em>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="review-data-source">
+                  <h2>Data source</h2>
+                  <dl>
+                    <div>
+                      <dt>Source file</dt>
+                      <dd>{data.run.source}</dd>
+                    </div>
+                    <div>
+                      <dt>Imported</dt>
+                      <dd>{data.run.synced}</dd>
+                    </div>
+                    <div>
+                      <dt>Last write</dt>
+                      <dd>{data.run.synced}</dd>
+                    </div>
+                    <div>
+                      <dt>Run ID</dt>
+                      <dd>{data.run.id}</dd>
+                    </div>
+                  </dl>
+                </section>
+              </>
+            )}
+          </div>
+
+          <section
+            className={classNames(
+              "review-panel-actions",
+              mode === "manual" && "manual-review-actions",
+            )}
+          >
+            <span>
+              {mode === "manual" ? "Workspace actions" : "Review actions"}
+            </span>
+            {mode === "manual" ? (
+              <>
+                <button
+                  className="ghost-link"
+                  onClick={() =>
+                    notify("Activity panel opened for this record.")
+                  }
+                >
+                  View activity
+                </button>
+                <button className="secondary" onClick={saveCorrections}>
+                  Save review
+                </button>
+                <button
+                  className={classNames(
+                    "primary",
+                    issueCount > 0 && "disabled",
+                  )}
+                  aria-disabled={issueCount > 0}
+                  onClick={continueToApproval}
+                >
+                  <ArrowRight size={18} />
+                  {issueCount > 0
+                    ? `Resolve ${issueCount} issues`
+                    : "Continue to approval"}
+                </button>
+              </>
+            ) : (
+              <>
+                {issueCount > 0 && (
+                  <button className="suggest-button" onClick={applySuggestions}>
+                    Apply suggested fixes
+                  </button>
+                )}
+                <div>
+                  <button className="secondary" onClick={saveCorrections}>
+                    Save corrections
+                  </button>
+                  <button
+                    className="secondary"
+                    onClick={() => {
+                      notify(
+                        issueCount
+                          ? `${issueCount} issues remain after validation.`
+                          : "Validation passed. No field issues remain.",
+                      );
+                    }}
+                  >
+                    Re-run validation
+                  </button>
+                </div>
+                <button
+                  className={classNames(
+                    "primary",
+                    issueCount > 0 && "disabled",
+                  )}
+                  aria-disabled={issueCount > 0}
+                  onClick={continueToApproval}
+                >
+                  <ArrowRight size={18} />
+                  {issueCount > 0
+                    ? `Resolve ${issueCount} issues`
+                    : "Continue to approval"}
+                </button>
+              </>
+            )}
+            {mode === "automation" && (
+              <button
+                className="ghost-link"
+                onClick={() => {
+                  exportJson("automation-final-review-audit.json", {
+                    mode,
+                    fields: validatedRows,
+                  });
+                  notify("Final review audit downloaded.");
+                }}
+              >
+                Export audit JSON
+              </button>
+            )}
+          </section>
+        </aside>
+      </div>
+      <ManualStatusBar
+        ready={issueCount === 0}
+        title={
+          issueCount
+            ? `Final review blocked · ${issueCount} issues`
+            : "Final review complete · ready for approval"
+        }
+        subtitle={
+          restored
+            ? "Corrections are stored locally in this prototype."
+            : "Loading saved corrections…"
+        }
+      />
+    </>
   );
 }
 
@@ -1643,13 +2401,42 @@ function ManualRail({
   phase,
   setPhase,
   completed,
+  collapsed,
 }: {
   phase: number;
   setPhase: (phase: number) => void;
   completed: number[];
+  collapsed: boolean;
 }) {
   return (
-    <aside className="phase-rail manual-rail">
+    <motion.aside
+      layout="size"
+      initial={false}
+      transition={{ type: "spring", stiffness: 420, damping: 38 }}
+      className={classNames(
+        "phase-rail manual-rail",
+        collapsed && "is-collapsed",
+      )}
+    >
+      <div className="sidebar-heading">
+        <span className="sidebar-mode-icon" title="Manual dashboard">
+          <HandPalm size={20} weight="fill" />
+        </span>
+        <div className="sidebar-heading-copy">
+          <span>Manual dashboard</span>
+          <strong>Operator workspace</strong>
+          <small>
+            {completed.length} of {data.manual.phases.length} phases complete
+          </small>
+          <div className="sidebar-progress" aria-hidden="true">
+            <i
+              style={{
+                width: `${(completed.length / data.manual.phases.length) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
+      </div>
       <nav>
         {data.manual.phases.map((item) => {
           const status =
@@ -1657,9 +2444,9 @@ function ManualRail({
               ? "active"
               : completed.includes(item.id)
                 ? "complete"
-                : phase === 5 && [1, 4].includes(item.id)
+                : phase >= 5 && [1, 4].includes(item.id)
                   ? "blocked"
-                  : phase === 5 && item.id === 2
+                  : phase >= 5 && item.id === 2
                     ? "warning"
                     : "waiting";
           return (
@@ -1693,7 +2480,7 @@ function ManualRail({
           );
         })}
       </nav>
-    </aside>
+    </motion.aside>
   );
 }
 
@@ -1719,12 +2506,12 @@ function ManualField({
   onValueChange?: (value: string) => void;
 }) {
   const storageKey = manualStorageKey(label);
-  const [current, setCurrent] = useState(value);
+  const [current, setCurrent] = useState(visibleValue(value));
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        setCurrent(saved);
+      if (saved !== null) {
+        setCurrent(visibleValue(saved));
         window.dispatchEvent(new CustomEvent("plm-field-change"));
       }
     }, 0);
@@ -1764,8 +2551,7 @@ function ManualField({
     ],
   };
   const choices = optionsByLabel[label];
-  const missing =
-    current === "Required from Excel" || current === "Confirmation required";
+  const missing = isMissingValue(current);
   return (
     <label className="manual-field">
       <span>{label}</span>
@@ -1775,7 +2561,7 @@ function ManualField({
             value={current}
             onChange={(event) => update(event.target.value)}
           >
-            {missing && <option value={current}>{current}</option>}
+            {missing && <option value=""> </option>}
             {choices.map((choice) => (
               <option value={choice} key={choice}>
                 {choice}
@@ -1785,7 +2571,7 @@ function ManualField({
         ) : (
           <input
             aria-label={label}
-            value={current}
+            value={visibleValue(current)}
             onChange={(event) => update(event.target.value)}
           />
         )}
@@ -1895,7 +2681,7 @@ function ManualStyle({
               </div>
             </div>
             <div className="run-checklist">
-              <h3>Automation run</h3>
+              <h3>Creation checklist</h3>
               {[
                 "Resolve hierarchy",
                 "Find existing",
@@ -1912,10 +2698,73 @@ function ManualStyle({
             </div>
           </div>
         </main>
-        <SourcePanel title="Source data" required={false} />
+        <SourcePanel
+          title="Style values"
+          rows={[
+            ["Season", data.run.season],
+            ...requiredLabels.map((label) => [label, readManualField(label)]),
+            ...data.manual.coreProperties.map(([label, value]) => [
+              label,
+              readManualField(label, value),
+            ]),
+          ]}
+          actions={
+            <>
+              <button
+                className="ghost-link"
+                onClick={() => {
+                  exportJson("style-intake-activity.json", {
+                    requiredLabels,
+                    missingLabels,
+                    values: Object.fromEntries(
+                      requiredLabels.map((label) => [
+                        label,
+                        readManualField(label),
+                      ]),
+                    ),
+                  });
+                  notify("Style activity exported.");
+                }}
+              >
+                View activity
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  saveLocalDraft(
+                    "plm-manual-style-draft",
+                    Object.fromEntries(
+                      requiredLabels.map((label) => [
+                        label,
+                        readManualField(label),
+                      ]),
+                    ),
+                  );
+                  notify("Manual style draft saved locally.");
+                }}
+              >
+                Save draft
+              </button>
+              <button
+                className={classNames("primary", !ready && "disabled")}
+                aria-disabled={!ready}
+                onClick={() =>
+                  ready
+                    ? onComplete()
+                    : notify(
+                        `Complete ${missingLabels.join(", ")} to continue.`,
+                      )
+                }
+              >
+                {ready ? <Check size={18} /> : <Lock size={18} />}
+                Create style & continue
+              </button>
+            </>
+          }
+        />
       </div>
-      <ActionBar
-        icon="warning"
+      <ManualStatusBar
+        ready={ready}
         title={
           ready
             ? "Validation complete · style can be created"
@@ -1926,49 +2775,7 @@ function ManualStyle({
             ? "Hierarchy resolved and duplicate search completed."
             : `Missing ${missingLabels.join(", ")}.`
         }
-      >
-        <button
-          className="ghost-link"
-          onClick={() => {
-            exportJson("style-intake-activity.json", {
-              requiredLabels,
-              missingLabels,
-              values: Object.fromEntries(
-                requiredLabels.map((label) => [label, readManualField(label)]),
-              ),
-            });
-            notify("Style activity exported.");
-          }}
-        >
-          View activity
-        </button>
-        <button
-          className="secondary"
-          onClick={() => {
-            saveLocalDraft(
-              "plm-manual-style-draft",
-              Object.fromEntries(
-                requiredLabels.map((label) => [label, readManualField(label)]),
-              ),
-            );
-            notify("Manual style draft saved locally.");
-          }}
-        >
-          Save draft
-        </button>
-        <button
-          className={classNames("primary", !ready && "disabled")}
-          aria-disabled={!ready}
-          onClick={() =>
-            ready
-              ? onComplete()
-              : notify(`Complete ${missingLabels.join(", ")} to continue.`)
-          }
-        >
-          {ready ? <Check size={18} /> : <Lock size={18} />}
-          Create style & continue
-        </button>
-      </ActionBar>
+      />
     </>
   );
 }
@@ -2069,7 +2876,7 @@ function ManualColor({
                             <span />
                           </button>
                         ) : (
-                          cell
+                          visibleValue(cell)
                         )}
                       </td>
                     ))}
@@ -2096,7 +2903,7 @@ function ManualColor({
               <span>Live lookup</span>
             </div>
             <div className="automation-log">
-              <h3>Automation log — 16 Jul 2026</h3>
+              <h3>Validation activity — 16 Jul 2026</h3>
               {data.manual.automationLog.map(([item, status]) => (
                 <p key={item}>
                   <StatusIcon kind={status === "Done" ? "complete" : status} />
@@ -2107,61 +2914,76 @@ function ManualColor({
             </div>
           </div>
         </main>
-        <SourcePanel title="Source data" />
+        <SourcePanel
+          title="Color & BOM values"
+          rows={[
+            ["Colour", "BLACK"],
+            ["Material", "FKn01144"],
+            ["MRP", "₹999"],
+            ["Pantone", readManualField("Pantone")],
+            ...data.manual.colorFields.map((label) => [
+              label,
+              readManualField(label),
+            ]),
+          ]}
+          actions={
+            <>
+              <button
+                className="ghost-link"
+                onClick={() => {
+                  exportJson("color-bom-activity.json", {
+                    addToBom,
+                    mainMaterial,
+                    missingFields,
+                  });
+                  notify("Color and BOM activity exported.");
+                }}
+              >
+                View activity
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  saveLocalDraft("plm-manual-color-draft", {
+                    addToBom,
+                    mainMaterial,
+                    fields: Object.fromEntries(
+                      data.manual.colorFields.map((label) => [
+                        label,
+                        readManualField(label),
+                      ]),
+                    ),
+                  });
+                  notify("Product definition draft saved locally.");
+                }}
+              >
+                Save draft
+              </button>
+              <button
+                className={classNames("primary", !ready && "disabled")}
+                aria-disabled={!ready}
+                onClick={() =>
+                  ready
+                    ? onComplete()
+                    : notify(
+                        `Complete ${missingFields.join(", ")} and keep BOM toggles enabled.`,
+                      )
+                }
+              >
+                Save product definition
+              </button>
+            </>
+          }
+        />
       </div>
-      <ActionBar
-        icon={ready ? "safe" : "warning"}
+      <ManualStatusBar
+        ready={ready}
         title={
           ready
             ? "Product definition ready to sync"
             : `${missingFields.length} source values · Product definition cannot sync`
         }
-      >
-        <button
-          className="ghost-link"
-          onClick={() => {
-            exportJson("color-bom-activity.json", {
-              addToBom,
-              mainMaterial,
-              missingFields,
-            });
-            notify("Color and BOM activity exported.");
-          }}
-        >
-          View activity
-        </button>
-        <button
-          className="secondary"
-          onClick={() => {
-            saveLocalDraft("plm-manual-color-draft", {
-              addToBom,
-              mainMaterial,
-              fields: Object.fromEntries(
-                data.manual.colorFields.map((label) => [
-                  label,
-                  readManualField(label),
-                ]),
-              ),
-            });
-            notify("Product definition draft saved locally.");
-          }}
-        >
-          Save draft
-        </button>
-        <button
-          className={classNames("primary", !ready && "disabled")}
-          aria-disabled={!ready}
-          onClick={() =>
-            ready
-              ? onComplete()
-              : notify(
-                  `Complete ${missingFields.join(", ")} and keep BOM toggles enabled.`,
-                )
-          }
-        >
-          Save product definition
-        </button>
-      </ActionBar>
+      />
     </>
   );
 }
@@ -2202,13 +3024,11 @@ function ManualSupplier({
                   <p key={a}>
                     <CheckCircle size={20} weight="fill" />
                     <strong>{a}</strong>
-                    <span>{b}</span>
+                    <span>{visibleValue(b)}</span>
                   </p>
                 ))}
               </div>
-              <h3 className="panel-section-title">
-                Request → quote automation
-              </h3>
+              <h3 className="panel-section-title">Request activity</h3>
               <div className="manual-timeline">
                 {data.manual.requestTimeline.map(([time, item]) => (
                   <p key={time}>
@@ -2232,7 +3052,7 @@ function ManualSupplier({
               </button>
             </section>
             <section>
-              <h2>Generated supplier quote</h2>
+              <h2>Supplier quote</h2>
               <div className="quote-fields">
                 {data.manual.quoteFields.map(([label, value]) => (
                   <ManualField key={label} label={label} value={value} />
@@ -2260,10 +3080,54 @@ function ManualSupplier({
             </section>
           </div>
         </main>
-        <SourcePanel title="Source data" />
+        <SourcePanel
+          title="Supplier values"
+          rows={[
+            ...data.sourceRecord.filter(([label]) =>
+              [
+                "Vendor",
+                "Cost",
+                "MRP",
+                "HSN",
+                "Vendor Type",
+                "Supplier Request Template",
+              ].includes(label),
+            ),
+            ["Supplier-code mapping", supplierMapping],
+          ]}
+          actions={
+            <>
+              <button
+                className="secondary"
+                onClick={() => {
+                  saveLocalDraft("plm-manual-supplier-draft", {
+                    mapping: supplierMapping,
+                    quote: data.manual.quoteFields,
+                  });
+                  notify("Supplier quote draft saved locally.");
+                }}
+              >
+                Save draft
+              </button>
+              <button
+                className={classNames("primary", !ready && "disabled")}
+                aria-disabled={!ready}
+                onClick={() =>
+                  ready
+                    ? onComplete()
+                    : notify(
+                        "Confirm supplier-code mapping to enable approval.",
+                      )
+                }
+              >
+                Approve supplier quote
+              </button>
+            </>
+          }
+        />
       </div>
-      <ActionBar
-        icon={ready ? "safe" : "warning"}
+      <ManualStatusBar
+        ready={ready}
         title={
           ready
             ? "Supplier quote ready for approval"
@@ -2274,31 +3138,7 @@ function ManualSupplier({
             ? `Mapped using ${supplierMapping}.`
             : "All other supplier request and quote validations passed."
         }
-      >
-        <button
-          className="ghost-link"
-          onClick={() => {
-            saveLocalDraft("plm-manual-supplier-draft", {
-              mapping: supplierMapping,
-              quote: data.manual.quoteFields,
-            });
-            notify("Supplier quote draft saved locally.");
-          }}
-        >
-          Save draft
-        </button>
-        <button
-          className={classNames("primary", !ready && "disabled")}
-          aria-disabled={!ready}
-          onClick={() =>
-            ready
-              ? onComplete()
-              : notify("Confirm supplier-code mapping to enable approval.")
-          }
-        >
-          Approve supplier quote
-        </button>
-      </ActionBar>
+      />
     </>
   );
 }
@@ -2422,10 +3262,73 @@ function ManualSku({
               : "Same-day ex-factory and shipment requires critical-path approval."}
           </div>
         </main>
-        <SourcePanel title="Source data" required={false} />
+        <SourcePanel
+          title="SKU & PO values"
+          rows={[
+            ...data.sourceRecord.filter(([label]) =>
+              [
+                "Total Qty",
+                "Ex-factory",
+                "Shipment",
+                "Launch",
+                "Vendor Type",
+              ].includes(label),
+            ),
+            ["Ratio template", ratioTemplate],
+            ["Holiday calendar", holidayCalendar],
+            ["Critical path", criticalPath],
+          ]}
+          actions={
+            <>
+              <button
+                className="ghost-link"
+                onClick={() => {
+                  exportJson("sku-po-planning.json", {
+                    ratioTemplate,
+                    ratios,
+                    planned,
+                    holidayCalendar,
+                    criticalPath,
+                  });
+                  notify("SKU and PO plan exported.");
+                }}
+              >
+                View activity
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  saveLocalDraft("plm-manual-sku-draft", {
+                    ratioTemplate,
+                    ratios,
+                    planned,
+                    holidayCalendar,
+                    criticalPath,
+                  });
+                  notify("SKU and PO draft saved locally.");
+                }}
+              >
+                Save draft
+              </button>
+              <button
+                className={classNames("primary", !ready && "disabled")}
+                aria-disabled={!ready}
+                onClick={() =>
+                  ready
+                    ? onComplete()
+                    : notify(
+                        "Select the ratio template, holiday calendar, and critical path to continue.",
+                      )
+                }
+              >
+                Create PO & validate
+              </button>
+            </>
+          }
+        />
       </div>
-      <ActionBar
-        icon={ready ? "safe" : "warning"}
+      <ManualStatusBar
+        ready={ready}
         title={
           ready
             ? "SKU matrix and PO plan validated"
@@ -2436,51 +3339,7 @@ function ManualSku({
             ? "The size matrix reconciles to 15,511 and the critical path is approved."
             : "Select a ratio template, holiday calendar, and critical path."
         }
-      >
-        <button
-          className="ghost-link"
-          onClick={() => {
-            exportJson("sku-po-planning.json", {
-              ratioTemplate,
-              ratios,
-              planned,
-              holidayCalendar,
-              criticalPath,
-            });
-            notify("SKU and PO plan exported.");
-          }}
-        >
-          View activity
-        </button>
-        <button
-          className="secondary"
-          onClick={() => {
-            saveLocalDraft("plm-manual-sku-draft", {
-              ratioTemplate,
-              ratios,
-              planned,
-              holidayCalendar,
-              criticalPath,
-            });
-            notify("SKU and PO draft saved locally.");
-          }}
-        >
-          Save draft
-        </button>
-        <button
-          className={classNames("primary", !ready && "disabled")}
-          aria-disabled={!ready}
-          onClick={() =>
-            ready
-              ? onComplete()
-              : notify(
-                  "Select the ratio template, holiday calendar, and critical path to continue.",
-                )
-          }
-        >
-          Create PO & validate
-        </button>
-      </ActionBar>
+      />
     </>
   );
 }
@@ -2496,7 +3355,7 @@ function ManualApproval({
 }) {
   const [approvalIndex, setApprovalIndex] = useState(0);
   const [issued, setIssued] = useState(false);
-  const requiredPhases = [1, 2, 3, 4];
+  const requiredPhases = [1, 2, 3, 4, 5];
   const ready = requiredPhases.every((phase) => completed.includes(phase));
   const pendingPhases = requiredPhases.filter(
     (phase) => !completed.includes(phase),
@@ -2525,8 +3384,8 @@ function ManualApproval({
   return (
     <>
       <div className="content-with-panel">
-        <main className="workspace manual-workspace">
-          <ManualHeading phase={5} />
+        <main className="workspace manual-workspace manual-approval-workspace">
+          <ManualHeading phase={6} />
           <div className="preflight-card">
             <header>
               <strong>
@@ -2574,6 +3433,33 @@ function ManualApproval({
                 </div>
               );
             })}
+            <div
+              className={classNames(
+                "preflight-row",
+                completed.includes(5) ? "complete" : "blocked",
+              )}
+            >
+              <StatusIcon
+                kind={completed.includes(5) ? "complete" : "Blocked"}
+                size={24}
+              />
+              <strong>Final review</strong>
+              <span>
+                <b>
+                  {completed.includes(5)
+                    ? "Corrections validated"
+                    : "Final review not completed"}
+                </b>
+                <small>
+                  {completed.includes(5)
+                    ? "Source and PLM values are ready for approval"
+                    : "Review all values and clear correction blockers"}
+                </small>
+              </span>
+              {!completed.includes(5) && (
+                <button onClick={() => setPhase(5)}>Open final review</button>
+              )}
+            </div>
           </div>
           <section className="manual-approval-route">
             <h2>Approval route</h2>
@@ -2653,22 +3539,57 @@ function ManualApproval({
             </section>
           </div>
         </main>
-        <aside className="context-panel executive-panel">
-          <h2>Executive order summary</h2>
-          <dl>
-            {data.sourceRecord
-              .filter(([label]) => label !== "Supplier Request Template")
-              .map(([a, b]) => (
-                <div key={a}>
-                  <dt>{a}</dt>
-                  <dd>{b}</dd>
-                </div>
-              ))}
-          </dl>
+        <aside className="context-panel executive-panel manual-context-panel">
+          <div className="context-scroll">
+            <h2>Executive order summary</h2>
+            <dl>
+              {data.sourceRecord
+                .filter(([label]) => label !== "Supplier Request Template")
+                .map(([a, b]) => (
+                  <div key={a}>
+                    <dt>{a}</dt>
+                    <dd>{b}</dd>
+                  </div>
+                ))}
+            </dl>
+          </div>
+          <section className="manual-panel-actions">
+            <span>Workspace actions</span>
+            <button className="secondary" onClick={() => setPhase(5)}>
+              Back to final review
+            </button>
+            <button
+              className="secondary"
+              onClick={() => {
+                saveLocalDraft("plm-manual-approval-draft", {
+                  completed,
+                  approvalIndex,
+                  issued,
+                });
+                notify("Approval draft saved locally.");
+              }}
+            >
+              Save draft
+            </button>
+            <button
+              className={classNames(
+                "primary",
+                (!ready || issued) && "disabled",
+              )}
+              aria-disabled={!ready || issued}
+              onClick={approveNext}
+            >
+              {issued
+                ? "Supplier PO issued"
+                : approvalIndex < 5
+                  ? `Approve ${data.manual.manualApprovals[approvalIndex][0]}`
+                  : "Issue supplier PO"}
+            </button>
+          </section>
         </aside>
       </div>
-      <ActionBar
-        icon={ready ? "safe" : "warning"}
+      <ManualStatusBar
+        ready={ready}
         title={
           issued
             ? "Supplier PO issued successfully"
@@ -2683,37 +3604,18 @@ function ManualApproval({
               ? "Complete the approval route, then issue the supplier PO."
               : "Resolve upstream exceptions before approval routing can begin."
         }
-      >
-        <button
-          className="secondary"
-          onClick={() => {
-            saveLocalDraft("plm-manual-approval-draft", {
-              completed,
-              approvalIndex,
-              issued,
-            });
-            notify("Approval draft saved locally.");
-          }}
-        >
-          Save draft
-        </button>
-        <button
-          className={classNames("primary", (!ready || issued) && "disabled")}
-          aria-disabled={!ready || issued}
-          onClick={approveNext}
-        >
-          {issued
-            ? "Supplier PO issued"
-            : approvalIndex < 5
-              ? `Approve ${data.manual.manualApprovals[approvalIndex][0]}`
-              : "Issue supplier PO"}
-        </button>
-      </ActionBar>
+      />
     </>
   );
 }
 
-function ManualProcess({ notify }: { notify: (text: string) => void }) {
+function ManualProcess({
+  notify,
+  sidebarCollapsed,
+}: {
+  notify: (text: string) => void;
+  sidebarCollapsed: boolean;
+}) {
   const [phase, setPhase] = useState(1);
   const [completed, setCompleted] = useState<number[]>([]);
   const [restored, setRestored] = useState(false);
@@ -2741,18 +3643,30 @@ function ManualProcess({ notify }: { notify: (text: string) => void }) {
       );
     }
   }, [phase, completed, restored]);
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>(".dashboard-manual .workspace")
+        ?.scrollTo({ top: 0, behavior: "auto" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [phase]);
   const completePhase = (current: number) => {
     setCompleted((items) =>
       items.includes(current) ? items : [...items, current],
     );
-    setPhase(Math.min(5, current + 1));
+    setPhase(Math.min(data.manual.phases.length, current + 1));
     notify(`${data.manual.phases[current - 1].short} completed.`);
   };
   return (
     <>
-      <ManualOperationStrip phase={phase} />
       <div className="app-body">
-        <ManualRail phase={phase} setPhase={setPhase} completed={completed} />
+        <ManualRail
+          phase={phase}
+          setPhase={setPhase}
+          completed={completed}
+          collapsed={sidebarCollapsed}
+        />
         <div className="page-stack">
           {phase === 1 && (
             <ManualStyle notify={notify} onComplete={() => completePhase(1)} />
@@ -2770,6 +3684,13 @@ function ManualProcess({ notify }: { notify: (text: string) => void }) {
             <ManualSku notify={notify} onComplete={() => completePhase(4)} />
           )}{" "}
           {phase === 5 && (
+            <FinalReview
+              mode="manual"
+              notify={notify}
+              onContinue={() => completePhase(5)}
+            />
+          )}
+          {phase === 6 && (
             <ManualApproval
               setPhase={setPhase}
               notify={notify}
@@ -2786,7 +3707,6 @@ function ActionBar({
   icon,
   title,
   subtitle,
-  children,
 }: {
   icon: string;
   title: string;
@@ -2794,26 +3714,18 @@ function ActionBar({
   children: React.ReactNode;
 }) {
   return (
-    <footer className="action-bar">
-      <div className={classNames("action-icon", icon)}>
-        {icon === "safe" ? (
-          <ShieldCheck size={55} />
-        ) : (
-          <Warning size={50} weight="fill" />
-        )}
-      </div>
-      <div className="action-copy">
-        <strong>{title}</strong>
-        {subtitle && <span>{subtitle}</span>}
-      </div>
-      <div className="action-buttons">{children}</div>
-    </footer>
+    <ManualStatusBar
+      ready={icon === "safe"}
+      title={title}
+      subtitle={subtitle}
+    />
   );
 }
 
 export default function Home() {
   const [phase, setPhase] = useState(1);
   const [mode, setMode] = useState<"automation" | "manual">("automation");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [toast, setToast] = useState("");
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -2825,8 +3737,10 @@ export default function Home() {
           const state = parsed.payload ?? parsed;
           if (state.mode === "automation" || state.mode === "manual")
             setMode(state.mode);
+          if (typeof state.sidebarCollapsed === "boolean")
+            setSidebarCollapsed(state.sidebarCollapsed);
           if (typeof state.phase === "number")
-            setPhase(Math.min(5, Math.max(1, state.phase)));
+            setPhase(Math.min(data.phases.length, Math.max(1, state.phase)));
         } catch {
           localStorage.removeItem("plm-prototype-state");
         }
@@ -2836,46 +3750,100 @@ export default function Home() {
     return () => window.clearTimeout(timer);
   }, []);
   useEffect(() => {
-    if (hydrated) saveLocalDraft("plm-prototype-state", { mode, phase });
-  }, [hydrated, mode, phase]);
+    if (hydrated)
+      saveLocalDraft("plm-prototype-state", {
+        mode,
+        phase,
+        sidebarCollapsed,
+      });
+  }, [hydrated, mode, phase, sidebarCollapsed]);
   const notify = (text: string) => {
     setToast(text);
     window.setTimeout(() => setToast(""), 2600);
   };
   return (
-    <div className="app-shell">
-      <Header mode={mode} setMode={setMode} notify={notify} />
-      {mode === "automation" ? (
-        <>
-          <OperationStrip phase={phase} />
-          <div className="app-body">
-            <PhaseRail phase={phase} setPhase={setPhase} />
-            <div className="page-stack">
-              {phase === 1 && (
-                <ImportMap notify={notify} onComplete={() => setPhase(2)} />
-              )}{" "}
-              {phase === 2 && <Plan setPhase={setPhase} notify={notify} />}{" "}
-              {phase === 3 && (
-                <Execute notify={notify} onComplete={() => setPhase(4)} />
-              )}{" "}
-              {phase === 4 && (
-                <Resolve notify={notify} onComplete={() => setPhase(5)} />
-              )}{" "}
-              {phase === 5 && <Review notify={notify} />}
-            </div>
-          </div>
-        </>
-      ) : (
-        <ManualProcess notify={notify} />
-      )}
-      <div className="toast-region" aria-live="polite" aria-atomic="true">
-        {toast && (
-          <div className="toast">
-            <Info size={19} />
-            {toast}
-          </div>
+    <MotionConfig reducedMotion="user">
+      <div
+        className={classNames(
+          "app-shell",
+          `dashboard-${mode}`,
+          sidebarCollapsed && "sidebar-collapsed",
         )}
+      >
+        <Header
+          mode={mode}
+          setMode={setMode}
+          sidebarCollapsed={sidebarCollapsed}
+          setSidebarCollapsed={setSidebarCollapsed}
+          notify={notify}
+        />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={mode}
+            className="dashboard-stage"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {mode === "automation" ? (
+              <>
+                <OperationStrip phase={phase} />
+                <div className="app-body">
+                  <PhaseRail
+                    phase={phase}
+                    setPhase={setPhase}
+                    collapsed={sidebarCollapsed}
+                  />
+                  <div className="page-stack">
+                    {phase === 1 && (
+                      <ImportMap
+                        notify={notify}
+                        onComplete={() => setPhase(2)}
+                      />
+                    )}{" "}
+                    {phase === 2 && (
+                      <Plan setPhase={setPhase} notify={notify} />
+                    )}{" "}
+                    {phase === 3 && (
+                      <Execute notify={notify} onComplete={() => setPhase(4)} />
+                    )}{" "}
+                    {phase === 4 && (
+                      <Resolve notify={notify} onComplete={() => setPhase(5)} />
+                    )}{" "}
+                    {phase === 5 && (
+                      <FinalReview
+                        mode="automation"
+                        notify={notify}
+                        onContinue={() => setPhase(6)}
+                      />
+                    )}
+                    {phase === 6 && (
+                      <Review
+                        notify={notify}
+                        onBackToReview={() => setPhase(5)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <ManualProcess
+                notify={notify}
+                sidebarCollapsed={sidebarCollapsed}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+        <div className="toast-region" aria-live="polite" aria-atomic="true">
+          {toast && (
+            <div className="toast">
+              <Info size={19} />
+              {toast}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </MotionConfig>
   );
 }

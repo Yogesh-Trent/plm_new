@@ -33,9 +33,15 @@
     },
     {
       "id": 5,
-      "short": "Review & release",
-      "title": "Review & release",
-      "subtitle": "Reconcile final PLM objects, complete approvals, then issue the supplier PO."
+      "short": "Final review",
+      "title": "Final review & correction",
+      "subtitle": "Review every PLM object and correct source values before approval."
+    },
+    {
+      "id": 6,
+      "short": "Approval & issue",
+      "title": "Approval & issue",
+      "subtitle": "Complete the approval route, release the final PLM objects, and issue the supplier PO."
     }
   ],
   "operations": [
@@ -361,6 +367,84 @@
     ["Supplier delivery", "Not sent", "Waiting"],
     ["SAP sync", "Not started", "Waiting"]
   ],
+  "finalReview": {
+    "fields": [
+      ["Style & color", "Season", "Zudio AW 26", "Zudio AW 26", "Pass"],
+      ["Style & color", "Department", "Menswear", "Menswear", "Pass"],
+      ["Style & color", "Material", "FKn01144", "FKn01144", "Pass"],
+      ["Style & color", "Colour", "BLACK", "BLACK", "Pass"],
+      ["Style & color", "Pantone", "Not provided", "Not provided", "Missing"],
+      [
+        "Style & color",
+        "Brand / Division",
+        "Not provided",
+        "Not provided",
+        "Missing"
+      ],
+      [
+        "Style & color",
+        "Product Type",
+        "Not provided",
+        "Not provided",
+        "Missing"
+      ],
+      [
+        "Style & color",
+        "Style Type",
+        "Not provided",
+        "Not provided",
+        "Missing"
+      ],
+      ["Style & color", "Template", "Not provided", "Not provided", "Missing"],
+      [
+        "Style & color",
+        "Style Name",
+        "Not provided",
+        "Not provided",
+        "Missing"
+      ],
+      ["BOM & supplier", "Supplier ID", "11301069", "11301069", "Pass"],
+      [
+        "BOM & supplier",
+        "Vendor",
+        "NZ SEASONAL WEAR PRIVATE LIMITED",
+        "NZ SEASONAL WEAR PRIVATE LIMITED",
+        "Pass"
+      ],
+      ["BOM & supplier", "Main material", "FKn01144", "FKn01144", "Pass"],
+      ["BOM & supplier", "Cost", "₹100", "₹100", "Pass"],
+      ["BOM & supplier", "MRP", "₹999", "₹999", "Pass"],
+      [
+        "SKU & quantity",
+        "Size allocation",
+        "15,511 total",
+        "Not provided",
+        "Missing"
+      ],
+      ["SKU & quantity", "Total quantity", "15,511", "15,511", "Pass"],
+      ["PO dates & terms", "Ex-factory", "02 Dec 2026", "02 Dec 2026", "Pass"],
+      ["PO dates & terms", "Shipment", "02 Dec 2026", "02 Dec 2026", "Pass"],
+      ["PO dates & terms", "Launch", "17 Dec 2026", "17 Dec 2026", "Pass"],
+      ["PO dates & terms", "Vendor type", "Domestic", "Domestic", "Pass"],
+      [
+        "PO dates & terms",
+        "Supplier request template",
+        "Silver Seal Request Template",
+        "Silver Seal Request Template",
+        "Pass"
+      ],
+      ["PO dates & terms", "HSN", "62033300", "62033300", "Pass"]
+    ],
+    "suggestions": {
+      "Pantone": "19-0303 TCX",
+      "Brand / Division": "Zudio",
+      "Product Type": "T-Shirt",
+      "Style Type": "Fashion",
+      "Template": "Menswear Core",
+      "Style Name": "AW26 Black Crew Tee",
+      "Size allocation": "XS 1,551 · S 3,102 · M 3,878 · L 3,102 · XL 2,327 · XXL 1,551"
+    }
+  },
   "manual": {
     "phases": [
       {
@@ -389,6 +473,12 @@
       },
       {
         "id": 5,
+        "short": "Final review",
+        "title": "Final review & correction",
+        "subtitle": "Review all saved values, correct issues, and validate the record before approval."
+      },
+      {
+        "id": 6,
         "short": "Approval & issue",
         "title": "Approval & issue",
         "subtitle": "Clear every exception, complete the approval route, then issue the supplier PO."
