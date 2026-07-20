@@ -3665,6 +3665,78 @@ body {
   }
 }
 
+/* Grouped workspace navigation keeps both detailed stages accessible. */
+.workspace-group {
+  margin: 2px 0;
+}
+.workspace-group .phase-item {
+  margin: 0;
+}
+.workspace-substeps {
+  display: grid;
+  gap: 3px;
+  margin: 4px 7px 7px 40px;
+  padding: 5px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.workspace-substep {
+  min-width: 0;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: #c9cbcd;
+  font-size: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+.workspace-substep:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+}
+.workspace-substep > span {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #8b8e91;
+  border-radius: 50%;
+  color: inherit;
+  font-size: 8px;
+  font-weight: 700;
+}
+.workspace-substep.is-active {
+  border-color: color-mix(in srgb, var(--dashboard-accent) 45%, white);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.workspace-substep.is-active > span {
+  border-color: var(--dashboard-accent);
+  background: var(--dashboard-accent);
+  color: #fff;
+}
+.workspace-substep.is-complete {
+  color: #a9d0bb;
+}
+.workspace-substep.is-complete > span {
+  border-color: #77a78d;
+}
+.phase-rail.is-collapsed .workspace-substeps {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .workspace-substeps {
+    display: none;
+  }
+}
+
 /* Manual final-review record rows --------------------------------------- */
 .dashboard-manual .final-review-panel .manual-record-list {
   display: flex;
@@ -4773,5 +4845,138 @@ body {
     .phase-item
     > span:nth-child(2) {
     display: none;
+  }
+}
+
+/* Merged workspace pages --------------------------------------------------- */
+.merged-workspace {
+  display: block;
+}
+.merged-heading {
+  border-bottom: 1px solid var(--line);
+  padding: 2px 0 16px;
+  margin-bottom: 4px;
+}
+.merged-heading .eyebrow {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--dashboard-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+.merged-heading h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 33px;
+  line-height: 1.06;
+  margin: 0 0 8px;
+  color: #241f21;
+}
+.merged-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 74ch;
+}
+.merged-phase {
+  display: block;
+  padding: 0 0 10px;
+}
+.merged-phase + .merged-phase {
+  margin-top: 22px;
+}
+/* Clear, full-width step header (not sticky, so it never overlaps content) */
+.merged-step-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 20px 0 14px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--dashboard-accent);
+  border-radius: 8px;
+  background: var(--soft);
+}
+.merged-step-label > strong {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+}
+.merged-step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 3px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.merged-step-pill.is-ready {
+  border-color: var(--green);
+  background: #eef6f1;
+  color: var(--green);
+}
+/* Combined right panel */
+.merged-panel .context-scroll {
+  display: block;
+}
+.merged-panel .panel-rows {
+  display: block;
+}
+.merged-panel .panel-rows + .panel-rows {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.merged-panel .panel-rows > h3,
+.merged-panel .panel-rows > h2 {
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+.merged-panel .panel-note {
+  margin: -4px 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+/* Single consolidated primary action in the combined panel */
+.merged-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+/* embedded final-review body inside a merged workspace */
+.final-review-embed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* The merged step header already names this step, so drop the duplicate
+   inner heading text but keep the Edit-corrections toggle. */
+.final-review-embed .final-review-heading {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  justify-content: flex-end;
+}
+.final-review-embed .final-review-heading > div {
+  display: none;
+}
+@media (max-width: 900px) {
+  .merged-heading h1 {
+    font-size: 26px;
   }
 }

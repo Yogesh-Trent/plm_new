@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Bell,
@@ -32,6 +32,57 @@ import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import data from "./data/prototype.json";
 
 type Status = "complete" | "active" | "waiting" | "interrupted";
+
+type WorkflowGroup = {
+  id: number;
+  short: string;
+  title: string;
+  phases: [number, number];
+};
+
+const automationWorkflowGroups: WorkflowGroup[] = [
+  {
+    id: 1,
+    short: "Map & plan",
+    title: "Map source & plan run",
+    phases: [1, 2],
+  },
+  {
+    id: 2,
+    short: "Run & recover",
+    title: "Execute run & recover safely",
+    phases: [3, 4],
+  },
+  {
+    id: 3,
+    short: "Review & issue",
+    title: "Review record & issue PO",
+    phases: [5, 6],
+  },
+];
+
+const manualWorkflowGroups: WorkflowGroup[] = [
+  {
+    id: 1,
+    short: "Product setup",
+    title: "Style, colour & BOM",
+    phases: [1, 2],
+  },
+  {
+    id: 2,
+    short: "Supplier & order",
+    title: "Supplier commercial & PO planning",
+    phases: [3, 4],
+  },
+  {
+    id: 3,
+    short: "Review & approval",
+    title: "Final review & approval issue",
+    phases: [5, 6],
+  },
+];
+
+const workflowGroupForPhase = (phase: number) => Math.ceil(phase / 2);
 
 const classNames = (...items: Array<string | false | undefined>) =>
   items.filter(Boolean).join(" ");
@@ -369,7 +420,8 @@ function PhaseRail({
           <span>Automation dashboard</span>
           <strong>{data.run.id}</strong>
           <small>
-            {Math.max(0, phase - 1)} of {data.phases.length} phases complete
+            {Math.floor(Math.max(0, phase - 1) / 2)} of{" "}
+            {automationWorkflowGroups.length} workspaces complete
           </small>
           <div className="sidebar-progress" aria-hidden="true">
             <i
@@ -381,44 +433,48 @@ function PhaseRail({
         </div>
       </div>
       <nav>
-        {data.phases.map((item) => {
+        {automationWorkflowGroups.map((item) => {
+          const activeGroup = workflowGroupForPhase(phase);
           const status: Status =
-            item.id < phase
+            item.id < activeGroup
               ? "complete"
-              : item.id === phase
+              : item.id === activeGroup
                 ? "active"
-                : phase === 4 && item.id === 3
-                  ? "interrupted"
-                  : "waiting";
+                : "waiting";
           return (
-            <button
-              key={item.id}
-              onClick={() => setPhase(item.id)}
-              aria-current={status === "active" ? "step" : undefined}
+            <div
               className={classNames(
-                "phase-item",
+                "workspace-group",
                 status === "active" && "is-active",
               )}
+              key={item.id}
             >
-              <span className={classNames("phase-number", status)}>
-                {item.id}
-              </span>
-              <span>
-                <strong>{item.short}</strong>
-                <small className={status}>
-                  {status === "complete"
-                    ? "Complete"
-                    : status === "active"
-                      ? "Active"
-                      : status === "interrupted"
-                        ? "Interrupted"
+              <button
+                onClick={() => setPhase(item.phases[0])}
+                aria-current={status === "active" ? "step" : undefined}
+                className={classNames(
+                  "phase-item",
+                  status === "active" && "is-active",
+                )}
+              >
+                <span className={classNames("phase-number", status)}>
+                  {item.id}
+                </span>
+                <span>
+                  <strong>{item.short}</strong>
+                  <small className={status}>
+                    {status === "complete"
+                      ? "Complete"
+                      : status === "active"
+                        ? item.title
                         : "Waiting"}
-                </small>
-              </span>
-              {status === "complete" && (
-                <CheckCircle className="phase-check" size={20} />
-              )}
-            </button>
+                  </small>
+                </span>
+                {status === "complete" && (
+                  <CheckCircle className="phase-check" size={20} />
+                )}
+              </button>
+            </div>
           );
         })}
       </nav>
@@ -502,53 +558,6 @@ function OperationStrip({ phase }: { phase: number }) {
   );
 }
 
-function SourcePanel({
-  title = "Source record",
-  rows,
-  actions,
-}: {
-  title?: string;
-  rows?: string[][];
-  actions?: React.ReactNode;
-}) {
-  const visibleRows = (rows ?? data.sourceRecord).filter(([, value]) =>
-    Boolean(visibleValue(value)),
-  );
-  return (
-    <aside
-      className={classNames(
-        "context-panel",
-        Boolean(actions) && "manual-context-panel",
-      )}
-    >
-      <div className="context-scroll">
-        <h3>{title}</h3>
-        {visibleRows.length ? (
-          <dl>
-            {visibleRows.map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{visibleValue(value)}</dd>
-              </div>
-            ))}
-          </dl>
-        ) : (
-          <div className="context-empty">
-            <Info size={18} />
-            <span>No values filled in this phase yet.</span>
-          </div>
-        )}
-      </div>
-      {actions && (
-        <section className="manual-panel-actions automation-panel-actions">
-          <span>Workspace actions</span>
-          {actions}
-        </section>
-      )}
-    </aside>
-  );
-}
-
 function ManualStatusBar({
   ready,
   title,
@@ -588,15 +597,179 @@ function Stat({
   );
 }
 
-function ImportMap({
+// ---------------------------------------------------------------------------
+// Merged workspace infrastructure
+//
+// Each workflow group (2 legacy phases) is presented as ONE cohesive page.
+// Every legacy phase is expressed as a hook returning a PhaseDescriptor; a
+// group component composes two descriptors into a single workspace + panel.
+// ---------------------------------------------------------------------------
+
+type PhaseDescriptor = {
+  step: number;
+  short: string;
+  ready: boolean;
+  sections: React.ReactNode;
+  panelBody: React.ReactNode;
+  // Phase-specific extra buttons (Approve, Apply fix, Export, …). The generic
+  // "View activity" / "Save draft" pair is deduplicated at the page level via
+  // the onActivity / onSaveDraft handlers below.
+  panelActions?: React.ReactNode;
+  onActivity?: () => void;
+  onSaveDraft?: () => void;
+};
+
+function PanelRows({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: (string | undefined)[][];
+}) {
+  const visibleRows = rows.filter(([, value]) => Boolean(visibleValue(value)));
+  return (
+    <section className="panel-rows">
+      <h3>{title}</h3>
+      {visibleRows.length ? (
+        <dl>
+          {visibleRows.map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{visibleValue(value)}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <div className="context-empty">
+          <Info size={18} />
+          <span>No values filled in this step yet.</span>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function PhaseBlockLabel({
+  short,
+  ready,
+}: {
+  short: string;
+  ready: boolean;
+}) {
+  return (
+    <div className={classNames("merged-step-label", ready && "is-ready")}>
+      <strong>{short}</strong>
+      <span className={classNames("merged-step-pill", ready && "is-ready")}>
+        {ready ? (
+          <CheckCircle size={15} weight="fill" />
+        ) : (
+          <Clock size={15} />
+        )}
+        {ready ? "Ready" : "In progress"}
+      </span>
+    </div>
+  );
+}
+
+function MergedGroupPage({
+  eyebrow,
+  title,
+  subtitle,
+  phaseA,
+  phaseB,
+  utilityActions,
+  primary,
+  statusReady,
+  statusTitle,
+  statusSubtitle,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  phaseA: PhaseDescriptor;
+  phaseB: PhaseDescriptor;
+  utilityActions?: React.ReactNode;
+  primary: React.ReactNode;
+  statusReady: boolean;
+  statusTitle: string;
+  statusSubtitle?: string;
+}) {
+  const activities = [phaseA.onActivity, phaseB.onActivity].filter(
+    (run): run is () => void => Boolean(run),
+  );
+  const draftSavers = [phaseA.onSaveDraft, phaseB.onSaveDraft].filter(
+    (run): run is () => void => Boolean(run),
+  );
+  return (
+    <>
+      <div className="content-with-panel merged-layout">
+        <main className="workspace manual-workspace merged-workspace">
+          <div className="merged-heading">
+            <span className="eyebrow">{eyebrow}</span>
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+          </div>
+          <section className="merged-phase">
+            <PhaseBlockLabel short={phaseA.short} ready={phaseA.ready} />
+            {phaseA.sections}
+          </section>
+          <section className="merged-phase">
+            <PhaseBlockLabel short={phaseB.short} ready={phaseB.ready} />
+            {phaseB.sections}
+          </section>
+        </main>
+        <aside className="context-panel manual-context-panel merged-panel">
+          <div className="context-scroll">
+            {phaseA.panelBody}
+            {phaseB.panelBody}
+          </div>
+          <section className="manual-panel-actions">
+            <span>Workspace actions</span>
+            {phaseA.panelActions}
+            {phaseB.panelActions}
+            {activities.length > 0 && (
+              <button
+                className="ghost-link"
+                onClick={() => activities.forEach((run) => run())}
+              >
+                View activity
+              </button>
+            )}
+            {draftSavers.length > 0 && (
+              <button
+                className="secondary"
+                onClick={() => draftSavers.forEach((run) => run())}
+              >
+                Save draft
+              </button>
+            )}
+            {utilityActions}
+            <div className="merged-primary">{primary}</div>
+          </section>
+        </aside>
+      </div>
+      <ManualStatusBar
+        ready={statusReady}
+        title={statusTitle}
+        subtitle={statusSubtitle}
+      />
+    </>
+  );
+}
+
+function useImportMap({
   notify,
-  onComplete,
+  sourceResolved,
+  setSourceResolved,
+  ratioApproved,
+  setRatioApproved,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
-  const [sourceResolved, setSourceResolved] = useState(false);
-  const [ratioApproved, setRatioApproved] = useState(false);
+  sourceResolved: boolean;
+  setSourceResolved: (value: boolean) => void;
+  ratioApproved: boolean;
+  setRatioApproved: (value: boolean) => void;
+}): PhaseDescriptor {
   const ready = sourceResolved && ratioApproved;
   const resolvedCount =
     14 + (sourceResolved ? 16 : 0) + (ratioApproved ? 1 : 0);
@@ -606,12 +779,13 @@ function ImportMap({
       : row[4] === "Blocked" && ratioApproved
         ? "Matched"
         : row[4];
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace">
-          <ScreenHeading phase={1} />
-          <div className="source-health">
+  return {
+    step: 1,
+    short: "Import & map",
+    ready,
+    sections: (
+      <>
+        <div className="source-health">
             <strong>{data.run.source}</strong>
             <span className="success-dot">● Loaded</span>
             <span className="health-copy">
@@ -716,125 +890,12 @@ function ImportMap({
               Review ratio policy
             </button>
           </div>
-        </main>
-        <RunPreview
-          actions={
-            <>
-              <button
-                className="ghost-link"
-                onClick={() => {
-                  exportJson("source-to-plm-mapping.json", {
-                    mapping: data.mapping.map((row) => [
-                      ...row.slice(0, 4),
-                      effectiveStatus(row),
-                    ]),
-                    sourceResolved,
-                    ratioApproved,
-                  });
-                  notify("Mapping JSON downloaded.");
-                }}
-              >
-                Export mapping
-              </button>
-              <button
-                className="secondary"
-                onClick={() => {
-                  saveLocalDraft("plm-automation-draft", {
-                    sourceResolved,
-                    ratioApproved,
-                  });
-                  notify("Automation draft saved locally.");
-                }}
-              >
-                Save draft
-              </button>
-              <button
-                className={classNames("primary", !ready && "disabled")}
-                aria-disabled={!ready}
-                onClick={() => {
-                  if (ready) {
-                    localStorage.setItem("plm-automation-mapped", "true");
-                    onComplete();
-                  } else {
-                    notify(
-                      `Resolve ${sourceResolved ? 0 : 16} source values and ${ratioApproved ? 0 : 1} ratio policy first.`,
-                    );
-                  }
-                }}
-              >
-                Validate mapping
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ActionBar
-        icon={ready ? "safe" : "warning"}
-        title={
-          ready
-            ? "Mapping complete · ready to simulate"
-            : "Mapping incomplete · source values and ratio policy require attention"
-        }
-        subtitle={
-          ready
-            ? "All source values resolve to active PLM keys."
-            : "Replace the source and approve a ratio before validation."
-        }
-      >
-        <button
-          onClick={() => {
-            exportJson("source-to-plm-mapping.json", {
-              mapping: data.mapping.map((row) => [
-                ...row.slice(0, 4),
-                effectiveStatus(row),
-              ]),
-              sourceResolved,
-              ratioApproved,
-            });
-            notify("Mapping JSON downloaded.");
-          }}
-          className="ghost-link"
-        >
-          Export mapping
-        </button>
-        <button
-          onClick={() => {
-            saveLocalDraft("plm-automation-draft", {
-              sourceResolved,
-              ratioApproved,
-            });
-            notify("Automation draft saved locally.");
-          }}
-          className="secondary"
-        >
-          Save draft
-        </button>
-        <button
-          onClick={() => {
-            if (ready) {
-              localStorage.setItem("plm-automation-mapped", "true");
-              onComplete();
-            } else
-              notify(
-                `Resolve ${sourceResolved ? 0 : 16} source values and ${ratioApproved ? 0 : 1} ratio policy first.`,
-              );
-          }}
-          className={classNames("primary", !ready && "disabled")}
-          aria-disabled={!ready}
-        >
-          Validate mapping
-        </button>
-      </ActionBar>
-    </>
-  );
-}
-
-function RunPreview({ actions }: { actions?: React.ReactNode }) {
-  return (
-    <aside className="context-panel preview-panel manual-context-panel">
-      <div className="context-scroll">
+      </>
+    ),
+    panelBody: (
+      <section className="panel-rows">
         <h3>RUN OUTPUT PREVIEW</h3>
-        <p>8 operations from this row</p>
+        <p className="panel-note">8 operations from this row</p>
         <div className="preview-list">
           {data.operations.map((item, index) => (
             <div key={item}>
@@ -873,43 +934,47 @@ function RunPreview({ actions }: { actions?: React.ReactNode }) {
             </div>
           ))}
         </div>
-      </div>
-      {actions && (
-        <section className="manual-panel-actions automation-panel-actions">
-          <span>Workspace actions</span>
-          {actions}
-        </section>
-      )}
-    </aside>
-  );
+      </section>
+    ),
+    panelActions: (
+      <button
+        className="ghost-link"
+        onClick={() => {
+          exportJson("source-to-plm-mapping.json", {
+            mapping: data.mapping.map((row) => [
+              ...row.slice(0, 4),
+              effectiveStatus(row),
+            ]),
+            sourceResolved,
+            ratioApproved,
+          });
+          notify("Mapping JSON downloaded.");
+        }}
+      >
+        Export mapping
+      </button>
+    ),
+    onSaveDraft: () => {
+      saveLocalDraft("plm-automation-draft", {
+        sourceResolved,
+        ratioApproved,
+      });
+      notify("Automation draft saved locally.");
+    },
+  };
 }
 
-function ScreenHeading({ phase }: { phase: number }) {
-  const item = data.phases[phase - 1];
-  return (
-    <div className="screen-heading">
-      <h1>{item.title}</h1>
-      <p>{item.subtitle}</p>
-    </div>
-  );
-}
-
-function Plan({
-  setPhase,
+function usePlan({
   notify,
+  mapped,
+  approved,
+  setApproved,
 }: {
-  setPhase: (id: number) => void;
   notify: (text: string) => void;
-}) {
-  const [approved, setApproved] = useState(false);
-  const [mapped, setMapped] = useState(false);
-  useEffect(() => {
-    const timer = window.setTimeout(
-      () => setMapped(localStorage.getItem("plm-automation-mapped") === "true"),
-      0,
-    );
-    return () => window.clearTimeout(timer);
-  }, []);
+  mapped: boolean;
+  approved: boolean;
+  setApproved: (value: boolean) => void;
+}): PhaseDescriptor {
   const approvePlan = () => {
     if (!mapped) {
       notify("Complete and validate source mapping before plan approval.");
@@ -921,14 +986,14 @@ function Plan({
       approvedAt: new Date().toISOString(),
     });
     notify("Run plan approved. Execution is ready.");
-    window.setTimeout(() => setPhase(3), 450);
   };
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace">
-          <ScreenHeading phase={2} />
-          <MiniFlow active={2} />
+  return {
+    step: 2,
+    short: "Plan & simulate",
+    ready: mapped && approved,
+    sections: (
+      <>
+        <MiniFlow active={2} />
           <div className="table-wrap plan-table">
             <table>
               <thead>
@@ -1030,53 +1095,18 @@ function Plan({
               </p>
             </section>
           </div>
-        </main>
-        <SourcePanel
-          title="Planning inputs"
-          rows={data.sourceRecord.filter(([label]) =>
-            ["Material", "Colour", "Vendor", "Total Qty"].includes(label),
-          )}
-          actions={
-            <>
-              <button className="ghost-link" onClick={() => setPhase(1)}>
-                Back to mapping
-              </button>
-              <button
-                className="secondary"
-                onClick={() => {
-                  exportJson("dry-run-plan.json", {
-                    operations: data.planRows,
-                    blockers: data.blockers,
-                    warnings: data.warnings,
-                  });
-                  notify("Dry-run plan downloaded.");
-                }}
-              >
-                <DownloadSimple size={18} />
-                Export plan
-              </button>
-              <button
-                className={classNames("primary", !mapped && "disabled")}
-                aria-disabled={!mapped}
-                onClick={approvePlan}
-              >
-                {approved ? "Plan approved" : "Approve run plan"}
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ActionBar
-        icon={mapped ? "safe" : "warning"}
-        title={
-          mapped
-            ? "Dry-run complete · ready for approval"
-            : "Plan blocked · 6 source or policy requirements unresolved"
-        }
-      >
-        <button className="secondary" onClick={() => setPhase(1)}>
-          Back to mapping
-        </button>
+      </>
+    ),
+    panelBody: (
+      <PanelRows
+        title="Planning inputs"
+        rows={data.sourceRecord.filter(([label]) =>
+          ["Material", "Colour", "Vendor", "Total Qty"].includes(label),
+        )}
+      />
+    ),
+    panelActions: (
+      <>
         <button
           className="secondary"
           onClick={() => {
@@ -1088,19 +1118,19 @@ function Plan({
             notify("Dry-run plan downloaded.");
           }}
         >
-          <DownloadSimple size={20} />
+          <DownloadSimple size={18} />
           Export plan
         </button>
         <button
-          className={classNames("primary", !mapped && "disabled")}
+          className={classNames("secondary", !mapped && "disabled")}
           aria-disabled={!mapped}
           onClick={approvePlan}
         >
           {approved ? "Plan approved" : "Approve run plan"}
         </button>
-      </ActionBar>
-    </>
-  );
+      </>
+    ),
+  };
 }
 
 function MiniFlow({ active }: { active: number }) {
@@ -1120,13 +1150,13 @@ function MiniFlow({ active }: { active: number }) {
   );
 }
 
-function Execute({
+function useExecute({
   notify,
-  onComplete,
+  onFinished,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
+  onFinished: () => void;
+}): PhaseDescriptor {
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(38);
   const completionNotified = useRef(false);
@@ -1143,18 +1173,20 @@ function Execute({
     if (progress === 100 && !completionNotified.current) {
       completionNotified.current = true;
       localStorage.setItem("plm-automation-executed", "true");
+      onFinished();
       notify(
         "Execution completed successfully. All eight operations finished.",
       );
     }
-  }, [progress, notify]);
+  }, [progress, notify, onFinished]);
   const completedCount = Math.min(8, Math.floor(progress / 12.5));
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace execute-workspace">
-          <ScreenHeading phase={3} />
-          <div className="progress-row">
+  return {
+    step: 3,
+    short: "Execute & monitor",
+    ready: finished,
+    sections: (
+      <>
+        <div className="progress-row">
             <strong>
               {finished
                 ? "100% complete"
@@ -1246,91 +1278,10 @@ function Execute({
               </tbody>
             </table>
           </section>
-        </main>
-        <ExecutePanel
-          actions={
-            <>
-              <button
-                className="secondary"
-                onClick={() => {
-                  exportJson("automation-event-log.json", {
-                    progress,
-                    paused,
-                    events: data.eventLog,
-                  });
-                  notify("Full event log downloaded.");
-                }}
-              >
-                View full log
-              </button>
-              <button
-                className="primary"
-                onClick={() => (finished ? onComplete() : setPaused(!paused))}
-              >
-                {finished
-                  ? "Continue to recovery"
-                  : paused
-                    ? "Resume run"
-                    : "Pause after current action"}
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ActionBar
-        icon="safe"
-        title={
-          paused
-            ? "Run paused at a safe boundary"
-            : finished
-              ? "Run completed · all writes verified"
-              : "Current write will finish before pausing"
-        }
-        subtitle="No partial create · resume from BOM placement"
-      >
-        <button
-          className="secondary"
-          onClick={() => {
-            exportJson("automation-event-log.json", {
-              progress,
-              paused,
-              events: data.eventLog,
-            });
-            notify("Full event log downloaded.");
-          }}
-        >
-          View full log
-        </button>
-        <button
-          className="primary"
-          onClick={() => (finished ? onComplete() : setPaused(!paused))}
-        >
-          {finished ? (
-            <>
-              <ArrowRight size={19} />
-              Continue to recovery
-            </>
-          ) : paused ? (
-            <>
-              <ArrowRight size={19} />
-              Resume run
-            </>
-          ) : (
-            <>
-              <Pause size={19} />
-              Pause after current action
-            </>
-          )}
-        </button>
-      </ActionBar>
-    </>
-  );
-}
-
-function ExecutePanel({ actions }: { actions?: React.ReactNode }) {
-  return (
-    <aside className="context-panel manual-context-panel">
-      <div className="context-scroll">
+      </>
+    ),
+    panelBody: (
+      <section className="panel-rows">
         <h3>Current object inventory</h3>
         <dl>
           {[
@@ -1347,36 +1298,71 @@ function ExecutePanel({ actions }: { actions?: React.ReactNode }) {
             </div>
           ))}
         </dl>
-      </div>
-      {actions && (
-        <section className="manual-panel-actions automation-panel-actions">
-          <span>Workspace actions</span>
-          {actions}
-        </section>
-      )}
-    </aside>
-  );
+      </section>
+    ),
+    panelActions: (
+      <>
+        <button
+          className="secondary"
+          onClick={() => {
+            exportJson("automation-event-log.json", {
+              progress,
+              paused,
+              events: data.eventLog,
+            });
+            notify("Full event log downloaded.");
+          }}
+        >
+          View full log
+        </button>
+        <button
+          className={classNames("secondary", finished && "disabled")}
+          aria-disabled={finished}
+          onClick={() => !finished && setPaused(!paused)}
+        >
+          {finished ? (
+            <>
+              <CheckCircle size={19} weight="fill" />
+              Run complete
+            </>
+          ) : paused ? (
+            <>
+              <ArrowRight size={19} />
+              Resume run
+            </>
+          ) : (
+            <>
+              <Pause size={19} />
+              Pause after current action
+            </>
+          )}
+        </button>
+      </>
+    ),
+  };
 }
 
-function Resolve({
+function useResolve({
   notify,
-  onComplete,
+  resolved,
+  setResolved,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
+  resolved: boolean;
+  setResolved: (value: boolean) => void;
+}): PhaseDescriptor {
   const [strategy, setStrategy] = useState("FASHION");
   const [query, setQuery] = useState("");
-  const [resolved, setResolved] = useState(false);
   const matches = data.strategyValues.filter((value) =>
     value.toLowerCase().includes(query.trim().toLowerCase()),
   );
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace resolve-workspace">
-          <ScreenHeading phase={4} />
-          <div className="resolve-grid">
+  return {
+    step: 4,
+    short: "Resolve & recover",
+    ready: resolved,
+    sections: (
+      <>
+        <div className="resolve-grid">
             <ExceptionInbox />
             <section className="resolve-main">
               <h2>Resolve Strategy</h2>
@@ -1532,57 +1518,20 @@ function Resolve({
               <small>Idempotency key RUN-R-001-04</small>
             </div>
           </div>
-        </main>
-        <SourcePanel
-          title="Recovery values"
-          rows={[
-            ["Colour", "BLACK"],
-            ["Selected strategy", strategy],
-            ["Recovery state", resolved ? "Validated" : "Pending apply"],
-          ]}
-          actions={
-            <>
-              <button
-                className="secondary"
-                onClick={() => {
-                  saveLocalDraft("plm-recovery-note", {
-                    strategy,
-                    resolved,
-                    note: "Active enum correction",
-                  });
-                  notify("Recovery note saved locally.");
-                }}
-              >
-                Save note
-              </button>
-              <button
-                className="secondary"
-                onClick={() => notify("Run paused.")}
-              >
-                Pause run
-              </button>
-              <button
-                className="primary"
-                onClick={() => {
-                  setResolved(true);
-                  localStorage.setItem("plm-automation-recovered", "true");
-                  notify(
-                    "Fix applied. Five operations revalidated successfully.",
-                  );
-                  window.setTimeout(onComplete, 450);
-                }}
-              >
-                Apply fix & resume
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ActionBar
-        icon="warning"
-        title="1 exception selected · 5 operations will rerun"
-        subtitle="Completed objects and stored PLM IDs remain preserved."
-      >
+      </>
+    ),
+    panelBody: (
+      <PanelRows
+        title="Recovery values"
+        rows={[
+          ["Colour", "BLACK"],
+          ["Selected strategy", strategy],
+          ["Recovery state", resolved ? "Validated" : "Pending apply"],
+        ]}
+      />
+    ),
+    panelActions: (
+      <>
         <button
           className="secondary"
           onClick={() => {
@@ -1596,23 +1545,21 @@ function Resolve({
         >
           Save note
         </button>
-        <button className="secondary" onClick={() => notify("Run paused.")}>
-          Pause run
-        </button>
         <button
-          className="primary"
+          className={classNames("secondary", resolved && "disabled")}
+          aria-disabled={resolved}
           onClick={() => {
+            if (resolved) return;
             setResolved(true);
             localStorage.setItem("plm-automation-recovered", "true");
             notify("Fix applied. Five operations revalidated successfully.");
-            window.setTimeout(onComplete, 450);
           }}
         >
-          Apply fix & resume
+          {resolved ? "Fix applied" : "Apply fix & resume"}
         </button>
-      </ActionBar>
-    </>
-  );
+      </>
+    ),
+  };
 }
 
 function ExceptionInbox() {
@@ -1654,13 +1601,15 @@ function ExceptionInbox() {
   );
 }
 
-function Review({
+function useReview({
   notify,
-  onBackToReview,
 }: {
   notify: (text: string) => void;
-  onBackToReview: () => void;
-}) {
+}): PhaseDescriptor & {
+  approvalIndex: number;
+  issued: boolean;
+  issuePo: () => void;
+} {
   const [approvalIndex, setApprovalIndex] = useState(1);
   const [issued, setIssued] = useState(false);
   const approvals = useMemo(
@@ -1700,11 +1649,15 @@ function Review({
     });
     notify("Supplier PO issued and downloaded.");
   };
-  return (
-    <>
-      <div className="review-layout">
-        <main className="workspace review-workspace">
-          <ScreenHeading phase={6} />
+  return {
+    step: 6,
+    short: "Approval & issue",
+    ready: issued,
+    approvalIndex,
+    issued,
+    issuePo,
+    sections: (
+      <>
           <div className="review-columns">
             <section>
               <h3>Final object inventory</h3>
@@ -1807,133 +1760,77 @@ function Review({
               </div>
             </section>
           </div>
-        </main>
-
-        <aside className="final-review-panel approval-issue-panel">
-          <div className="final-review-panel-scroll">
-            <section>
-              <div className="approval-title">
-                <h2>Approval route</h2>
-                <span>Waiting</span>
-              </div>
-              <div className="approval-route-steps">
-                {approvals.map((r, i) => (
-                  <button
-                    onClick={() => approveStep(i)}
-                    aria-label={
-                      i === approvalIndex && i < 4
-                        ? `Approve ${r[0]}`
-                        : "Approval status for " + r[0]
-                    }
-                    key={r[0]}
-                    className={classNames("approval-step", r[1].toLowerCase())}
-                  >
-                    <span className="approval-icon">
-                      {r[1] === "Locked" ? <Lock /> : <User />}
-                    </span>
-                    <span>
-                      <strong>{r[0]}</strong>
-                      <small>{r[1]}</small>
-                      {r[2] && <em>{r[2]}</em>}
-                    </span>
-                    <StatusIcon kind={r[1]} size={22} />
-                  </button>
-                ))}
-              </div>
-            </section>
-            <section>
-              <h2>Downstream delivery</h2>
-              <div className="approval-deliveries">
-                {data.deliveries.map((r) => (
-                  <div className="delivery" key={r[0]}>
-                    <FileText size={18} />
-                    <b>{r[0]}</b>
-                    <span>{r[1]}</span>
-                    <em>{r[2]}</em>
-                  </div>
-                ))}
-              </div>
-            </section>
+      </>
+    ),
+    panelBody: (
+      <>
+        <section>
+          <div className="approval-title">
+            <h2>Approval route</h2>
+            <span>Waiting</span>
           </div>
-          <section className="review-panel-actions approval-issue-actions">
-            <span>Approval actions</span>
-            <button
-              className="ghost-link"
-              onClick={() => {
-                exportJson("automation-audit.json", {
-                  approvals,
-                  issued,
-                  inventory: data.inventory,
-                  reconciliation: data.reconciliation,
-                });
-                notify("Audit JSON downloaded.");
-              }}
-            >
-              Export audit
-            </button>
-            <button className="secondary" onClick={onBackToReview}>
-              Back to final review
-            </button>
-            <button
-              className={classNames(
-                "primary",
-                (approvalIndex < 4 || issued) && "disabled",
-              )}
-              aria-disabled={approvalIndex < 4 || issued}
-              onClick={issuePo}
-            >
-              <Lock size={18} />
-              {issued ? "Supplier PO issued" : "Issue supplier PO"}
-            </button>
-          </section>
-        </aside>
-      </div>
-      <ActionBar
-        icon="warning"
-        title={
-          issued
-            ? "Supplier PO issued · downstream delivery started"
-            : `Release readiness · ${9 + Math.max(0, approvalIndex - 1)} checks passed · ${Math.max(0, 4 - approvalIndex)} approvals pending`
-        }
-        subtitle="Same-day shipment policy and remaining approvals must clear before issue."
+          <div className="approval-route-steps">
+            {approvals.map((r, i) => (
+              <button
+                onClick={() => approveStep(i)}
+                aria-label={
+                  i === approvalIndex && i < 4
+                    ? `Approve ${r[0]}`
+                    : "Approval status for " + r[0]
+                }
+                key={r[0]}
+                className={classNames("approval-step", r[1].toLowerCase())}
+              >
+                <span className="approval-icon">
+                  {r[1] === "Locked" ? <Lock /> : <User />}
+                </span>
+                <span>
+                  <strong>{r[0]}</strong>
+                  <small>{r[1]}</small>
+                  {r[2] && <em>{r[2]}</em>}
+                </span>
+                <StatusIcon kind={r[1]} size={22} />
+              </button>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h2>Downstream delivery</h2>
+          <div className="approval-deliveries">
+            {data.deliveries.map((r) => (
+              <div className="delivery" key={r[0]}>
+                <FileText size={18} />
+                <b>{r[0]}</b>
+                <span>{r[1]}</span>
+                <em>{r[2]}</em>
+              </div>
+            ))}
+          </div>
+        </section>
+      </>
+    ),
+    panelActions: (
+      <button
+        className="ghost-link"
+        onClick={() => {
+          exportJson("automation-audit.json", {
+            approvals,
+            issued,
+            inventory: data.inventory,
+            reconciliation: data.reconciliation,
+          });
+          notify("Audit JSON downloaded.");
+        }}
       >
-        <button
-          className="ghost-link"
-          onClick={() => {
-            exportJson("automation-audit.json", {
-              approvals,
-              issued,
-              inventory: data.inventory,
-              reconciliation: data.reconciliation,
-            });
-            notify("Audit JSON downloaded.");
-          }}
-        >
-          Export audit
-        </button>
-        <button className="secondary" onClick={onBackToReview}>
-          Back to final review
-          <ArrowRight size={17} />
-        </button>
-        <button
-          className={classNames(
-            "primary",
-            (approvalIndex < 4 || issued) && "disabled",
-          )}
-          aria-disabled={approvalIndex < 4 || issued}
-          onClick={issuePo}
-        >
-          <Lock size={19} />
-          {issued ? "Supplier PO issued" : "Issue supplier PO"}
-        </button>
-      </ActionBar>
-    </>
-  );
+        Export audit
+      </button>
+    ),
+  };
 }
 
 type DashboardMode = "automation" | "manual";
 
-function FinalReview({
+function useFinalReview({
   mode,
   notify,
   onContinue,
@@ -1941,13 +1838,12 @@ function FinalReview({
   mode: DashboardMode;
   notify: (text: string) => void;
   onContinue: () => void;
-}) {
+}): PhaseDescriptor & { issueCount: number } {
   const storageKey = `plm-final-review-${mode}`;
   const initialRows = data.finalReview.fields.map((row) => [...row]);
   const suggestions: Record<string, string> = data.finalReview.suggestions;
   const [rows, setRows] = useState<string[][]>(initialRows);
   const [editMode, setEditMode] = useState(mode === "manual");
-  const [restored, setRestored] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -1961,7 +1857,6 @@ function FinalReview({
           localStorage.removeItem(storageKey);
         }
       }
-      setRestored(true);
     }, 0);
     return () => window.clearTimeout(timer);
   }, [storageKey]);
@@ -2024,10 +1919,13 @@ function FinalReview({
     onContinue();
   };
 
-  return (
-    <>
-      <div className="final-review-layout">
-        <main className="final-review-main">
+  return {
+    step: 5,
+    short: "Final review & correction",
+    ready: issueCount === 0,
+    issueCount,
+    sections: (
+      <div className="final-review-embed">
           <header className="final-review-heading">
             <div>
               <span className="eyebrow">
@@ -2169,21 +2067,21 @@ function FinalReview({
               </section>
             ))}
           </div>
-        </main>
-
-        <aside className="final-review-panel">
-          <div className="final-review-panel-scroll">
+      </div>
+    ),
+    panelBody: (
+      <>
             {mode === "manual" ? (
-              <section className="manual-review-record">
-                <h2>Review values</h2>
-                <div className="manual-record-list">
+              <section className="panel-rows">
+                <h3>Review values</h3>
+                <dl>
                   {manualRecordRows.map((row) => (
-                    <div className="manual-record-row" key={row[1]}>
-                      <strong>{row[1]}</strong>
-                      <span>{visibleValue(row[3])}</span>
+                    <div key={row[1]}>
+                      <dt>{row[1]}</dt>
+                      <dd>{visibleValue(row[3])}</dd>
                     </div>
                   ))}
-                </div>
+                </dl>
               </section>
             ) : (
               <>
@@ -2286,114 +2184,220 @@ function FinalReview({
                 </section>
               </>
             )}
-          </div>
-
-          <section
-            className={classNames(
-              "review-panel-actions",
-              mode === "manual" && "manual-review-actions",
-            )}
+      </>
+    ),
+    onActivity:
+      mode === "manual"
+        ? () => notify("Activity panel opened for this record.")
+        : () => {
+            exportJson("automation-final-review-audit.json", {
+              mode,
+              fields: validatedRows,
+            });
+            notify("Final review audit downloaded.");
+          },
+    onSaveDraft: saveCorrections,
+    panelActions:
+      mode === "manual" ? (
+        <button
+          className={classNames("secondary", issueCount > 0 && "disabled")}
+          aria-disabled={issueCount > 0}
+          onClick={continueToApproval}
+        >
+          <ArrowRight size={18} />
+          {issueCount > 0
+            ? `Resolve ${issueCount} issues`
+            : "Confirm review & unlock approval"}
+        </button>
+      ) : (
+        <>
+          {issueCount > 0 && (
+            <button className="suggest-button" onClick={applySuggestions}>
+              Apply suggested fixes
+            </button>
+          )}
+          <button
+            className="secondary"
+            onClick={() => {
+              notify(
+                issueCount
+                  ? `${issueCount} issues remain after validation.`
+                  : "Validation passed. No field issues remain.",
+              );
+            }}
           >
-            <span>
-              {mode === "manual" ? "Workspace actions" : "Review actions"}
-            </span>
-            {mode === "manual" ? (
-              <>
-                <button
-                  className="ghost-link"
-                  onClick={() =>
-                    notify("Activity panel opened for this record.")
-                  }
-                >
-                  View activity
-                </button>
-                <button className="secondary" onClick={saveCorrections}>
-                  Save review
-                </button>
-                <button
-                  className={classNames(
-                    "primary",
-                    issueCount > 0 && "disabled",
-                  )}
-                  aria-disabled={issueCount > 0}
-                  onClick={continueToApproval}
-                >
-                  <ArrowRight size={18} />
-                  {issueCount > 0
-                    ? `Resolve ${issueCount} issues`
-                    : "Continue to approval"}
-                </button>
-              </>
-            ) : (
-              <>
-                {issueCount > 0 && (
-                  <button className="suggest-button" onClick={applySuggestions}>
-                    Apply suggested fixes
-                  </button>
-                )}
-                <div>
-                  <button className="secondary" onClick={saveCorrections}>
-                    Save corrections
-                  </button>
-                  <button
-                    className="secondary"
-                    onClick={() => {
-                      notify(
-                        issueCount
-                          ? `${issueCount} issues remain after validation.`
-                          : "Validation passed. No field issues remain.",
-                      );
-                    }}
-                  >
-                    Re-run validation
-                  </button>
-                </div>
-                <button
-                  className={classNames(
-                    "primary",
-                    issueCount > 0 && "disabled",
-                  )}
-                  aria-disabled={issueCount > 0}
-                  onClick={continueToApproval}
-                >
-                  <ArrowRight size={18} />
-                  {issueCount > 0
-                    ? `Resolve ${issueCount} issues`
-                    : "Continue to approval"}
-                </button>
-              </>
-            )}
-            {mode === "automation" && (
-              <button
-                className="ghost-link"
-                onClick={() => {
-                  exportJson("automation-final-review-audit.json", {
-                    mode,
-                    fields: validatedRows,
-                  });
-                  notify("Final review audit downloaded.");
-                }}
-              >
-                Export audit JSON
-              </button>
-            )}
-          </section>
-        </aside>
-      </div>
-      <ManualStatusBar
-        ready={issueCount === 0}
-        title={
-          issueCount
-            ? `Final review blocked · ${issueCount} issues`
-            : "Final review complete · ready for approval"
-        }
-        subtitle={
-          restored
-            ? "Corrections are stored locally in this prototype."
-            : "Loading saved corrections…"
-        }
-      />
-    </>
+            Re-run validation
+          </button>
+          <button
+            className={classNames("secondary", issueCount > 0 && "disabled")}
+            aria-disabled={issueCount > 0}
+            onClick={continueToApproval}
+          >
+            <ArrowRight size={18} />
+            {issueCount > 0
+              ? `Resolve ${issueCount} issues`
+              : "Confirm review"}
+          </button>
+        </>
+      ),
+  };
+}
+
+// --- Automation merged group pages ----------------------------------------
+
+function AutomationMapPlan({
+  notify,
+  setPhase,
+}: {
+  notify: (text: string) => void;
+  setPhase: (phase: number) => void;
+}) {
+  const [sourceResolved, setSourceResolved] = useState(false);
+  const [ratioApproved, setRatioApproved] = useState(false);
+  const [planApproved, setPlanApproved] = useState(false);
+  const mapped = sourceResolved && ratioApproved;
+  useEffect(() => {
+    if (mapped) localStorage.setItem("plm-automation-mapped", "true");
+  }, [mapped]);
+  const importMap = useImportMap({
+    notify,
+    sourceResolved,
+    setSourceResolved,
+    ratioApproved,
+    setRatioApproved,
+  });
+  const plan = usePlan({
+    notify,
+    mapped,
+    approved: planApproved,
+    setApproved: setPlanApproved,
+  });
+  const ready = importMap.ready && plan.ready;
+  return (
+    <MergedGroupPage
+      eyebrow={`Automated run · ${data.run.id}`}
+      title="Map source & plan run"
+      subtitle="Resolve the source mapping and approve the dry-run plan on one page before execution."
+      phaseA={importMap}
+      phaseB={plan}
+      primary={
+        <button
+          className={classNames("primary", !ready && "disabled")}
+          aria-disabled={!ready}
+          onClick={() =>
+            ready
+              ? setPhase(3)
+              : notify("Resolve mapping and approve the run plan first.")
+          }
+        >
+          <ArrowRight size={18} />
+          Continue to run &amp; recover
+        </button>
+      }
+      statusReady={ready}
+      statusTitle={
+        ready
+          ? "Mapping validated · run plan approved"
+          : "Mapping & plan require attention"
+      }
+      statusSubtitle={
+        ready
+          ? "All source values resolve to active PLM keys and the plan is approved."
+          : "Replace the source, approve the ratio, then approve the run plan."
+      }
+    />
+  );
+}
+
+function AutomationRunRecover({
+  notify,
+  setPhase,
+}: {
+  notify: (text: string) => void;
+  setPhase: (phase: number) => void;
+}) {
+  const [executed, setExecuted] = useState(false);
+  const [resolved, setResolved] = useState(false);
+  const onFinished = useCallback(() => setExecuted(true), []);
+  const execute = useExecute({ notify, onFinished });
+  const resolve = useResolve({ notify, resolved, setResolved });
+  const ready = executed && resolve.ready;
+  return (
+    <MergedGroupPage
+      eyebrow={`Automated run · ${data.run.id}`}
+      title="Execute run & recover safely"
+      subtitle="Run the eight PLM operations and resolve any exception without leaving the page."
+      phaseA={execute}
+      phaseB={resolve}
+      primary={
+        <button
+          className={classNames("primary", !ready && "disabled")}
+          aria-disabled={!ready}
+          onClick={() =>
+            ready
+              ? setPhase(5)
+              : notify("Finish the run and apply the recovery fix first.")
+          }
+        >
+          <ArrowRight size={18} />
+          Continue to review &amp; issue
+        </button>
+      }
+      statusReady={ready}
+      statusTitle={
+        ready
+          ? "Run complete · exception recovered"
+          : "Run and recovery in progress"
+      }
+      statusSubtitle="Completed objects and stored PLM IDs remain preserved during recovery."
+    />
+  );
+}
+
+function AutomationReviewIssue({
+  notify,
+}: {
+  notify: (text: string) => void;
+}) {
+  const review = useFinalReview({
+    mode: "automation",
+    notify,
+    onContinue: () => notify("Final review confirmed."),
+  });
+  const issue = useReview({ notify });
+  const canIssue =
+    review.issueCount === 0 && issue.approvalIndex >= 4 && !issue.issued;
+  return (
+    <MergedGroupPage
+      eyebrow={`Automated run · ${data.run.id}`}
+      title="Review record & issue PO"
+      subtitle="Confirm the reconciled record and route approvals to issue the supplier PO."
+      phaseA={review}
+      phaseB={issue}
+      primary={
+        <button
+          className={classNames("primary", !canIssue && "disabled")}
+          aria-disabled={!canIssue}
+          onClick={() => {
+            if (review.issueCount > 0) {
+              notify(`Resolve ${review.issueCount} review issues first.`);
+              return;
+            }
+            issue.issuePo();
+          }}
+        >
+          <Lock size={18} />
+          {issue.issued ? "Supplier PO issued" : "Issue supplier PO"}
+        </button>
+      }
+      statusReady={issue.issued}
+      statusTitle={
+        issue.issued
+          ? "Supplier PO issued · downstream delivery started"
+          : "Final review & approval route in progress"
+      }
+      statusSubtitle="Clear all review issues and complete the approval route before issue."
+    />
   );
 }
 
@@ -2426,7 +2430,12 @@ function ManualRail({
           <span>Manual dashboard</span>
           <strong>Operator workspace</strong>
           <small>
-            {completed.length} of {data.manual.phases.length} phases complete
+            {
+              manualWorkflowGroups.filter((group) =>
+                group.phases.every((step) => completed.includes(step)),
+              ).length
+            }{" "}
+            of {manualWorkflowGroups.length} workspaces complete
           </small>
           <div className="sidebar-progress" aria-hidden="true">
             <i
@@ -2438,59 +2447,52 @@ function ManualRail({
         </div>
       </div>
       <nav>
-        {data.manual.phases.map((item) => {
+        {manualWorkflowGroups.map((item) => {
+          const activeGroup = workflowGroupForPhase(phase);
           const status =
-            item.id === phase
+            item.id === activeGroup
               ? "active"
-              : completed.includes(item.id)
+              : item.phases.every((step) => completed.includes(step))
                 ? "complete"
-                : phase >= 5 && [1, 4].includes(item.id)
-                  ? "blocked"
-                  : phase >= 5 && item.id === 2
-                    ? "warning"
-                    : "waiting";
+                : "waiting";
           return (
-            <button
-              key={item.id}
-              aria-current={status === "active" ? "step" : undefined}
-              onClick={() => setPhase(item.id)}
+            <div
               className={classNames(
-                "phase-item",
+                "workspace-group",
                 status === "active" && "is-active",
               )}
+              key={item.id}
             >
-              <span className={classNames("phase-number", status)}>
-                {item.id}
-              </span>
-              <span>
-                <strong>{item.short}</strong>
-                <small className={status}>
-                  {status === "complete"
-                    ? "Complete"
-                    : status === "active"
-                      ? "Active"
-                      : status === "blocked"
-                        ? "Blocked"
-                        : status === "warning"
-                          ? "Warning"
-                          : "Waiting"}
-                </small>
-              </span>
-            </button>
+              <button
+                aria-current={status === "active" ? "step" : undefined}
+                onClick={() => setPhase(item.phases[0])}
+                className={classNames(
+                  "phase-item",
+                  status === "active" && "is-active",
+                )}
+              >
+                <span className={classNames("phase-number", status)}>
+                  {item.id}
+                </span>
+                <span>
+                  <strong>{item.short}</strong>
+                  <small className={status}>
+                    {status === "complete"
+                      ? "Complete"
+                      : status === "active"
+                        ? item.title
+                        : "Waiting"}
+                  </small>
+                </span>
+                {status === "complete" && (
+                  <CheckCircle className="phase-check" size={20} />
+                )}
+              </button>
+            </div>
           );
         })}
       </nav>
     </motion.aside>
-  );
-}
-
-function ManualHeading({ phase }: { phase: number }) {
-  const item = data.manual.phases[phase - 1];
-  return (
-    <div className="screen-heading manual-heading">
-      <h1>{item.title}</h1>
-      <p>{item.subtitle}</p>
-    </div>
   );
 }
 
@@ -2585,13 +2587,11 @@ function ManualField({
   );
 }
 
-function ManualStyle({
+function useManualStyle({
   notify,
-  onComplete,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
+}): PhaseDescriptor {
   useManualFieldVersion();
   const requiredLabels = [
     "Department",
@@ -2607,11 +2607,12 @@ function ManualStyle({
     return !value || value === "Required from Excel";
   });
   const ready = missingLabels.length === 0;
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace manual-workspace">
-          <ManualHeading phase={1} />
+  return {
+    step: 1,
+    short: "Style intake",
+    ready,
+    sections: (
+      <>
           <div className="preflight-line">
             <strong>Source preflight</strong>
             <span>· 1 row loaded</span>
@@ -2697,96 +2698,48 @@ function ManualStyle({
               ))}
             </div>
           </div>
-        </main>
-        <SourcePanel
-          title="Style values"
-          rows={[
-            ["Season", data.run.season],
-            ...requiredLabels.map((label) => [label, readManualField(label)]),
-            ...data.manual.coreProperties.map(([label, value]) => [
-              label,
-              readManualField(label, value),
-            ]),
-          ]}
-          actions={
-            <>
-              <button
-                className="ghost-link"
-                onClick={() => {
-                  exportJson("style-intake-activity.json", {
-                    requiredLabels,
-                    missingLabels,
-                    values: Object.fromEntries(
-                      requiredLabels.map((label) => [
-                        label,
-                        readManualField(label),
-                      ]),
-                    ),
-                  });
-                  notify("Style activity exported.");
-                }}
-              >
-                View activity
-              </button>
-              <button
-                className="secondary"
-                onClick={() => {
-                  saveLocalDraft(
-                    "plm-manual-style-draft",
-                    Object.fromEntries(
-                      requiredLabels.map((label) => [
-                        label,
-                        readManualField(label),
-                      ]),
-                    ),
-                  );
-                  notify("Manual style draft saved locally.");
-                }}
-              >
-                Save draft
-              </button>
-              <button
-                className={classNames("primary", !ready && "disabled")}
-                aria-disabled={!ready}
-                onClick={() =>
-                  ready
-                    ? onComplete()
-                    : notify(
-                        `Complete ${missingLabels.join(", ")} to continue.`,
-                      )
-                }
-              >
-                {ready ? <Check size={18} /> : <Lock size={18} />}
-                Create style & continue
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ManualStatusBar
-        ready={ready}
-        title={
-          ready
-            ? "Validation complete · style can be created"
-            : `Validation summary · ${missingLabels.length} blockers`
-        }
-        subtitle={
-          ready
-            ? "Hierarchy resolved and duplicate search completed."
-            : `Missing ${missingLabels.join(", ")}.`
-        }
+      </>
+    ),
+    panelBody: (
+      <PanelRows
+        title="Style values"
+        rows={[
+          ["Season", data.run.season],
+          ...requiredLabels.map((label) => [label, readManualField(label)]),
+          ...data.manual.coreProperties.map(([label, value]) => [
+            label,
+            readManualField(label, value),
+          ]),
+        ]}
       />
-    </>
-  );
+    ),
+    onActivity: () => {
+      exportJson("style-intake-activity.json", {
+        requiredLabels,
+        missingLabels,
+        values: Object.fromEntries(
+          requiredLabels.map((label) => [label, readManualField(label)]),
+        ),
+      });
+      notify("Style activity exported.");
+    },
+    onSaveDraft: () => {
+      saveLocalDraft(
+        "plm-manual-style-draft",
+        Object.fromEntries(
+          requiredLabels.map((label) => [label, readManualField(label)]),
+        ),
+      );
+      notify("Manual style draft saved locally.");
+    },
+  };
 }
 
-function ManualColor({
+function useManualColor({
   notify,
-  onComplete,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
+}): PhaseDescriptor {
   useManualFieldVersion();
   const [addToBom, setAddToBom] = useState(true);
   const [mainMaterial, setMainMaterial] = useState(true);
@@ -2795,11 +2748,12 @@ function ManualColor({
       readManualField(label, "Required from Excel") === "Required from Excel",
   );
   const ready = missingFields.length === 0 && addToBom && mainMaterial;
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace manual-workspace">
-          <ManualHeading phase={2} />
+  return {
+    step: 2,
+    short: "Color & BOM",
+    ready,
+    sections: (
+      <>
           <section className="manual-section color-definition">
             <h2>Color definition</h2>
             <div className="color-top-grid">
@@ -2913,99 +2867,64 @@ function ManualColor({
               ))}
             </div>
           </div>
-        </main>
-        <SourcePanel
-          title="Color & BOM values"
-          rows={[
-            ["Colour", "BLACK"],
-            ["Material", "FKn01144"],
-            ["MRP", "₹999"],
-            ["Pantone", readManualField("Pantone")],
-            ...data.manual.colorFields.map((label) => [
-              label,
-              readManualField(label),
-            ]),
-          ]}
-          actions={
-            <>
-              <button
-                className="ghost-link"
-                onClick={() => {
-                  exportJson("color-bom-activity.json", {
-                    addToBom,
-                    mainMaterial,
-                    missingFields,
-                  });
-                  notify("Color and BOM activity exported.");
-                }}
-              >
-                View activity
-              </button>
-              <button
-                className="secondary"
-                onClick={() => {
-                  saveLocalDraft("plm-manual-color-draft", {
-                    addToBom,
-                    mainMaterial,
-                    fields: Object.fromEntries(
-                      data.manual.colorFields.map((label) => [
-                        label,
-                        readManualField(label),
-                      ]),
-                    ),
-                  });
-                  notify("Product definition draft saved locally.");
-                }}
-              >
-                Save draft
-              </button>
-              <button
-                className={classNames("primary", !ready && "disabled")}
-                aria-disabled={!ready}
-                onClick={() =>
-                  ready
-                    ? onComplete()
-                    : notify(
-                        `Complete ${missingFields.join(", ")} and keep BOM toggles enabled.`,
-                      )
-                }
-              >
-                Save product definition
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ManualStatusBar
-        ready={ready}
-        title={
-          ready
-            ? "Product definition ready to sync"
-            : `${missingFields.length} source values · Product definition cannot sync`
-        }
+      </>
+    ),
+    panelBody: (
+      <PanelRows
+        title="Color & BOM values"
+        rows={[
+          ["Colour", "BLACK"],
+          ["Material", "FKn01144"],
+          ["MRP", "₹999"],
+          ["Pantone", readManualField("Pantone")],
+          ...data.manual.colorFields.map((label) => [
+            label,
+            readManualField(label),
+          ]),
+        ]}
       />
-    </>
-  );
+    ),
+    onActivity: () => {
+      exportJson("color-bom-activity.json", {
+        addToBom,
+        mainMaterial,
+        missingFields,
+      });
+      notify("Color and BOM activity exported.");
+    },
+    onSaveDraft: () => {
+      saveLocalDraft("plm-manual-color-draft", {
+        addToBom,
+        mainMaterial,
+        fields: Object.fromEntries(
+          data.manual.colorFields.map((label) => [
+            label,
+            readManualField(label),
+          ]),
+        ),
+      });
+      notify("Product definition draft saved locally.");
+    },
+  };
 }
 
-function ManualSupplier({
+function useManualSupplier({
   notify,
-  onComplete,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
+}): PhaseDescriptor {
   useManualFieldVersion();
   const supplierMapping = readManualField(
     "Supplier-code mapping",
     "Confirmation required",
   );
   const ready = supplierMapping !== "Confirmation required";
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace manual-workspace">
-          <ManualHeading phase={3} />
+  return {
+    step: 3,
+    short: "Supplier commercial",
+    ready,
+    sections: (
+      <>
           <div className="issued-tags">
             <span>Request SR-001 · Issued</span>
             <span>Quote SQ-001 · Draft</span>
@@ -3079,77 +2998,41 @@ function ManualSupplier({
               </div>
             </section>
           </div>
-        </main>
-        <SourcePanel
-          title="Supplier values"
-          rows={[
-            ...data.sourceRecord.filter(([label]) =>
-              [
-                "Vendor",
-                "Cost",
-                "MRP",
-                "HSN",
-                "Vendor Type",
-                "Supplier Request Template",
-              ].includes(label),
-            ),
-            ["Supplier-code mapping", supplierMapping],
-          ]}
-          actions={
-            <>
-              <button
-                className="secondary"
-                onClick={() => {
-                  saveLocalDraft("plm-manual-supplier-draft", {
-                    mapping: supplierMapping,
-                    quote: data.manual.quoteFields,
-                  });
-                  notify("Supplier quote draft saved locally.");
-                }}
-              >
-                Save draft
-              </button>
-              <button
-                className={classNames("primary", !ready && "disabled")}
-                aria-disabled={!ready}
-                onClick={() =>
-                  ready
-                    ? onComplete()
-                    : notify(
-                        "Confirm supplier-code mapping to enable approval.",
-                      )
-                }
-              >
-                Approve supplier quote
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ManualStatusBar
-        ready={ready}
-        title={
-          ready
-            ? "Supplier quote ready for approval"
-            : "Approval blocked · Supplier-code mapping confirmation required"
-        }
-        subtitle={
-          ready
-            ? `Mapped using ${supplierMapping}.`
-            : "All other supplier request and quote validations passed."
-        }
+      </>
+    ),
+    panelBody: (
+      <PanelRows
+        title="Supplier values"
+        rows={[
+          ...data.sourceRecord.filter(([label]) =>
+            [
+              "Vendor",
+              "Cost",
+              "MRP",
+              "HSN",
+              "Vendor Type",
+              "Supplier Request Template",
+            ].includes(label),
+          ),
+          ["Supplier-code mapping", supplierMapping],
+        ]}
       />
-    </>
-  );
+    ),
+    onSaveDraft: () => {
+      saveLocalDraft("plm-manual-supplier-draft", {
+        mapping: supplierMapping,
+        quote: data.manual.quoteFields,
+      });
+      notify("Supplier quote draft saved locally.");
+    },
+  };
 }
 
-function ManualSku({
+function useManualSku({
   notify,
-  onComplete,
 }: {
   notify: (text: string) => void;
-  onComplete: () => void;
-}) {
+}): PhaseDescriptor {
   useManualFieldVersion();
   const ratioTemplate = readManualField(
     "Ratio template",
@@ -3167,11 +3050,12 @@ function ManualSku({
     criticalPath !== "Required from Excel";
   const ratios = [1, 2, 3, 3, 2, 1];
   const planned = [1293, 2585, 3878, 3878, 2585, 1292];
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace manual-workspace">
-          <ManualHeading phase={4} />
+  return {
+    step: 4,
+    short: "SKU & PO planning",
+    ready,
+    sections: (
+      <>
           <div className="sku-grid">
             <section>
               <div className="section-row">
@@ -3261,90 +3145,51 @@ function ManualSku({
               ? "Same-day handoff approved against the selected critical path."
               : "Same-day ex-factory and shipment requires critical-path approval."}
           </div>
-        </main>
-        <SourcePanel
-          title="SKU & PO values"
-          rows={[
-            ...data.sourceRecord.filter(([label]) =>
-              [
-                "Total Qty",
-                "Ex-factory",
-                "Shipment",
-                "Launch",
-                "Vendor Type",
-              ].includes(label),
-            ),
-            ["Ratio template", ratioTemplate],
-            ["Holiday calendar", holidayCalendar],
-            ["Critical path", criticalPath],
-          ]}
-          actions={
-            <>
-              <button
-                className="ghost-link"
-                onClick={() => {
-                  exportJson("sku-po-planning.json", {
-                    ratioTemplate,
-                    ratios,
-                    planned,
-                    holidayCalendar,
-                    criticalPath,
-                  });
-                  notify("SKU and PO plan exported.");
-                }}
-              >
-                View activity
-              </button>
-              <button
-                className="secondary"
-                onClick={() => {
-                  saveLocalDraft("plm-manual-sku-draft", {
-                    ratioTemplate,
-                    ratios,
-                    planned,
-                    holidayCalendar,
-                    criticalPath,
-                  });
-                  notify("SKU and PO draft saved locally.");
-                }}
-              >
-                Save draft
-              </button>
-              <button
-                className={classNames("primary", !ready && "disabled")}
-                aria-disabled={!ready}
-                onClick={() =>
-                  ready
-                    ? onComplete()
-                    : notify(
-                        "Select the ratio template, holiday calendar, and critical path to continue.",
-                      )
-                }
-              >
-                Create PO & validate
-              </button>
-            </>
-          }
-        />
-      </div>
-      <ManualStatusBar
-        ready={ready}
-        title={
-          ready
-            ? "SKU matrix and PO plan validated"
-            : "Validation summary · required planning inputs missing"
-        }
-        subtitle={
-          ready
-            ? "The size matrix reconciles to 15,511 and the critical path is approved."
-            : "Select a ratio template, holiday calendar, and critical path."
-        }
+      </>
+    ),
+    panelBody: (
+      <PanelRows
+        title="SKU & PO values"
+        rows={[
+          ...data.sourceRecord.filter(([label]) =>
+            [
+              "Total Qty",
+              "Ex-factory",
+              "Shipment",
+              "Launch",
+              "Vendor Type",
+            ].includes(label),
+          ),
+          ["Ratio template", ratioTemplate],
+          ["Holiday calendar", holidayCalendar],
+          ["Critical path", criticalPath],
+        ]}
       />
-    </>
-  );
+    ),
+    onActivity: () => {
+      exportJson("sku-po-planning.json", {
+        ratioTemplate,
+        ratios,
+        planned,
+        holidayCalendar,
+        criticalPath,
+      });
+      notify("SKU and PO plan exported.");
+    },
+    onSaveDraft: () => {
+      saveLocalDraft("plm-manual-sku-draft", {
+        ratioTemplate,
+        ratios,
+        planned,
+        holidayCalendar,
+        criticalPath,
+      });
+      notify("SKU and PO draft saved locally.");
+    },
+  };
 }
 
-function ManualApproval({
+function useManualApproval({
   setPhase,
   notify,
   completed,
@@ -3352,7 +3197,11 @@ function ManualApproval({
   setPhase: (phase: number) => void;
   notify: (text: string) => void;
   completed: number[];
-}) {
+}): PhaseDescriptor & {
+  approvalIndex: number;
+  issued: boolean;
+  approveNext: () => void;
+} {
   const [approvalIndex, setApprovalIndex] = useState(0);
   const [issued, setIssued] = useState(false);
   const requiredPhases = [1, 2, 3, 4, 5];
@@ -3381,11 +3230,15 @@ function ManualApproval({
     });
     notify("Supplier PO issued and confirmation downloaded.");
   };
-  return (
-    <>
-      <div className="content-with-panel">
-        <main className="workspace manual-workspace manual-approval-workspace">
-          <ManualHeading phase={6} />
+  return {
+    step: 6,
+    short: "Approval & issue",
+    ready,
+    approvalIndex,
+    issued,
+    approveNext,
+    sections: (
+      <>
           <div className="preflight-card">
             <header>
               <strong>
@@ -3538,74 +3391,190 @@ function ManualApproval({
               </button>
             </section>
           </div>
-        </main>
-        <aside className="context-panel executive-panel manual-context-panel">
-          <div className="context-scroll">
-            <h2>Executive order summary</h2>
-            <dl>
-              {data.sourceRecord
-                .filter(([label]) => label !== "Supplier Request Template")
-                .map(([a, b]) => (
-                  <div key={a}>
-                    <dt>{a}</dt>
-                    <dd>{b}</dd>
-                  </div>
-                ))}
-            </dl>
-          </div>
-          <section className="manual-panel-actions">
-            <span>Workspace actions</span>
-            <button className="secondary" onClick={() => setPhase(5)}>
-              Back to final review
-            </button>
-            <button
-              className="secondary"
-              onClick={() => {
-                saveLocalDraft("plm-manual-approval-draft", {
-                  completed,
-                  approvalIndex,
-                  issued,
-                });
-                notify("Approval draft saved locally.");
-              }}
-            >
-              Save draft
-            </button>
-            <button
-              className={classNames(
-                "primary",
-                (!ready || issued) && "disabled",
-              )}
-              aria-disabled={!ready || issued}
-              onClick={approveNext}
-            >
-              {issued
-                ? "Supplier PO issued"
-                : approvalIndex < 5
-                  ? `Approve ${data.manual.manualApprovals[approvalIndex][0]}`
-                  : "Issue supplier PO"}
-            </button>
-          </section>
-        </aside>
-      </div>
-      <ManualStatusBar
-        ready={ready}
-        title={
-          issued
-            ? "Supplier PO issued successfully"
-            : ready
-              ? `${approvalIndex}/5 approvals completed`
-              : `Preflight blocked · ${pendingPhases.length} phases incomplete`
-        }
-        subtitle={
-          issued
-            ? "SPO-R001 is ready for downstream delivery."
-            : ready
-              ? "Complete the approval route, then issue the supplier PO."
-              : "Resolve upstream exceptions before approval routing can begin."
-        }
-      />
-    </>
+      </>
+    ),
+    panelBody: (
+      <section className="panel-rows executive-panel">
+        <h2>Executive order summary</h2>
+        <dl>
+          {data.sourceRecord
+            .filter(([label]) => label !== "Supplier Request Template")
+            .map(([a, b]) => (
+              <div key={a}>
+                <dt>{a}</dt>
+                <dd>{b}</dd>
+              </div>
+            ))}
+        </dl>
+      </section>
+    ),
+    onSaveDraft: () => {
+      saveLocalDraft("plm-manual-approval-draft", {
+        completed,
+        approvalIndex,
+        issued,
+      });
+      notify("Approval draft saved locally.");
+    },
+  };
+}
+
+// --- Manual merged group pages --------------------------------------------
+
+function ManualProductSetup({
+  notify,
+  onComplete,
+}: {
+  notify: (text: string) => void;
+  onComplete: () => void;
+}) {
+  const style = useManualStyle({ notify });
+  const color = useManualColor({ notify });
+  const ready = style.ready && color.ready;
+  return (
+    <MergedGroupPage
+      eyebrow="Manual workspace · Product setup"
+      title="Style, colour & BOM"
+      subtitle="Enter the style hierarchy, colourways and BOM on one page before supplier work."
+      phaseA={style}
+      phaseB={color}
+      primary={
+        <button
+          className={classNames("primary", !ready && "disabled")}
+          aria-disabled={!ready}
+          onClick={() =>
+            ready
+              ? onComplete()
+              : notify("Complete style intake and colour & BOM to continue.")
+          }
+        >
+          {ready ? <Check size={18} /> : <Lock size={18} />}
+          Save product &amp; continue
+        </button>
+      }
+      statusReady={ready}
+      statusTitle={
+        ready ? "Product setup ready to sync" : "Product setup has open blockers"
+      }
+      statusSubtitle={
+        ready
+          ? "Hierarchy resolved, colourways and BOM validated."
+          : "Resolve the required style, colour and BOM values."
+      }
+    />
+  );
+}
+
+function ManualSupplierOrder({
+  notify,
+  onComplete,
+}: {
+  notify: (text: string) => void;
+  onComplete: () => void;
+}) {
+  const supplier = useManualSupplier({ notify });
+  const sku = useManualSku({ notify });
+  const ready = supplier.ready && sku.ready;
+  return (
+    <MergedGroupPage
+      eyebrow="Manual workspace · Supplier & order"
+      title="Supplier commercial & PO planning"
+      subtitle="Approve the supplier quote and plan the SKU ratio and PO on one page."
+      phaseA={supplier}
+      phaseB={sku}
+      primary={
+        <button
+          className={classNames("primary", !ready && "disabled")}
+          aria-disabled={!ready}
+          onClick={() =>
+            ready
+              ? onComplete()
+              : notify(
+                  "Confirm the supplier mapping and planning inputs to continue.",
+                )
+          }
+        >
+          <ArrowRight size={18} />
+          Create PO &amp; continue
+        </button>
+      }
+      statusReady={ready}
+      statusTitle={
+        ready
+          ? "Supplier quote approved · PO plan validated"
+          : "Supplier & order has open blockers"
+      }
+      statusSubtitle={
+        ready
+          ? "The size matrix reconciles to 15,511 and the critical path is approved."
+          : "Confirm the supplier mapping, ratio template, holiday calendar and critical path."
+      }
+    />
+  );
+}
+
+function ManualReviewApproval({
+  notify,
+  completed,
+  setPhase,
+  markPhase,
+}: {
+  notify: (text: string) => void;
+  completed: number[];
+  setPhase: (phase: number) => void;
+  markPhase: (phase: number) => void;
+}) {
+  const review = useFinalReview({
+    mode: "manual",
+    notify,
+    onContinue: () => markPhase(5),
+  });
+  const approval = useManualApproval({ setPhase, notify, completed });
+  const issued = approval.issued;
+  useEffect(() => {
+    if (issued) {
+      markPhase(5);
+      markPhase(6);
+    }
+  }, [issued, markPhase]);
+  const primaryDisabled = !approval.ready || approval.issued;
+  return (
+    <MergedGroupPage
+      eyebrow="Manual workspace · Review & approval"
+      title="Final review & approval issue"
+      subtitle="Confirm the record and route approvals to issue the supplier PO on one page."
+      phaseA={review}
+      phaseB={approval}
+      primary={
+        <button
+          className={classNames("primary", primaryDisabled && "disabled")}
+          aria-disabled={primaryDisabled}
+          onClick={approval.approveNext}
+        >
+          <Lock size={18} />
+          {approval.issued
+            ? "Supplier PO issued"
+            : approval.approvalIndex < 5
+              ? `Approve ${data.manual.manualApprovals[approval.approvalIndex][0]}`
+              : "Issue supplier PO"}
+        </button>
+      }
+      statusReady={approval.ready}
+      statusTitle={
+        approval.issued
+          ? "Supplier PO issued successfully"
+          : approval.ready
+            ? `${approval.approvalIndex}/5 approvals completed`
+            : "Confirm the final review to unlock approvals"
+      }
+      statusSubtitle={
+        approval.issued
+          ? "SPO-R001 is ready for downstream delivery."
+          : approval.ready
+            ? "Complete the approval route, then issue the supplier PO."
+            : "Resolve review issues and confirm the record before approval routing."
+      }
+    />
   );
 }
 
@@ -3643,6 +3612,7 @@ function ManualProcess({
       );
     }
   }, [phase, completed, restored]);
+  const group = workflowGroupForPhase(phase);
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       document
@@ -3650,13 +3620,21 @@ function ManualProcess({
         ?.scrollTo({ top: 0, behavior: "auto" });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [phase]);
-  const completePhase = (current: number) => {
+  }, [group]);
+  const markPhase = useCallback((target: number) => {
     setCompleted((items) =>
-      items.includes(current) ? items : [...items, current],
+      items.includes(target) ? items : [...items, target],
     );
-    setPhase(Math.min(data.manual.phases.length, current + 1));
-    notify(`${data.manual.phases[current - 1].short} completed.`);
+  }, []);
+  const completeGroup = (current: number) => {
+    const definition = manualWorkflowGroups[current - 1];
+    setCompleted((items) =>
+      Array.from(new Set([...items, ...definition.phases])),
+    );
+    if (current < manualWorkflowGroups.length) {
+      setPhase(manualWorkflowGroups[current].phases[0]);
+    }
+    notify(`${definition.short} completed.`);
   };
   return (
     <>
@@ -3668,57 +3646,29 @@ function ManualProcess({
           collapsed={sidebarCollapsed}
         />
         <div className="page-stack">
-          {phase === 1 && (
-            <ManualStyle notify={notify} onComplete={() => completePhase(1)} />
-          )}{" "}
-          {phase === 2 && (
-            <ManualColor notify={notify} onComplete={() => completePhase(2)} />
-          )}{" "}
-          {phase === 3 && (
-            <ManualSupplier
+          {group === 1 && (
+            <ManualProductSetup
               notify={notify}
-              onComplete={() => completePhase(3)}
-            />
-          )}{" "}
-          {phase === 4 && (
-            <ManualSku notify={notify} onComplete={() => completePhase(4)} />
-          )}{" "}
-          {phase === 5 && (
-            <FinalReview
-              mode="manual"
-              notify={notify}
-              onContinue={() => completePhase(5)}
+              onComplete={() => completeGroup(1)}
             />
           )}
-          {phase === 6 && (
-            <ManualApproval
-              setPhase={setPhase}
+          {group === 2 && (
+            <ManualSupplierOrder
+              notify={notify}
+              onComplete={() => completeGroup(2)}
+            />
+          )}
+          {group === 3 && (
+            <ManualReviewApproval
               notify={notify}
               completed={completed}
+              setPhase={setPhase}
+              markPhase={markPhase}
             />
           )}
         </div>
       </div>
     </>
-  );
-}
-
-function ActionBar({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: string;
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <ManualStatusBar
-      ready={icon === "safe"}
-      title={title}
-      subtitle={subtitle}
-    />
   );
 }
 
@@ -3796,33 +3746,17 @@ export default function Home() {
                     collapsed={sidebarCollapsed}
                   />
                   <div className="page-stack">
-                    {phase === 1 && (
-                      <ImportMap
+                    {workflowGroupForPhase(phase) === 1 && (
+                      <AutomationMapPlan notify={notify} setPhase={setPhase} />
+                    )}
+                    {workflowGroupForPhase(phase) === 2 && (
+                      <AutomationRunRecover
                         notify={notify}
-                        onComplete={() => setPhase(2)}
-                      />
-                    )}{" "}
-                    {phase === 2 && (
-                      <Plan setPhase={setPhase} notify={notify} />
-                    )}{" "}
-                    {phase === 3 && (
-                      <Execute notify={notify} onComplete={() => setPhase(4)} />
-                    )}{" "}
-                    {phase === 4 && (
-                      <Resolve notify={notify} onComplete={() => setPhase(5)} />
-                    )}{" "}
-                    {phase === 5 && (
-                      <FinalReview
-                        mode="automation"
-                        notify={notify}
-                        onContinue={() => setPhase(6)}
+                        setPhase={setPhase}
                       />
                     )}
-                    {phase === 6 && (
-                      <Review
-                        notify={notify}
-                        onBackToReview={() => setPhase(5)}
-                      />
+                    {workflowGroupForPhase(phase) === 3 && (
+                      <AutomationReviewIssue notify={notify} />
                     )}
                   </div>
                 </div>
