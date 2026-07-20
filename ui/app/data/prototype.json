@@ -1,0 +1,555 @@
+{
+  "run": {
+    "season": "Zudio AW 26",
+    "division": "Menswear",
+    "source": "Excel row 001",
+    "id": "Run R-001",
+    "synced": "16 Jul 2026, 09:45"
+  },
+  "phases": [
+    {
+      "id": 1,
+      "short": "Import & map",
+      "title": "Import & map source data",
+      "subtitle": "Resolve one Excel row to active PLM keys before any write occurs."
+    },
+    {
+      "id": 2,
+      "short": "Plan & simulate",
+      "title": "Plan & simulate run",
+      "subtitle": "Dry-run the complete dependency plan before any PLM write."
+    },
+    {
+      "id": 3,
+      "short": "Execute & monitor",
+      "title": "Execute & monitor run",
+      "subtitle": "Run R-001 · Approved plan executing safely"
+    },
+    {
+      "id": 4,
+      "short": "Resolve & recover",
+      "title": "Resolve & recover",
+      "subtitle": "Repair one exception, inspect downstream impact, and resume safely."
+    },
+    {
+      "id": 5,
+      "short": "Review & release",
+      "title": "Review & release",
+      "subtitle": "Reconcile final PLM objects, complete approvals, then issue the supplier PO."
+    }
+  ],
+  "operations": [
+    "Style",
+    "Color",
+    "BOM",
+    "Supplier request",
+    "Quote/code",
+    "SKUs",
+    "Supplier PO",
+    "Issue"
+  ],
+  "sourceRecord": [
+    ["Material", "FKn01144"],
+    ["Colour", "BLACK"],
+    ["Vendor", "11301069 · NZ SEASONAL WEAR PRIVATE LIMITED"],
+    ["Cost", "₹100"],
+    ["MRP", "₹999"],
+    ["Total Qty", "15,511"],
+    ["HSN", "62033300"],
+    ["Ex-factory", "02 Dec 2026"],
+    ["Shipment", "02 Dec 2026"],
+    ["Launch", "17 Dec 2026"],
+    ["Vendor Type", "Domestic"],
+    ["Supplier Request Template", "Silver Seal Request Template"]
+  ],
+  "requiredFields": [
+    "Department",
+    "Brand / Division",
+    "Product Type",
+    "Style Type",
+    "Template",
+    "Style Name",
+    "Color attributes",
+    "Size ratio"
+  ],
+  "mapping": [
+    ["Season", "Zudio AW 26", "Season", "Exact active key", "Matched"],
+    [
+      "Material_Code",
+      "FKn01144",
+      "BOM material",
+      "Exact code match",
+      "Matched"
+    ],
+    ["Colour", "BLACK", "Color combo", "Exact enum key", "Matched"],
+    ["Supplier_ID", "11301069", "Supplier", "Exact ID match", "Matched"],
+    [
+      "Vendor_Name",
+      "NZ SEASONAL WEAR PRIVATE LIMITED",
+      "Supplier name",
+      "Confirms ID 11301069",
+      "Matched"
+    ],
+    ["Cost", "100", "Quote cost / CMP", "Numeric · INR", "Matched"],
+    ["MRP", "999", "Colorway / quote MRP", "Numeric · INR", "Matched"],
+    ["Total_Qty", "15,511", "PO total quantity", "Positive integer", "Matched"],
+    ["hsn_code", "62033300", "Quote HSN", "Exact code", "Matched"],
+    [
+      "Ex_Factory_Date",
+      "02 Dec 2026",
+      "PO ex-factory",
+      "Valid date",
+      "Matched"
+    ],
+    [
+      "Shipment_Date",
+      "02 Dec 2026",
+      "PO shipment",
+      "Same-day check",
+      "Warning"
+    ],
+    ["Launch_Date", "17 Dec 2026", "PO launch", "Valid date", "Matched"],
+    [
+      "Department",
+      "Required from Excel",
+      "Style hierarchy",
+      "No source value",
+      "Missing"
+    ],
+    [
+      "Brand/Division",
+      "Required from Excel",
+      "Style hierarchy",
+      "No source value",
+      "Missing"
+    ],
+    [
+      "Product_Type",
+      "Required from Excel",
+      "Style hierarchy",
+      "No source value",
+      "Missing"
+    ],
+    [
+      "Style_Type",
+      "Required from Excel",
+      "Style type",
+      "No source value",
+      "Missing"
+    ],
+    [
+      "Template",
+      "Required from Excel",
+      "Style template",
+      "No source value",
+      "Missing"
+    ],
+    [
+      "Style_Name",
+      "Required from Excel",
+      "Style name",
+      "No source value",
+      "Missing"
+    ],
+    [
+      "Color attributes (10)",
+      "Required from Excel",
+      "Active colorway enums",
+      "No source values",
+      "Missing"
+    ],
+    [
+      "Size_Range / size ratio",
+      "Policy required",
+      "SKU quantity ratio",
+      "Six size quantities are 0",
+      "Blocked"
+    ]
+  ],
+  "planRows": [
+    [
+      "1",
+      "Style",
+      "Create or find",
+      "Style · ID pending",
+      "Season + hierarchy",
+      "Draft planned",
+      "No · dry run"
+    ],
+    [
+      "2",
+      "Color",
+      "Create or find",
+      "Color combo · BLACK",
+      "Inherits Style; color attributes Required from Excel",
+      "Planned",
+      "No · dry run"
+    ],
+    [
+      "3",
+      "BOM",
+      "Find or update",
+      "Style BOM · FKn01144",
+      "Inherits Style + Color; main material",
+      "Planned",
+      "No · dry run"
+    ],
+    [
+      "4",
+      "Supplier request",
+      "Create or find",
+      "Request · ID pending",
+      "Inherits Style + BOM; vendor + template",
+      "Planned",
+      "No · dry run"
+    ],
+    [
+      "5",
+      "Quote/code",
+      "Find generated",
+      "Supplier quote · ID pending",
+      "Inherits request; ₹100 / ₹999 / 62033300",
+      "Approval planned",
+      "No · dry run"
+    ],
+    [
+      "6",
+      "SKUs",
+      "Create or find",
+      "SKU matrix · IDs pending",
+      "Inherits Color + quote; size ratio Policy required",
+      "Blocked",
+      "No · dry run"
+    ],
+    [
+      "7",
+      "Supplier PO",
+      "Create or find",
+      "Supplier PO · ID pending",
+      "Inherits SKUs; 15,511 + dates",
+      "Draft planned",
+      "No · dry run"
+    ],
+    [
+      "8",
+      "Issue",
+      "State transition",
+      "PO approval + Issue",
+      "Inherits validated PO; role policy",
+      "Waiting",
+      "No · dry run"
+    ]
+  ],
+  "blockers": [
+    "Department — Required from Excel",
+    "Brand / Division — Required from Excel",
+    "Product Type — Required from Excel",
+    "Style configuration — Style Type, Template, Style Name",
+    "Color attributes — Required from Excel",
+    "Size ratio — Policy required"
+  ],
+  "warnings": [
+    "Ex-factory and Shipment are both 02 Dec 2026",
+    "Supplier-code target field requires confirmation"
+  ],
+  "generatedIds": [
+    ["Style", "ST-—"],
+    ["Color", "CC-—"],
+    ["BOM", "BOM-—"],
+    ["Request", "SR-—"],
+    ["Quote", "SQ-—"],
+    ["SKUs", "SKU-—"],
+    ["PO", "PO-—"],
+    ["Issue", "EVT-—"]
+  ],
+  "executeRows": [
+    ["1", "Style", "STY-26-004781", "Created · Draft", "01:42", "complete"],
+    [
+      "2",
+      "Color",
+      "CC-004781-BLK",
+      "Created · Active enums resolved",
+      "00:58",
+      "complete"
+    ],
+    [
+      "3",
+      "BOM",
+      "BOM-004781",
+      "Place main material FKn01144 in Fabrics › Full Body",
+      "01:38",
+      "running"
+    ],
+    ["4", "Supplier request", "—", "Dependency not reached", "—", "waiting"],
+    ["5", "Quote/code", "—", "Dependency not reached", "—", "waiting"],
+    ["6", "SKUs", "—", "Dependency not reached", "—", "waiting"],
+    ["7", "Supplier PO", "—", "Dependency not reached", "—", "waiting"],
+    ["8", "Issue", "—", "Dependency not reached", "—", "waiting"]
+  ],
+  "eventLog": [
+    ["09:45:02", "Style", "STY-26-004781", "Created · Draft"],
+    ["09:46:44", "Color", "CC-004781-BLK", "Created · BLACK"],
+    ["09:47:42", "BOM", "BOM-004781", "Found existing Style BOM"],
+    ["09:49:20", "BOM", "Fabrics › Full Body", "Placing FKn01144…"]
+  ],
+  "exceptions": {
+    "Source data": [
+      ["Department", "Required from Excel"],
+      ["Brand / Division", "Required from Excel"],
+      ["Size ratio", "Policy required"]
+    ],
+    "Master data": [
+      ["Strategy", "Active enum resolution"],
+      ["Buy Type", "Required from Excel"],
+      ["Fit Type", "Required from Excel"],
+      ["Store Grade", "Required from Excel"],
+      ["Fixture Type", "Required from Excel"],
+      ["DROP", "Required from Excel"],
+      ["Month", "Required from Excel"]
+    ],
+    "PLM/API": [["Style posting", "Recoverable event"]]
+  },
+  "strategyValues": ["FASHION", "CORE", "SEASONAL"],
+  "retryPreview": [
+    "Update Color attributes",
+    "Revalidate BOM inheritance",
+    "Refresh Quote/code",
+    "Re-enrich SKUs",
+    "Revalidate Supplier PO"
+  ],
+  "inventory": [
+    ["Style", "STY-AW26-001", "Complete"],
+    ["Color", "CLR-BLK-001", "Complete"],
+    ["BOM", "BOM-001", "Complete"],
+    ["Supplier Request", "SR-001", "Complete"],
+    ["Quote/code", "SQ-001", "Approved"],
+    ["SKU 28", "SKU-001", "Complete"],
+    ["SKU 30", "SKU-002", "Complete"],
+    ["SKU 32", "SKU-003", "Complete"],
+    ["SKU 34", "SKU-004", "Complete"],
+    ["SKU 36", "SKU-005", "Complete"],
+    ["SKU 38", "SKU-006", "Complete"],
+    ["Supplier PO", "SPO-R001", "Draft"]
+  ],
+  "reconciliation": [
+    ["Material", "FKn01144", "FKn01144", "Pass"],
+    ["Colour", "BLACK", "BLACK", "Pass"],
+    [
+      "Vendor",
+      "11301069 · NZ SEASONAL WEAR PRIVATE LIMITED",
+      "Same supplier ID",
+      "Pass"
+    ],
+    ["Cost", "₹100", "₹100", "Pass"],
+    ["MRP", "₹999", "₹999", "Pass"],
+    ["Total Qty", "15,511", "15,511", "Pass"],
+    ["HSN", "62033300", "62033300", "Pass"],
+    ["Ex-factory", "02 Dec 2026", "02 Dec 2026", "Pass"],
+    ["Shipment", "02 Dec 2026", "02 Dec 2026", "Warning"],
+    ["Launch", "17 Dec 2026", "17 Dec 2026", "Pass"],
+    ["Vendor type", "Domestic", "Domestic", "Pass"]
+  ],
+  "approvals": [
+    ["Merchandiser", "Approved", "M. Kulkarni · 09:12"],
+    ["Sourcing", "Pending", ""],
+    ["Accounts", "Waiting", ""],
+    ["Ready", "Waiting", ""],
+    ["Issue", "Locked", ""]
+  ],
+  "deliveries": [
+    ["PO PDF", "Not generated", "Waiting"],
+    ["Supplier delivery", "Not sent", "Waiting"],
+    ["SAP sync", "Not started", "Waiting"]
+  ],
+  "manual": {
+    "phases": [
+      {
+        "id": 1,
+        "short": "Style intake",
+        "title": "Create the style",
+        "subtitle": "Validate the Excel row, resolve hierarchy, prevent duplicates, then create and verify core properties."
+      },
+      {
+        "id": 2,
+        "short": "Color & BOM",
+        "title": "Color & product definition",
+        "subtitle": "Create the BLACK colorway and place its main material in the Style BOM."
+      },
+      {
+        "id": 3,
+        "short": "Supplier commercial",
+        "title": "Supplier commercial",
+        "subtitle": "Request issued · generated quote ready for review"
+      },
+      {
+        "id": 4,
+        "short": "SKU & PO planning",
+        "title": "SKU & PO planning",
+        "subtitle": "Build the size split, enrich SKUs and validate the supplier order."
+      },
+      {
+        "id": 5,
+        "short": "Approval & issue",
+        "title": "Approval & issue",
+        "subtitle": "Clear every exception, complete the approval route, then issue the supplier PO."
+      }
+    ],
+    "hierarchyFields": [
+      ["Season", "Zudio AW 26", "Resolved"],
+      ["Department", "Required from Excel", ""],
+      ["Brand / Division", "Required from Excel", ""],
+      ["Product Type", "Required from Excel", ""],
+      ["Style Type", "Required from Excel", ""],
+      ["Template", "Required from Excel", ""],
+      ["Style Name", "Required from Excel", ""]
+    ],
+    "sizes": ["28 / XS", "30 / S", "32 / M", "34 / L", "36 / XL", "38 / XXL"],
+    "coreProperties": [
+      ["MATKL Description 3", "Required from Excel"],
+      ["Description", "W26D14 EA CHK 347001 T SHIRT NOV"],
+      ["Generic", "Required from Excel"]
+    ],
+    "colorFields": [
+      "Strategy",
+      "Buy Type",
+      "Fit Type",
+      "Story Name",
+      "Garment Design",
+      "Garment Length",
+      "Store Grade",
+      "Fixture Type",
+      "DROP",
+      "Month"
+    ],
+    "bomRows": [
+      [
+        "Full Body",
+        "Fabrics",
+        "FKn01144",
+        "Required from Excel",
+        "Required from Excel",
+        "BLACK"
+      ],
+      [
+        "Trims",
+        "Trims",
+        "Main label · Size label · Wash care · Lock string · Branded RFID hang tag",
+        "Template protected",
+        "Template protected",
+        ""
+      ],
+      [
+        "Packaging",
+        "Packaging",
+        "Carton · Carton ply · Compostable bag · Hangtag",
+        "Template protected",
+        "Template protected",
+        ""
+      ]
+    ],
+    "automationLog": [
+      ["Find color combo", "Done"],
+      ["Create BLACK", "Done"],
+      ["Resolve active enums", "Blocked"],
+      ["Refresh & verify", "Done"],
+      ["Open Style BOM", "Done"],
+      ["Place FKn01144", "Done"],
+      ["Set main material", "Queued"]
+    ],
+    "package": [
+      ["Style record", "Attached · Style Name: Required from Excel"],
+      ["Style BOM", "Attached · FKn01144 main material"],
+      ["Technical package", "Attached · package name: Required from Excel"]
+    ],
+    "requestTimeline": [
+      ["09:42", "Request created"],
+      ["09:43", "Style + BOM attached"],
+      ["09:44", "Request issued"],
+      ["09:45", "Quote generated"]
+    ],
+    "quoteFields": [
+      ["Selected BOM", "Style BOM · FKn01144"],
+      ["Supplier-code mapping", "Confirmation required"],
+      ["Cost / CMP", "₹100"],
+      ["MRP", "₹999"],
+      ["HSN", "62033300"],
+      ["Article Freight Group", "GAR-XX1"],
+      ["Currency", "INR"]
+    ],
+    "approvalChecks": [
+      "Vendor active",
+      "BOM linked",
+      "Commercial fields valid",
+      "Currency valid",
+      "Supplier-code mapping · Confirmation required"
+    ],
+    "poFields": [
+      ["Vendor", "11301069 · NZ SEASONAL WEAR PRIVATE LIMITED"],
+      ["Cost", "₹100"],
+      ["Total Qty", "15,511"],
+      ["Ex-factory", "02 Dec 2026"],
+      ["Shipment", "02 Dec 2026"],
+      ["Launch", "17 Dec 2026"],
+      ["Route", "Domestic"],
+      ["Holiday calendar", "Required from Excel"],
+      ["Critical path", "Required from Excel"]
+    ],
+    "preflight": [
+      [
+        "Style",
+        "6 required source fields missing",
+        "Brand / Division, Product Type, Style Type, Template, Style Name, Department",
+        "Change in Style intake",
+        "blocked"
+      ],
+      [
+        "Color & BOM",
+        "Required color attributes unresolved",
+        "Strategy, Buy Type, Fit Type, Story Name, Garment Design, Garment Length, Store Grade, Fixture Type, DROP, Month",
+        "Change in Color & BOM",
+        "blocked"
+      ],
+      [
+        "Supplier commercial",
+        "Quote approved · commercial values valid",
+        "",
+        "",
+        "complete"
+      ],
+      [
+        "SKU / Quantity",
+        "Size ratio not approved",
+        "Size values are 0; calculated quantities must total 15,511",
+        "Change in SKU & PO planning",
+        "blocked"
+      ],
+      [
+        "PO dates",
+        "Same-day Ex-factory and Shipment",
+        "Policy confirmation required for Domestic order",
+        "Change in SKU & PO planning",
+        "warning"
+      ]
+    ],
+    "manualApprovals": [
+      ["Merchandiser", "Waiting until preflight passes"],
+      ["Sourcing", "Waiting until preflight passes"],
+      ["Accounts", "Waiting until preflight passes"],
+      ["Ready", "Waiting until preflight passes"],
+      ["Issue", "Waiting until preflight passes"]
+    ],
+    "exceptions": [
+      ["6 required source fields missing", "Style intake"],
+      ["Size ratio not approved", "SKU & PO planning"],
+      ["Same-day Ex-factory and Shipment", "SKU & PO planning"]
+    ],
+    "documents": [
+      ["PO PDF", "Not generated"],
+      ["Tech pack", "Attached"],
+      ["BOM export", "Attached"],
+      ["Supplier delivery", "Not started"],
+      ["SAP / PO sync", "Not started"],
+      ["SAP PO number", "—"]
+    ]
+  }
+}
