@@ -11,8 +11,12 @@ import {
   Clock,
   DotsThreeVertical,
   DownloadSimple,
+  FileArrowUp,
+  FileCsv,
   FileText,
+  FileXls,
   HandPalm,
+  ListChecks,
   Info,
   List,
   Lock,
@@ -23,7 +27,9 @@ import {
   Robot,
   ShieldCheck,
   SidebarSimple,
+  Stack,
   TShirt,
+  Trash,
   User,
   Warning,
   WarningCircle,
@@ -92,6 +98,230 @@ const missingMarkers = [
   "Not provided",
   "Confirmation required",
 ];
+
+// Full column layout of the manswear intake template (Template_manswear.xlsx).
+// Uploaded files are matched to these headers by name, so column order or a
+// stray blank column between them does not matter.
+const BULK_TEMPLATE_HEADERS = [
+  "Season",
+  "create_new_style",
+  "Image",
+  "Brand/Division",
+  "Product_Type",
+  "Style_Type",
+  "Template",
+  "Style_Name",
+  "Colorway_Selection",
+  "Pantone_Color_Code",
+  "DROP",
+  "month",
+  "Strategy",
+  "fit_type",
+  "Story_name",
+  "strategy",
+  "Buy_type",
+  "Fixture name",
+  "Garment_design",
+  "Garment_length",
+  "Store_grade",
+  "description_code",
+  "Description",
+  "Generic",
+  "Size_Range",
+  "28/XS",
+  "30/S",
+  "32/M",
+  "34/L",
+  "36/XL",
+  "38/XXL",
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "MATKL_Description_3",
+  "Material_Code",
+  "Colour",
+  "Existing_New",
+  "MRP",
+  "Supplier_ID",
+  "Vendor_Name",
+  "Cost",
+  "Total_Qty",
+  "Ex_Factory_Date",
+  "Shipment_Date",
+  "Launch_Date",
+  "Vendor_Type",
+  "supplier_request_template",
+  "new_supplier_request",
+  "hsn_code",
+];
+
+// Columns that must carry a value for a style row to be creatable in PLM.
+// (Descriptive fields like Brand/Product_Type are resolved inside PLM, so the
+// intake sheet leaves them blank — they are intentionally not required here.)
+const BULK_REQUIRED_COLUMNS = [
+  "Season",
+  "Description",
+  "Colour",
+  "MRP",
+  "Supplier_ID",
+  "Vendor_Name",
+  "Cost",
+  "Total_Qty",
+];
+
+// Per-size quantity columns; their sum must reconcile to Total_Qty. The sheet
+// carries two alternate size scales (a row populates one or the other), so both
+// sets are summed — the unused set is all zeros.
+const BULK_SIZE_COLUMNS = [
+  "28/XS",
+  "30/S",
+  "32/M",
+  "34/L",
+  "36/XL",
+  "38/XXL",
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+];
+
+// Columns surfaced in the on-screen preview table.
+const BULK_PREVIEW_COLUMNS = [
+  "Description",
+  "Colour",
+  "Vendor_Name",
+  "Cost",
+  "MRP",
+  "Total_Qty",
+];
+
+type BulkRow = {
+  cells: string[];
+  missing: string[];
+  sizeSum: number;
+  totalQty: number;
+  reconciled: boolean;
+};
+type BulkBatch = {
+  fileName: string;
+  size: number;
+  headers: string[];
+  rows: BulkRow[];
+};
+
+function bulkNumber(value: string) {
+  const parsed = Number(String(value ?? "").replace(/[, ]/g, ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+// Normalise a header so "Total_Qty", "Total Qty" and "totalqty" all match.
+function bulkNorm(value: string) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+const BULK_KNOWN_HEADERS = new Set(BULK_TEMPLATE_HEADERS.map(bulkNorm));
+
+// Split a delimited file into a full grid of rows (comma or tab, quoted-safe).
+function parseDelimitedGrid(text: string): string[][] {
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const sample = lines.find((line) => line.trim().length) ?? "";
+  const delimiter = sample.includes("\t") ? "\t" : ",";
+  const splitLine = (line: string) => {
+    const out: string[] = [];
+    let current = "";
+    let quoted = false;
+    for (let i = 0; i < line.length; i += 1) {
+      const char = line[i];
+      if (char === '"') quoted = !quoted;
+      else if (char === delimiter && !quoted) {
+        out.push(current.trim());
+        current = "";
+      } else current += char;
+    }
+    out.push(current.trim());
+    return out;
+  };
+  return lines.filter((line) => line.trim().length).map(splitLine);
+}
+
+// Find the real header row (files often have banner/preamble rows) by scoring
+// each of the first rows against the known template headers.
+function detectBulkTable(grid: string[][]): {
+  headers: string[];
+  rows: string[][];
+  score: number;
+} {
+  let bestIndex = 0;
+  let bestScore = -1;
+  const limit = Math.min(grid.length, 15);
+  for (let i = 0; i < limit; i += 1) {
+    const score = grid[i].reduce(
+      (sum, cell) => sum + (BULK_KNOWN_HEADERS.has(bulkNorm(cell)) ? 1 : 0),
+      0,
+    );
+    if (score > bestScore) {
+      bestScore = score;
+      bestIndex = i;
+    }
+  }
+  return {
+    headers: (grid[bestIndex] ?? []).map(String),
+    rows: grid.slice(bestIndex + 1),
+    score: bestScore,
+  };
+}
+
+function buildBulkBatch(
+  fileName: string,
+  size: number,
+  headers: string[],
+  rows: string[][],
+): BulkBatch {
+  const indexFor = (column: string) =>
+    headers.findIndex((header) => bulkNorm(header) === bulkNorm(column));
+  const requiredIndexes = BULK_REQUIRED_COLUMNS.map((column) => ({
+    column,
+    index: indexFor(column),
+  }));
+  const sizeIndexes = BULK_SIZE_COLUMNS.map(indexFor);
+  const totalIndex = indexFor("Total_Qty");
+  const cell = (cells: string[], index: number) =>
+    index === -1 ? "" : String(cells[index] ?? "").trim();
+
+  const bulkRows: BulkRow[] = rows
+    .filter((cells) => cells.some((value) => String(value ?? "").trim().length))
+    .map((cells) => {
+      const missing = requiredIndexes
+        .filter(({ index }) => !cell(cells, index))
+        .map(({ column }) => column);
+      const sizeSum = sizeIndexes.reduce(
+        (sum, index) => sum + bulkNumber(cell(cells, index)),
+        0,
+      );
+      const totalQty = bulkNumber(cell(cells, totalIndex));
+      const reconciled = totalQty > 0 && sizeSum === totalQty;
+      return { cells, missing, sizeSum, totalQty, reconciled };
+    });
+  return { fileName, size, headers, rows: bulkRows };
+}
+
+function bulkCellValue(batch: BulkBatch, row: BulkRow, column: string) {
+  const index = batch.headers.findIndex(
+    (header) => bulkNorm(header) === bulkNorm(column),
+  );
+  return index === -1 ? "" : String(row.cells[index] ?? "").trim();
+}
+
+function bulkRowReady(row: BulkRow) {
+  return row.missing.length === 0 && row.reconciled;
+}
 
 function isMissingValue(value?: string) {
   return !value || missingMarkers.includes(value.trim());
@@ -779,17 +1009,485 @@ function useImportMap({
       : row[4] === "Blocked" && ratioApproved
         ? "Matched"
         : row[4];
+
+  const [batch, setBatch] = useState<BulkBatch | null>(null);
+  const [batchError, setBatchError] = useState("");
+  const [dragging, setDragging] = useState(false);
+  const [parsing, setParsing] = useState(false);
+  const [queued, setQueued] = useState(false);
+  const validRows = batch ? batch.rows.filter(bulkRowReady) : [];
+  const missingRows = batch
+    ? batch.rows.filter((row) => row.missing.length > 0).length
+    : 0;
+  const mismatchRows = batch
+    ? batch.rows.filter((row) => row.missing.length === 0 && !row.reconciled)
+        .length
+    : 0;
+
+  const ingestFile = async (file: File | undefined) => {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    setQueued(false);
+    setBatch(null);
+    let grid: string[][] = [];
+    try {
+      if (/\.(xlsx|xls)$/.test(name)) {
+        setParsing(true);
+        const XLSX = await import("xlsx");
+        const buffer = await file.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        grid = XLSX.utils
+          .sheet_to_json<string[]>(sheet, {
+            header: 1,
+            raw: false,
+            defval: "",
+            blankrows: false,
+          })
+          .map((row) => (row ?? []).map((value) => String(value)));
+      } else if (/\.(csv|tsv|txt)$/.test(name)) {
+        grid = parseDelimitedGrid(await file.text());
+      } else {
+        setBatchError("Unsupported file. Upload a .xlsx, .xls, or .csv export.");
+        return;
+      }
+    } catch {
+      setBatchError("Could not read that file. Try re-exporting it.");
+      return;
+    } finally {
+      setParsing(false);
+    }
+    const { headers, rows, score } = detectBulkTable(grid);
+    if (score < 3) {
+      setBatchError(
+        "Couldn't find the template columns. Use the template above and keep the header row (Season, Description, Colour, Total_Qty…).",
+      );
+      return;
+    }
+    const next = buildBulkBatch(file.name, file.size, headers, rows);
+    if (next.rows.length === 0) {
+      setBatchError("No data rows found below the header row.");
+      return;
+    }
+    setBatchError("");
+    setBatch(next);
+  };
+
+  const downloadTemplate = () => {
+    const sampleRow = (overrides: Record<string, string>) =>
+      BULK_TEMPLATE_HEADERS.map((header) => overrides[header] ?? "");
+    const samples = [
+      sampleRow({
+        Season: "Zudio AW 26",
+        create_new_style: "Y",
+        Description: "W26D14 EA CHK 347001 T SHIRT NOV",
+        Size_Range: "28/XS - 38/XXL",
+        "28/XS": "2585",
+        "30/S": "2585",
+        "32/M": "3878",
+        "34/L": "3878",
+        "36/XL": "1293",
+        "38/XXL": "1292",
+        Colour: "BLACK",
+        Existing_New: "NEW",
+        MRP: "999",
+        Supplier_ID: "11301069",
+        Vendor_Name: "NZ SEASONAL WEAR PRIVATE LIMITED",
+        Cost: "100",
+        Total_Qty: "15511",
+        Vendor_Type: "Domestic",
+        supplier_request_template: "Silver Seal Request Template",
+        new_supplier_request: "Y",
+        hsn_code: "62033300",
+      }),
+    ];
+    const escape = (value: string) =>
+      /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+    downloadFile(
+      "manswear-bulk-template.csv",
+      [BULK_TEMPLATE_HEADERS, ...samples]
+        .map((row) => row.map(escape).join(","))
+        .join("\n"),
+      "text/csv",
+    );
+    notify("Manswear bulk template downloaded.");
+  };
+
+  const clearBatch = () => {
+    setBatch(null);
+    setBatchError("");
+    setQueued(false);
+  };
+
+  const queueBatch = () => {
+    if (!batch) return;
+    if (validRows.length === 0) {
+      notify("No valid rows to queue. Fix the highlighted columns first.");
+      return;
+    }
+    saveLocalDraft("plm-automation-bulk-batch", {
+      fileName: batch.fileName,
+      total: batch.rows.length,
+      valid: validRows.length,
+      headers: batch.headers,
+    });
+    setQueued(true);
+    setSourceResolved(true);
+    notify(
+      `${validRows.length} row${validRows.length === 1 ? "" : "s"} queued from ${batch.fileName}.`,
+    );
+  };
+
   return {
     step: 1,
     short: "Import & map",
     ready,
     sections: (
       <>
+        <section className="bulk-upload">
+          <div
+            className="bulk-upload-head"
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 16,
+              marginBottom: 14,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <span
+                className="bulk-upload-badge"
+                style={{
+                  flex: "0 0 auto",
+                  display: "inline-grid",
+                  placeItems: "center",
+                  width: 38,
+                  height: 38,
+                  borderRadius: 10,
+                  color: "#fff",
+                  background: "var(--dashboard-accent)",
+                }}
+              >
+                <Stack size={18} weight="fill" />
+              </span>
+              <div>
+                <h3>Bulk upload</h3>
+                <p>Create many styles from one intake sheet.</p>
+              </div>
+            </div>
+            <button
+              className="text-button"
+              onClick={downloadTemplate}
+              style={{
+                flex: "0 0 auto",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                whiteSpace: "nowrap",
+              }}
+            >
+              <DownloadSimple size={16} />
+              Template
+            </button>
+          </div>
+          <label
+            className={classNames(
+              "bulk-dropzone",
+              dragging && "is-dragging",
+              parsing && "is-parsing",
+            )}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+              padding: "26px 16px 22px",
+              border: `1.5px ${dragging ? "solid" : "dashed"} ${dragging ? "var(--dashboard-accent)" : "var(--line-strong)"}`,
+              borderRadius: 12,
+              background: "var(--soft)",
+              color: "var(--muted)",
+              textAlign: "center",
+              cursor: "pointer",
+            }}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(event) => {
+              event.preventDefault();
+              setDragging(false);
+              ingestFile(event.dataTransfer.files?.[0]);
+            }}
+          >
+            <input
+              type="file"
+              accept=".xlsx,.xls,.csv,.tsv,.txt"
+              hidden
+              onChange={(event) => {
+                ingestFile(event.target.files?.[0]);
+                event.target.value = "";
+              }}
+            />
+            <span
+              className="bulk-drop-icon"
+              aria-hidden="true"
+              style={{
+                display: "inline-grid",
+                placeItems: "center",
+                width: 52,
+                height: 52,
+                marginBottom: 6,
+                borderRadius: "50%",
+                color: "var(--dashboard-accent)",
+                background: "var(--paper-raised)",
+                border: "1px solid var(--line-strong)",
+              }}
+            >
+              <FileArrowUp size={26} weight="light" />
+            </span>
+            <strong>{parsing ? "Reading file…" : "Drop your file here"}</strong>
+            <span className="bulk-drop-sub">
+              or{" "}
+              <em style={{ fontStyle: "normal", fontWeight: 600, color: "var(--dashboard-accent)" }}>
+                click to browse
+              </em>
+            </span>
+            <span
+              className="bulk-drop-formats"
+              style={{ display: "inline-flex", gap: 7, marginTop: 10 }}
+            >
+              {[
+                { label: "XLSX", icon: <FileXls size={14} weight="fill" /> },
+                { label: "CSV", icon: <FileCsv size={14} weight="fill" /> },
+              ].map((format) => (
+                <span
+                  key={format.label}
+                  className="bulk-chip"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                    padding: "3px 10px",
+                    borderRadius: 999,
+                    border: "1px solid var(--line-strong)",
+                    background: "var(--paper-raised)",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "var(--ink-soft)",
+                  }}
+                >
+                  {format.icon}
+                  {format.label}
+                </span>
+              ))}
+            </span>
+          </label>
+          {!batch && !batchError && !parsing && (
+            <div
+              className="bulk-steps"
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+                marginTop: 12,
+                fontSize: 12,
+                color: "var(--muted)",
+              }}
+            >
+              {[
+                { label: "Auto-map columns", icon: <Stack size={15} /> },
+                {
+                  label: "Validate & reconcile",
+                  icon: <ListChecks size={15} />,
+                },
+                { label: "Queue batch", icon: <CheckCircle size={15} /> },
+              ].map((stepItem, stepIndex) => (
+                <span
+                  key={stepItem.label}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+                >
+                  {stepItem.icon}
+                  {stepItem.label}
+                  {stepIndex < 2 && (
+                    <i
+                      aria-hidden="true"
+                      style={{
+                        width: 16,
+                        height: 1,
+                        marginLeft: 4,
+                        background: "var(--line-strong)",
+                      }}
+                    />
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+          {batchError && (
+            <p className="manual-warning">
+              <Warning size={15} />
+              {batchError}
+            </p>
+          )}
+          {batch && (
+            <div className="bulk-result">
+              <div className="bulk-file-row">
+                <FileText size={18} />
+                <strong>{batch.fileName}</strong>
+                <span>{(batch.size / 1024).toFixed(1)} KB</span>
+                {queued && (
+                  <span className="bulk-queued">
+                    <CheckCircle size={15} weight="fill" />
+                    Queued
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className="bulk-clear"
+                  aria-label="Clear uploaded batch"
+                  onClick={clearBatch}
+                >
+                  <Trash size={16} />
+                </button>
+              </div>
+              <div className="mapping-stats">
+                <Stat value={String(batch.rows.length)} label="Style rows" />
+                <Stat
+                  value={String(validRows.length)}
+                  label="Ready"
+                  tone="good"
+                />
+                <Stat
+                  value={String(missingRows)}
+                  label="Missing fields"
+                  tone={missingRows ? "warn" : "good"}
+                />
+                <Stat
+                  value={String(mismatchRows)}
+                  label="Qty mismatch"
+                  tone={mismatchRows ? "warn" : "good"}
+                />
+              </div>
+              <div className="table-wrap">
+                <table className="bulk-preview">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      {BULK_PREVIEW_COLUMNS.map((column) => (
+                        <th key={column}>{column}</th>
+                      ))}
+                      <th>Sizes → Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {batch.rows.slice(0, 8).map((row, rowIndex) => {
+                      const ready = bulkRowReady(row);
+                      const statusLabel =
+                        row.missing.length > 0
+                          ? `${row.missing.length} missing`
+                          : !row.reconciled
+                            ? "Qty mismatch"
+                            : "Ready";
+                      return (
+                        <tr key={rowIndex}>
+                          <td>{rowIndex + 1}</td>
+                          {BULK_PREVIEW_COLUMNS.map((column) => {
+                            const value = bulkCellValue(batch, row, column);
+                            const isMissing =
+                              BULK_REQUIRED_COLUMNS.includes(column) && !value;
+                            return (
+                              <td
+                                key={column}
+                                className={isMissing ? "warning-text" : ""}
+                                title={value}
+                              >
+                                {value || "—"}
+                              </td>
+                            );
+                          })}
+                          <td
+                            className={row.reconciled ? "" : "warning-text"}
+                          >
+                            {row.sizeSum.toLocaleString("en-IN")} /{" "}
+                            {row.totalQty.toLocaleString("en-IN")}
+                          </td>
+                          <td
+                            className={classNames(
+                              "status-cell",
+                              ready ? "matched" : "missing",
+                            )}
+                          >
+                            <StatusIcon
+                              kind={ready ? "Matched" : "Missing"}
+                              size={15}
+                            />
+                            {statusLabel}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {batch.rows.length > 8 && (
+                <p className="bulk-more">
+                  Showing first 8 of {batch.rows.length} rows.
+                </p>
+              )}
+              <div className="bulk-actions">
+                <button
+                  className="secondary"
+                  onClick={() => {
+                    exportJson("bulk-upload-validation.json", {
+                      fileName: batch.fileName,
+                      total: batch.rows.length,
+                      ready: validRows.length,
+                      missingFields: missingRows,
+                      qtyMismatch: mismatchRows,
+                      rows: batch.rows.map((row) => ({
+                        description: bulkCellValue(batch, row, "Description"),
+                        colour: bulkCellValue(batch, row, "Colour"),
+                        totalQty: row.totalQty,
+                        sizeSum: row.sizeSum,
+                        reconciled: row.reconciled,
+                        missing: row.missing,
+                      })),
+                    });
+                    notify("Bulk validation report exported.");
+                  }}
+                >
+                  Export validation
+                </button>
+                <button
+                  className={classNames(
+                    "primary",
+                    (validRows.length === 0 || queued) && "disabled",
+                  )}
+                  aria-disabled={validRows.length === 0 || queued}
+                  onClick={queueBatch}
+                >
+                  {queued
+                    ? `${validRows.length} rows queued`
+                    : `Queue ${validRows.length} ready row${validRows.length === 1 ? "" : "s"}`}
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
         <div className="source-health">
             <strong>{data.run.source}</strong>
             <span className="success-dot">● Loaded</span>
             <span className="health-copy">
               <b>Source health</b>
+              <em>
+                {queued ? validRows.length : 1} row
+                {queued && validRows.length !== 1 ? "s" : ""} loaded
+              </em>
               <em>{resolvedCount} resolved</em>
               <em>{sourceResolved ? 0 : 16} missing</em>
               <em>{ratioApproved ? 0 : 1} policy blocker</em>
@@ -1852,14 +2550,28 @@ function useFinalReview({
         try {
           const parsed = JSON.parse(saved);
           const payload = parsed.payload ?? parsed;
-          if (Array.isArray(payload.rows)) setRows(payload.rows);
+          if (Array.isArray(payload.rows)) {
+            setRows(payload.rows);
+            return;
+          }
         } catch {
           localStorage.removeItem(storageKey);
         }
       }
+      // Manual review reflects the values the operator actually entered in the
+      // earlier steps (stored per field in localStorage), so filled hierarchy
+      // fields validate as Pass instead of showing "Not provided".
+      if (mode === "manual") {
+        setRows((current) =>
+          current.map((row) => {
+            const entered = readManualField(row[1]).trim();
+            return entered ? [row[0], row[1], entered, entered, row[4]] : row;
+          }),
+        );
+      }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [storageKey]);
+  }, [storageKey, mode]);
 
   const validatedRows = useMemo(
     () =>

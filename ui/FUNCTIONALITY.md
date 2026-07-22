@@ -24,7 +24,7 @@ Each workspace is presented as **three merged pages** (one per workflow group), 
 
 Three pages. Actions live in the combined right context panel; a single primary Continue advances to the next page.
 
-1. Map source & plan run (Import & map + Plan & simulate): resolve replacement-source fields, approve the ratio, export mappings, review the dry-run plan, approve the run plan, then continue to run & recover.
+1. Map source & plan run (Import & map + Plan & simulate): **bulk upload** an `.xlsx`/`.csv` manswear intake sheet (Nov-sale format, drag-drop or browse) parsed client-side with SheetJS. Columns are matched to PLM fields by header name (order-independent), and every row is validated — required fields present (`Season, Description, Colour, MRP, Supplier_ID, Vendor_Name, Cost, Total_Qty`) and the per-size breakdown (`28/XS…38/XXL` or `XS…XXL`) reconciled to `Total_Qty`. Shows a live Ready / Missing-fields / Qty-mismatch summary and a preview table, with a downloadable template, validation-report export, and "Queue ready rows" (which resolves the source). Then resolve replacement-source fields, approve the ratio, export mappings, review the dry-run plan, approve the run plan, and continue to run & recover.
 2. Execute run & recover safely (Execute & monitor + Resolve & recover): animated progress with safe pause/resume and downloadable event log, selectable exceptions with searchable active PLM values and saved recovery note, then continue to review & issue.
 3. Review record & issue PO (Final review & correction + Approval & issue): source-to-PLM comparison with inline correction, suggested fixes, live validation and audit export, sequential approval route, downloadable audit, and issued supplier-PO confirmation.
 
