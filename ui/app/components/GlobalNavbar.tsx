@@ -1,0 +1,227 @@
+"use client";
+
+import {
+  Bell,
+  CaretDown,
+  List,
+  MagnifyingGlass,
+  SignOut,
+  X,
+} from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { ROLE_LABELS, type Role } from "@/lib/roles";
+import { useAdminSearch } from "./AdminSearchContext";
+
+type GlobalNavbarProps = {
+  role: Role;
+  userName: string;
+  attentionCount: number;
+  onOpenNavigation?: () => void;
+};
+
+export function GlobalNavbar({
+  role,
+  userName,
+  attentionCount,
+  onOpenNavigation,
+}: GlobalNavbarProps) {
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [pastNavbar, setPastNavbar] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const revealTimerRef = useRef<number | null>(null);
+  const reduceMotion = useReducedMotion();
+  const { query: adminQuery, setQuery: setAdminQuery } = useAdminSearch();
+
+  const cancelScheduledReveal = () => {
+    if (revealTimerRef.current !== null) {
+      window.clearTimeout(revealTimerRef.current);
+      revealTimerRef.current = null;
+    }
+  };
+
+  const revealNavbar = () => {
+    cancelScheduledReveal();
+    setRevealed(true);
+  };
+
+  const scheduleHoverReveal = () => {
+    cancelScheduledReveal();
+    revealTimerRef.current = window.setTimeout(revealNavbar, 180);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const hasPassedNavbar = window.scrollY > 56;
+      setPastNavbar(hasPassedNavbar);
+      if (hasPassedNavbar) setRevealed(false);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (revealTimerRef.current !== null) {
+        window.clearTimeout(revealTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const closeProfile = (event: PointerEvent) => {
+      if (!profileRef.current?.contains(event.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setProfileOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeProfile);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeProfile);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      window.location.href = "/";
+    }
+  };
+
+  const hidden = pastNavbar && !revealed && !profileOpen;
+  const homeHref = role === "admin" ? "/admin" : `/${role}`;
+  const accountInitial = userName.trim().slice(0, 1).toUpperCase() || "U";
+
+  return (
+    <>
+      <button
+        className={`global-navbar-reveal${hidden ? " is-visible" : ""}`}
+        type="button"
+        aria-label="Show navigation"
+        tabIndex={hidden ? 0 : -1}
+        onClick={revealNavbar}
+        onPointerEnter={scheduleHoverReveal}
+        onPointerLeave={cancelScheduledReveal}
+        onFocus={revealNavbar}
+      >
+        <span />
+      </button>
+
+      <motion.header
+        className={`workspace-topbar-v2${role === "admin" ? " is-admin-navbar" : ""}`}
+        initial={false}
+        animate={
+          hidden
+            ? { y: "calc(-100% - 20px)", opacity: 0, scale: 0.985 }
+            : { y: 0, opacity: 1, scale: 1 }
+        }
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : hidden
+              ? { duration: 0.16, ease: [0.4, 0, 1, 1] }
+              : { type: "spring", stiffness: 430, damping: 34, mass: 0.72 }
+        }
+        aria-hidden={hidden}
+        inert={hidden ? true : undefined}
+        style={{ pointerEvents: hidden ? "none" : "auto" }}
+        onPointerEnter={() => setRevealed(true)}
+        onPointerLeave={() => {
+          if (pastNavbar && !profileOpen) setRevealed(false);
+        }}
+      >
+        <div className="global-navbar-leading">
+          {role !== "admin" && (
+            <button
+              className="workspace-menu-v2"
+              type="button"
+              aria-label="Open navigation"
+              onClick={onOpenNavigation}
+            >
+              <List size={21} />
+            </button>
+          )}
+
+          <Link className="workspace-topbrand-v2" href={homeHref}>
+            <span>TL</span>
+            <strong>Threadline</strong>
+          </Link>
+        </div>
+
+        <div className="workspace-top-actions-v2">
+          <span className="workspace-live-v2">
+            <i /> Live
+          </span>
+
+          <div
+            className="workspace-notification-v2"
+            role="status"
+            aria-label={`${attentionCount} items need attention`}
+          >
+            <Bell size={19} />
+            {attentionCount > 0 && <span>{Math.min(attentionCount, 9)}</span>}
+          </div>
+
+          <div className="workspace-profile-v2" ref={profileRef}>
+            <button
+              type="button"
+              aria-expanded={profileOpen}
+              aria-haspopup="menu"
+              onClick={() => setProfileOpen((value) => !value)}
+            >
+              <span>{accountInitial}</span>
+              <span>
+                <strong>{userName}</strong>
+                <small>{ROLE_LABELS[role]}</small>
+              </span>
+              <CaretDown size={13} weight="bold" />
+            </button>
+
+            {profileOpen && (
+              <div className="workspace-profile-menu-v2" role="menu">
+                <button type="button" role="menuitem" onClick={logout}>
+                  <SignOut size={17} /> Sign out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {role === "admin" && (
+          <div className="admin-navbar-slot">
+            <label className="admin-search-field">
+              <MagnifyingGlass size={19} />
+              <span className="sr-only">Search data sets</span>
+              <input
+                type="search"
+                value={adminQuery}
+                onChange={(event) => setAdminQuery(event.target.value)}
+                placeholder="Search data sets"
+              />
+              {adminQuery && (
+                <button
+                  type="button"
+                  onClick={() => setAdminQuery("")}
+                  aria-label="Clear search"
+                >
+                  <X size={17} />
+                </button>
+              )}
+            </label>
+          </div>
+        )}
+      </motion.header>
+    </>
+  );
+}

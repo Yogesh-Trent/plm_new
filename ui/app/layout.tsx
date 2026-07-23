@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AppToaster } from "./components/AppToaster";
+import { GlobalBackground } from "./components/GlobalBackground";
 import "./globals.css";
 import "./workspace.css";
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <GlobalBackground />
         <a className="workspace-skip-link" href="#main-content">
           Skip to main content
         </a>

@@ -75,6 +75,26 @@ Blocked: no browser console was available.
 
 final result: blocked
 
+**Global glass navbar revision — 23 Jul 2026**
+
+- Source visual truth: the Admin dashboard screenshot supplied in the conversation, showing the exposed skip link and the previous full-width top strip. The requested target is an Apple-style floating glass navbar using the existing sky-and-mint system.
+- Implementation screenshot path: unavailable. Browser discovery returned `No browser is available`, so a browser-rendered capture could not be produced.
+- Intended viewport and state: 1320px desktop Admin dashboard, default authenticated state, plus the page scrolled beyond 56px and the top-edge hover-reveal state.
+- Source pixels and density: conversation attachment; exact density metadata is unavailable. Implementation CSS viewport target is 1320px at device scale factor 1.
+- Full-view comparison evidence: blocked because the revised implementation could not be captured in a browser for a combined comparison.
+- Focused-region comparison evidence: blocked. Intended focus regions are the floating navbar, top spacing, hidden state, hover-reveal handle, profile menu, and mobile collapse.
+- Fonts and typography: the existing Threadline system sans stack is retained with compact 8–13px navbar hierarchy; browser comparison is blocked.
+- Spacing and layout rhythm: the navbar is a 60px floating capsule with 14px top offset, 22px desktop gutters, a centered location chip, and 86px reserved content clearance; browser comparison is blocked.
+- Colors and visual tokens: translucent white glass, sky-blue accent, charcoal text, subtle blue-grey borders, and the shared sky/mint atmosphere are implemented; browser comparison is blocked.
+- Image quality and asset fidelity: no raster asset is required for this navigation. Phosphor supplies interface icons and the existing CSS atmosphere remains unchanged.
+- Copy and content: the duplicated `Workspace / Admin operations` text is removed. The bar now contains Threadline, the current section, live state, attention status, and account controls.
+- Primary interactions tested from code/runtime: authenticated `/admin` returned HTTP 200, rendered the shared navbar and all 18 cards, omitted the Admin sidebar and legacy context copy, and retained the skip link. Scroll hiding, top-edge hover/focus reveal, outside-click close, and Escape close are implemented but could not be browser-driven.
+- Console errors checked: blocked because no browser console was available.
+- Comparison history: implementation, formatting, lint, TypeScript, production compilation, static generation, and authenticated runtime checks pass. The first visual comparison remains blocked by the unavailable browser surface.
+- Follow-up: capture the default, hidden, reveal, profile-open, and mobile states when a browser surface is available; fix any P0/P1/P2 mismatch before certifying visual fidelity.
+
+final result: blocked
+
 **Shared footer, empty-value, and context-scope revision — 20 Jul 2026**
 
 - Source evidence: Automation phase screenshots and Manual SKU planning screenshot supplied in the conversation.
@@ -151,3 +171,56 @@ final result: blocked
 - Replaced the Manual action footer with a reusable 36px validation status bar.
 - Replaced Arial Narrow/serif-heavy Manual typography with Segoe UI Variable/system UI display and text stacks.
 - ESLint, production compilation, TypeScript, static generation, and HTTP runtime verification pass.
+
+**Admin control-center redesign — 23 Jul 2026**
+
+- Source visual truth: two images supplied in the conversation: the dark three-column award-card grid (1536 × 1128) and the atmospheric glass achievement cards (1760 × 1371).
+- Intended implementation viewport: 1440 × 1024 desktop, with responsive behavior defined for 1180px, 820px, and 620px breakpoints.
+- Implementation screenshot path: unavailable. Both the selected in-app browser and the runtime browser fallback reported that no browser surface was available.
+- State: Admin dashboard with all 18 backend reference sets; View modal and Edit modal states require browser capture.
+- Full-view comparison evidence: blocked because a browser-rendered implementation screenshot could not be captured for a combined comparison with the source references.
+- Focused-region comparison evidence: blocked. Intended regions are the atmospheric shell, hero metrics, glass card grid, View/Edit controls, and modal value rows.
+- Fonts and typography: existing Threadline Georgia display and system sans stacks are retained; admin body text is 12px or larger and display hierarchy uses 26–68px sizes. Visual comparison is blocked.
+- Spacing and layout rhythm: three-column desktop card grid, 18px gaps, 24px card padding, 44px interaction targets, and modal-specific density are implemented. Visual comparison is blocked.
+- Colors and visual tokens: generated atmospheric navy/sky/indigo raster background, restrained sky/violet/cyan/coral category accents, translucent glass surfaces, and semantic danger states are implemented. Visual comparison is blocked.
+- Image quality and asset fidelity: the generated 1672 × 941 background is stored as a 52KB WebP project asset. Phosphor supplies all UI icons; no placeholder, emoji, handwritten SVG, CSS illustration, or UI screenshot is used as an asset.
+- Copy and content: all 18 set labels and descriptions map directly to the whitelisted backend reference tables. Counts render from live server data.
+- Primary interactions verified without browser mutation: authenticated Admin route returned HTTP 200, all 18 reference APIs responded, 81 values were loaded, and the background asset returned HTTP 200. Browser click, keyboard focus, and modal interaction testing remain blocked.
+- Console errors checked: blocked because no browser console was available.
+- Comparison history: no visual iteration was possible; the first capture attempt was blocked by the unavailable browser surface.
+- Follow-up: capture the dashboard and both modal modes at the intended viewport, compare them together with the supplied references, and fix any P0/P1/P2 differences before certifying visual fidelity.
+
+final result: blocked
+
+**CSS-only atmosphere revision — 23 Jul 2026**
+
+- Source visual truth: the light sky-and-mint dashboard reference supplied in the conversation (1536 × 1128).
+- Replaced the generated raster background with `app/components/GlobalBackground.tsx`, mounted once in the root layout and rendered on every route.
+- Background implementation is CSS-only: layered sky-blue, mint, soft-white, and pale-blue gradients. No PNG, JPEG, WebP, AVIF, inline SVG, or remote image is referenced by the background.
+- Rethemed the shared navigation rail, top bar, operational headers, cards, Admin dashboard, View/Edit modal, inputs, statuses, focus rings, and authentication surface around charcoal `#252525`, sky `#6AAEFF`, and mint `#7FE5A8`.
+- Responsive and reduced-motion behavior remains in place.
+- Authenticated `/admin` and `/styles` routes returned HTTP 200; the public landing route returned HTTP 200. Each route contains the shared `global-atmosphere` component, and Admin still renders all 18 backend-driven cards.
+- ESLint, TypeScript, production compilation, and static generation pass.
+- Browser-rendered screenshot comparison and console inspection remain blocked because no browser surface is available in this session.
+
+final result: blocked
+
+**Global glass navbar revision - 23 Jul 2026**
+
+- Source visual truth: the Admin dashboard screenshot supplied in the conversation, showing the exposed skip link and previous full-width top strip. The requested target is an Apple-style floating glass navbar using the existing sky-and-mint system.
+- Implementation screenshot path: unavailable. Browser discovery returned `No browser is available`, so a browser-rendered capture could not be produced.
+- Intended viewport and state: 1320px desktop Admin dashboard, default authenticated state, page scrolled beyond 56px, and top-edge hover-reveal state.
+- Source pixels and density: conversation attachment; exact density metadata is unavailable. Implementation CSS viewport target is 1320px at device scale factor 1.
+- Full-view comparison evidence: blocked because the revised implementation could not be captured for a combined comparison.
+- Focused-region comparison evidence: blocked. Intended regions are the floating navbar, top spacing, hidden state, reveal handle, profile menu, and mobile collapse.
+- Fonts and typography: the existing Threadline system sans stack is retained with a compact 8-13px navbar hierarchy; browser comparison is blocked.
+- Spacing and layout rhythm: 60px floating capsule, 14px top offset, 22px desktop gutters, centered location chip, and 86px reserved content clearance; browser comparison is blocked.
+- Colors and visual tokens: translucent white glass, sky-blue accent, charcoal text, subtle blue-grey borders, and the shared sky/mint atmosphere are implemented; browser comparison is blocked.
+- Image quality and asset fidelity: no raster asset is required. Phosphor supplies interface icons and the existing CSS atmosphere remains unchanged.
+- Copy and content: duplicated `Workspace / Admin operations` text is removed. The bar contains Threadline, current section, live state, attention status, and account controls.
+- Primary interactions tested from code/runtime: authenticated `/admin` returned HTTP 200, rendered the shared navbar and all 18 cards, omitted the Admin sidebar and legacy context copy, and retained the skip link. Scroll hiding, top-edge hover/focus reveal, outside-click close, and Escape close are implemented but could not be browser-driven.
+- Console errors checked: blocked because no browser console was available.
+- Comparison history: formatting, lint, TypeScript, production compilation, static generation, and authenticated runtime checks pass. Visual comparison remains blocked by the unavailable browser surface.
+- Follow-up: capture default, hidden, reveal, profile-open, and mobile states when a browser surface is available, then fix any P0/P1/P2 mismatch before certifying visual fidelity.
+
+final result: blocked
