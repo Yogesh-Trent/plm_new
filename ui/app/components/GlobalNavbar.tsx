@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ROLE_LABELS, type Role } from "@/lib/roles";
 import { useAdminSearch } from "./AdminSearchContext";
@@ -21,6 +22,25 @@ type GlobalNavbarProps = {
   onOpenNavigation?: () => void;
 };
 
+const SECTION_TITLES: Array<[string, string]> = [
+  ["/styles", "Styles"],
+  ["/color-combos", "Colourways"],
+  ["/boms", "BOM library"],
+  ["/supplier-requests", "Supplier requests"],
+  ["/supplier-quotes", "Supplier quotes"],
+  ["/purchase-orders", "Purchase orders"],
+  ["/all/process", "Seasons"],
+  ["/all/workflow", "Workflow"],
+];
+
+function sectionTitle(pathname: string, role: Role) {
+  for (const [href, label] of SECTION_TITLES) {
+    if (pathname === href || pathname.startsWith(`${href}/`)) return label;
+  }
+  if (pathname === `/${role}`) return "Overview";
+  return "Overview";
+}
+
 export function GlobalNavbar({
   role,
   userName,
@@ -30,6 +50,7 @@ export function GlobalNavbar({
   const [profileOpen, setProfileOpen] = useState(false);
   const [pastNavbar, setPastNavbar] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const pathname = usePathname();
   const profileRef = useRef<HTMLDivElement>(null);
   const revealTimerRef = useRef<number | null>(null);
   const reduceMotion = useReducedMotion();
@@ -102,6 +123,7 @@ export function GlobalNavbar({
   const hidden = pastNavbar && !revealed && !profileOpen;
   const homeHref = role === "admin" ? "/admin" : `/${role}`;
   const accountInitial = userName.trim().slice(0, 1).toUpperCase() || "U";
+  const section = sectionTitle(pathname, role);
 
   return (
     <>
@@ -153,10 +175,17 @@ export function GlobalNavbar({
             </button>
           )}
 
-          <Link className="workspace-topbrand-v2" href={homeHref}>
-            <span>TL</span>
-            <strong>Threadline</strong>
-          </Link>
+          {role === "admin" ? (
+            <Link className="workspace-topbrand-v2" href={homeHref}>
+              <span>TL</span>
+              <strong>Threadline</strong>
+            </Link>
+          ) : (
+            <div className="workspace-context-v2">
+              <span>Workspace</span>
+              <strong>{section}</strong>
+            </div>
+          )}
         </div>
 
         <div className="workspace-top-actions-v2">

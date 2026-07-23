@@ -71,7 +71,7 @@ export async function RoleHome({ session }: { session: Session }) {
   );
   const attentionCount = roleWork.length + openPos.length;
   const currentSeason = activeSeasons[0] ?? seasons[0];
-  const recentStyles = styles.slice(0, 5);
+  const recentStyles = styles.slice(0, 8);
 
   const primaryAction =
     session.role === "all"
@@ -99,7 +99,7 @@ export async function RoleHome({ session }: { session: Session }) {
               {ROLE_FOCUS[session.role]} ·{" "}
               {currentSeason?.name ?? "Collection workspace"}
             </p>
-            <h1>Good day, {session.name.split(" ")[0]}.</h1>
+            <h1>Good day.</h1>
             <p className="workspace-hero-copy-v2">
               {attentionCount
                 ? `${attentionCount} ${attentionCount === 1 ? "record needs" : "records need"} a decision before the line can move forward.`
@@ -262,7 +262,12 @@ export async function RoleHome({ session }: { session: Session }) {
                   <WarningCircle size={18} />
                 </span>
                 <span>
-                  <strong>{roleWork.length} style assignments</strong>
+                  <strong>
+                    {roleWork.length}{" "}
+                    {roleWork.length === 1
+                      ? "style assignment"
+                      : "style assignments"}
+                  </strong>
                   <small>Review product ownership and next action</small>
                 </span>
                 <ArrowRight size={16} />
@@ -272,7 +277,10 @@ export async function RoleHome({ session }: { session: Session }) {
                   <Clock size={18} />
                 </span>
                 <span>
-                  <strong>{openPos.length} open purchase orders</strong>
+                  <strong>
+                    {openPos.length} open purchase{" "}
+                    {openPos.length === 1 ? "order" : "orders"}
+                  </strong>
                   <small>Check routing, capacity, and issue status</small>
                 </span>
                 <ArrowRight size={16} />
@@ -289,64 +297,6 @@ export async function RoleHome({ session }: { session: Session }) {
               </Link>
             </div>
           </aside>
-
-          <section
-            className="workspace-panel-v2 workspace-flow-v2"
-            aria-labelledby="flow-title"
-          >
-            <div className="workspace-panel-heading-v2">
-              <div>
-                <p className="workspace-kicker">Collection route</p>
-                <h2 id="flow-title">From brief to issued order</h2>
-              </div>
-            </div>
-            <ol>
-              {[
-                [
-                  "01",
-                  "Range setup",
-                  `${activeSeasons.length} active seasons`,
-                  activeSeasons.length > 0,
-                ],
-                [
-                  "02",
-                  "Product definition",
-                  `${styles.length} styles · ${combos.total} colourways`,
-                  styles.length > 0,
-                ],
-                [
-                  "03",
-                  "Materials & costing",
-                  `${boms.length} BOMs available`,
-                  boms.length > 0,
-                ],
-                [
-                  "04",
-                  "Order & approval",
-                  `${openPos.length} orders in progress`,
-                  openPos.length === 0 && pos.length > 0,
-                ],
-              ].map(([index, title, detail, complete], itemIndex) => (
-                <li
-                  key={String(index)}
-                  className={
-                    complete
-                      ? "is-complete"
-                      : itemIndex === 1
-                        ? "is-current"
-                        : ""
-                  }
-                >
-                  <span>{String(index)}</span>
-                  <div>
-                    <strong>{String(title)}</strong>
-                    <small>{String(detail)}</small>
-                  </div>
-                  {complete ? <CheckCircle size={19} weight="fill" /> : <i />}
-                </li>
-              ))}
-            </ol>
-          </section>
 
           <section
             className="workspace-panel-v2 workspace-activity-v2"
@@ -388,6 +338,64 @@ export async function RoleHome({ session }: { session: Session }) {
                 </span>
               </div>
             )}
+          </section>
+
+          <section
+            className="workspace-panel-v2 workspace-flow-v2"
+            aria-labelledby="flow-title"
+          >
+            <div className="workspace-panel-heading-v2">
+              <div>
+                <p className="workspace-kicker">Collection route</p>
+                <h2 id="flow-title">From brief to issued order</h2>
+              </div>
+            </div>
+            <ol>
+              {[
+                [
+                  "01",
+                  "Range setup",
+                  `${activeSeasons.length} active seasons`,
+                  activeSeasons.length > 0,
+                ],
+                [
+                  "02",
+                  "Product definition",
+                  `${styles.length} ${styles.length === 1 ? "style" : "styles"} · ${combos.total} ${combos.total === 1 ? "colourway" : "colourways"}`,
+                  styles.length > 0,
+                ],
+                [
+                  "03",
+                  "Materials & costing",
+                  `${boms.length} BOMs available`,
+                  boms.length > 0,
+                ],
+                [
+                  "04",
+                  "Order & approval",
+                  `${openPos.length} ${openPos.length === 1 ? "order" : "orders"} in progress`,
+                  openPos.length === 0 && pos.length > 0,
+                ],
+              ].map(([index, title, detail, complete], itemIndex) => (
+                <li
+                  key={String(index)}
+                  className={
+                    complete
+                      ? "is-complete"
+                      : itemIndex === 1
+                        ? "is-current"
+                        : ""
+                  }
+                >
+                  <span>{String(index)}</span>
+                  <div>
+                    <strong>{String(title)}</strong>
+                    <small>{String(detail)}</small>
+                  </div>
+                  {complete ? <CheckCircle size={19} weight="fill" /> : <i />}
+                </li>
+              ))}
+            </ol>
           </section>
         </div>
       </main>
