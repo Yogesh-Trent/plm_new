@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CheckCircle, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { CheckCircle, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { RecordHeader } from "@/app/components/RecordWorkspace";
 
 type Quote = {
   id: string;
@@ -174,25 +175,23 @@ export function SupplierQuoteDetail({
 
   return (
     <div className="styles-page">
-      <header className="styles-topbar">
-        <button className="process-back" onClick={() => router.back()} type="button">
-          <ArrowLeft size={16} /> Back
-        </button>
-        <div className="styles-title">
-          <p className="process-eyebrow">Supplier quote · {quote.quote_code} · {roleLabel}</p>
-          <h1>{header.supplier || "Supplier quote"}</h1>
-        </div>
-        {canApprove && (
-          <button
-            type="button"
-            className={approved ? "ghost-button" : "primary-button"}
-            style={{ marginLeft: "auto" }}
-            onClick={() => patchQuote({ state: approved ? "draft" : "approved" })}
-          >
-            <CheckCircle size={16} /> {approved ? "Un-approve" : "Approve quote"}
-          </button>
-        )}
-      </header>
+      <RecordHeader
+        backHref="/supplier-quotes"
+        backLabel="All quotes"
+        eyebrow={`Supplier quote · ${quote.quote_code ?? ""} · ${roleLabel}`}
+        title={header.supplier || "Supplier quote"}
+        actions={
+          canApprove ? (
+            <button
+              type="button"
+              className={approved ? "ghost-button" : "primary-button"}
+              onClick={() => patchQuote({ state: approved ? "draft" : "approved" })}
+            >
+              <CheckCircle size={16} /> {approved ? "Un-approve" : "Approve quote"}
+            </button>
+          ) : undefined
+        }
+      />
 
       {/* A <div>, not a <form>: the Material costs sub-form below would
           otherwise be an invalid nested form and break hydration. */}

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { RecordHeader } from "@/app/components/RecordWorkspace";
 
 type Bom = {
   id: string;
@@ -172,18 +173,17 @@ export function BomDetail({
 
   return (
     <div className="styles-page">
-      <header className="styles-topbar">
-        <Link href="/boms" className="process-back">
-          <ArrowLeft size={16} /> All BOMs
-        </Link>
-        <div className="styles-title">
-          <p className="process-eyebrow">BOM · {bom.code || "no code"}</p>
-          <h1>{header.name || "Untitled BOM"}</h1>
-        </div>
-        <button className="icon-action is-danger detail-delete" onClick={deleteBom} title="Delete BOM" aria-label="Delete BOM">
-          <Trash size={16} />
-        </button>
-      </header>
+      <RecordHeader
+        backHref="/boms"
+        backLabel="All BOMs"
+        eyebrow={`BOM · ${bom.code || "no code"}`}
+        title={header.name || "Untitled BOM"}
+        actions={
+          <button className="icon-action is-danger detail-delete" onClick={deleteBom} title="Delete BOM" aria-label="Delete BOM">
+            <Trash size={16} />
+          </button>
+        }
+      />
 
       <div className="styles-body">
         <section className="season-create">

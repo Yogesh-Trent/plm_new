@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CheckCircle, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { CheckCircle, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { RecordHeader } from "@/app/components/RecordWorkspace";
 import { Inspections } from "./Inspections";
 
 type Po = {
@@ -172,18 +172,17 @@ export function PoDetail({
 
   return (
     <div className="styles-page">
-      <header className="styles-topbar">
-        <Link href="/purchase-orders" className="process-back">
-          <ArrowLeft size={16} /> All POs
-        </Link>
-        <div className="styles-title">
-          <p className="process-eyebrow">Supplier PO · {po.state.toUpperCase()}{po.sap_po_number ? ` · ${po.sap_po_number}` : ""}</p>
-          <h1>{po.po_number}</h1>
-        </div>
-        <span className={["issued", "ready", "closed"].includes(po.state) ? "status-pill is-active" : "status-pill is-inactive"} style={{ marginLeft: "auto" }}>
-          <span className="status-dot" />{po.state}
-        </span>
-      </header>
+      <RecordHeader
+        backHref="/purchase-orders"
+        backLabel="All POs"
+        eyebrow={`Supplier PO · ${po.state.toUpperCase()}${po.sap_po_number ? ` · ${po.sap_po_number}` : ""}`}
+        title={po.po_number ?? "Purchase order"}
+        actions={
+          <span className={["issued", "ready", "closed"].includes(po.state) ? "status-pill is-active" : "status-pill is-inactive"}>
+            <span className="status-dot" />{po.state}
+          </span>
+        }
+      />
 
       <div className="styles-body detail-grid">
         <div className="detail-main">

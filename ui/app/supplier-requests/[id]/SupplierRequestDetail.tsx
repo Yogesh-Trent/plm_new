@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowSquareOut, Plus, Trash } from "@phosphor-icons/react";
+import { ArrowSquareOut, Plus, Trash } from "@phosphor-icons/react";
+import { RecordHeader } from "@/app/components/RecordWorkspace";
 
 type Request = {
   id: string;
@@ -128,15 +129,12 @@ export function SupplierRequestDetail({
 
   return (
     <div className="styles-page">
-      <header className="styles-topbar">
-        <Link href={`/styles/${styleId}`} className="process-back">
-          <ArrowLeft size={16} /> {styleName || "Style"}
-        </Link>
-        <div className="styles-title">
-          <p className="process-eyebrow">Supplier request · {request.request_code} · {styleCode}</p>
-          <h1>{request.vendor || "Supplier request"}</h1>
-        </div>
-      </header>
+      <RecordHeader
+        backHref={`/styles/${styleId}`}
+        backLabel={styleName || "Style"}
+        eyebrow={`Supplier request · ${request.request_code}${styleCode ? ` · ${styleCode}` : ""}`}
+        title={request.vendor || "Supplier request"}
+      />
 
       <div className="styles-body">
         <section className="season-create">

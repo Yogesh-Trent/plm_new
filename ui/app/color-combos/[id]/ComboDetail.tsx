@@ -3,7 +3,8 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, FloppyDisk, Image as ImageIcon, Trash } from "@phosphor-icons/react";
+import { FloppyDisk, Image as ImageIcon, Trash } from "@phosphor-icons/react";
+import { RecordHeader } from "@/app/components/RecordWorkspace";
 import { BomPicker } from "./BomPicker";
 
 type Combo = {
@@ -139,26 +140,23 @@ export function ComboDetail({
 
   return (
     <div className="styles-page">
-      <header className="styles-topbar">
-        <Link href="/color-combos" className="process-back">
-          <ArrowLeft size={16} /> All colour combos
-        </Link>
-        <div className="styles-title">
-          <p className="process-eyebrow">
-            Colour combo · {combo.combo_code || "no code"}
-          </p>
-          <h1>{form.name || "Untitled combo"}</h1>
-        </div>
-        <button
-          className="icon-action is-danger detail-delete"
-          onClick={remove}
-          disabled={deleting}
-          title="Delete combo"
-          aria-label="Delete combo"
-        >
-          <Trash size={16} />
-        </button>
-      </header>
+      <RecordHeader
+        backHref="/color-combos"
+        backLabel="All colour combos"
+        eyebrow={`Colour combo · ${combo.combo_code || "no code"}`}
+        title={form.name || "Untitled combo"}
+        actions={
+          <button
+            className="icon-action is-danger detail-delete"
+            onClick={remove}
+            disabled={deleting}
+            title="Delete combo"
+            aria-label="Delete combo"
+          >
+            <Trash size={16} />
+          </button>
+        }
+      />
 
       <form className="styles-body detail-grid" onSubmit={save}>
         <div className="detail-main">
