@@ -51,7 +51,7 @@ const COST_FIELDS: Array<{ key: string; label: string; suffix?: string }> = [
 const EMPTY_LINE = { placementName: "", mainMaterial: "", bomSection: "", product: "", qty: "", unitCost: "" };
 
 function money(v: string | null) {
-  return v == null || v === "" ? "—" : Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  return v == null || v === "" ? "—" : Number(v).toLocaleString("en-GB", { maximumFractionDigits: 2 });
 }
 
 export function SupplierQuoteDetail({
@@ -194,7 +194,9 @@ export function SupplierQuoteDetail({
         )}
       </header>
 
-      <form className="styles-body detail-grid" onSubmit={saveCost}>
+      {/* A <div>, not a <form>: the Material costs sub-form below would
+          otherwise be an invalid nested form and break hydration. */}
+      <div className="styles-body detail-grid">
         <div className="detail-main">
           <section className="season-create">
             <h2>Quote</h2>
@@ -240,7 +242,7 @@ export function SupplierQuoteDetail({
             {error && <p className="login-error" role="alert">{error}</p>}
             <div className="season-actions">
               {saved && <span className="detail-saved">Saved.</span>}
-              <button type="submit" className="primary-button" disabled={saving}>
+              <button type="button" className="primary-button" onClick={saveCost} disabled={saving}>
                 <FloppyDisk size={16} /> {saving ? "Saving…" : "Save cost sheet"}
               </button>
             </div>
@@ -321,7 +323,7 @@ export function SupplierQuoteDetail({
             </p>
           </section>
         </aside>
-      </form>
+      </div>
     </div>
   );
 }

@@ -99,9 +99,11 @@ function toLocalInput(iso: string | null) {
 function formatDate(iso: string | null) {
   if (!iso) return "—";
   const d = new Date(iso);
+  // Fixed locale so server and client render identically (avoids a hydration
+  // mismatch when their default locales differ).
   return Number.isNaN(d.getTime())
     ? "—"
-    : d.toLocaleString(undefined, {
+    : d.toLocaleString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -305,11 +307,10 @@ export function StyleDetail({
         }
       />
 
-      <form
-        className="styles-body detail-grid record-form-v3"
-        onSubmit={handleSubmit(save)}
-        noValidate
-      >
+      {/* Not a <form>: this record contains independent sub-forms (colour
+          combos, artwork, sourcing, sampling). Nested forms are invalid HTML
+          and break hydration, so saving is driven by the button below. */}
+      <div className="styles-body detail-grid record-form-v3">
         <div className="detail-main">
           <section className="season-create">
             <h2>Identity</h2>
@@ -614,8 +615,9 @@ export function StyleDetail({
               Back
             </Link>
             <button
-              type="submit"
+              type="button"
               className="primary-button"
+              onClick={handleSubmit(save)}
               disabled={isSubmitting}
             >
               <FloppyDisk size={16} />{" "}
@@ -623,7 +625,7 @@ export function StyleDetail({
             </button>
           </div>
         </aside>
-      </form>
+      </div>
     </div>
   );
 }

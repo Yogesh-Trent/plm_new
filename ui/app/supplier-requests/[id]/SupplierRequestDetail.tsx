@@ -29,7 +29,7 @@ type Quote = {
 const EMPTY = { supplier: "", countryOfOrigin: "India", currency: "INR", colors: "", sizes: "" };
 
 function money(v: string | null) {
-  return v == null || v === "" ? "—" : Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  return v == null || v === "" ? "—" : Number(v).toLocaleString("en-GB", { maximumFractionDigits: 2 });
 }
 
 export function SupplierRequestDetail({

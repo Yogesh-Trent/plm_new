@@ -1831,9 +1831,28 @@
 
 .operational-table-region-v2 {
   width: 100%;
+  max-height: min(70vh, 720px);
   overflow: auto;
   border: 1px solid var(--workspace-line);
   border-radius: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--workspace-line-strong) transparent;
+}
+.operational-table-region-v2::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.operational-table-region-v2::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--workspace-line-strong);
+  background-clip: padding-box;
+}
+/* Keep column headers visible while scrolling these dense record tables. */
+.operational-table-region-v2 .season-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .operational-table-region-v2 .season-table th:first-child,

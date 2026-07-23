@@ -4,7 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ImageSquare, PencilSimple, Plus, Trash } from "@phosphor-icons/react";
+import {
+  ImageSquare,
+  PencilSimple,
+  Plus,
+  Trash,
+  X,
+} from "@phosphor-icons/react";
 import {
   OperationalContent,
   OperationalHeader,
@@ -85,7 +91,7 @@ function formatDate(iso: string | null) {
   if (!iso) return "—";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString(undefined, {
+  return d.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -107,6 +113,7 @@ export function StylesWorkspace({
   const [submitting, setSubmitting] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -121,8 +128,12 @@ export function StylesWorkspace({
     ])
       .then(([s, o]) => {
         if (!active) return;
-        setStyles(s.styles ?? []);
+        const loaded = s.styles ?? [];
+        setStyles(loaded);
         setOptions(o.options ?? null);
+        // Open the create form only when the collection is empty, so the list
+        // stays front-and-center once styles exist.
+        if (loaded.length === 0) setShowForm(true);
       })
       .catch(() => {
         if (active)
@@ -272,7 +283,27 @@ export function StylesWorkspace({
 
       <OperationalContent>
         <section className="season-create">
-          <h2>New style</h2>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="!m-0">New style</h2>
+            <button
+              type="button"
+              onClick={() => setShowForm((value) => !value)}
+              aria-expanded={showForm}
+              className="inline-flex min-h-[38px] items-center gap-1.5 rounded-lg border border-[color:var(--workspace-line-strong)] bg-[color:var(--workspace-surface)] px-3.5 text-xs font-bold text-[color:var(--workspace-ink)] transition-colors hover:border-[color:var(--workspace-accent)] hover:text-[color:var(--workspace-accent-deep)]"
+            >
+              {showForm ? (
+                <>
+                  <X size={15} /> Close
+                </>
+              ) : (
+                <>
+                  <Plus size={15} /> Add a style
+                </>
+              )}
+            </button>
+          </div>
+          {showForm && (
+            <>
           {noActiveSeasons && (
             <p className="styles-hint">
               No active season yet. Ask an <strong>All</strong> user to create
@@ -429,6 +460,8 @@ export function StylesWorkspace({
               </button>
             </div>
           </form>
+            </>
+          )}
         </section>
 
         <OperationalPanel title="Styles" count={styles.length}>
