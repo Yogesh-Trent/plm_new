@@ -9,8 +9,14 @@ if (!process.env.DATABASE_URL) {
 }
 const sql = neon(process.env.DATABASE_URL);
 
-const ROLES = ["designer", "buyer", "technologist", "all"];
-const LABEL = { designer: "Designer", buyer: "Buyer", technologist: "Technologist", all: "All" };
+const ROLES = ["designer", "buyer", "technologist", "all", "admin"];
+const LABEL = {
+  designer: "Designer",
+  buyer: "Buyer",
+  technologist: "Technologist",
+  all: "All",
+  admin: "Admin",
+};
 
 const season = data.run?.season ?? "Zudio AW 26";
 const division = data.run?.division ?? "Menswear";

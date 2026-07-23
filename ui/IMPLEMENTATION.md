@@ -43,12 +43,22 @@ start.
 
 ---
 
-## Phase 1 — Backend + 4 role dashboards (shared core)
+## Phase 1 — Backend + 4 role dashboards (shared core) — ✅ DONE
 
 **Goal:** stand up the Neon database + secure server layer, add a role/login step,
 and make **each of the 4 roles land on its own copy of the current full
 dashboard** with its own DB-persisted workspace. All 4 dashboards are identical in
 behaviour for now — no work is divided, no role-specific extras yet.
+
+> **Status: shipped.** Neon schema migrated + seeded (4 role runs); server-only DB
+> layer (`lib/db.ts`, `lib/queries.ts`); API routes under `app/api/*`; signed
+> httpOnly session cookie (`lib/auth.ts`) + edge presence guard (`proxy.ts`);
+> role-picker login (`/`) → 4 role dashboards (`/designer`, `/buyer`,
+> `/technologist`, `/all`) all rendering the shared `app/Dashboard.tsx`, each with
+> its own DB-backed workspace + role badge + sign-out. Verified: `tsc`, ESLint,
+> `next build` all pass; no `DATABASE_URL`/`AUTH_SECRET` in any client bundle;
+> end-to-end auth + role-isolation smoke tests pass. Run `npm run db:reset` to
+> (re)create + seed the DB, then `npm run dev`.
 
 ### 1a. Backend foundation (Neon + Next.js API)
 
@@ -122,6 +132,80 @@ of the shared core without changing it.
 
 **Deliverable:** each role keeps the shared dashboard **plus** its own extra
 features; `All` is the superset.
+
+### Phase 2 build log (the real PLM process)
+
+A fifth role, **Admin**, was added to own reference data. Build order so far:
+
+1. **Step 1 — Seasons** (role All) ✅ — create/edit/delete seasons with department,
+   complete date, status (creator-controlled); style count derived live.
+2. **Step 2 — Style Create** (all roles) ✅ — create styles under an *active*
+   season from admin-managed lists (department, brand/division, product type, style
+   type, template). Auto style code; template autofill (empty until the template
+   builder exists). Season style-count ticks up per style.
+3. **Style detail page** (`/styles/[id]`) ✅ — full edit of every field incl. the
+   "fill later" production fields (pack, drop, supplier request, issue date, colour
+   combo text, vendors) + image.
+4. **Admin role + dashboard** (`/admin`) ✅ — CRUD for departments, brands, product
+   types, style types, templates. Server-enforced admin-only.
+
+#### Step 2b — Color Combos (a SEPARATE sub-process) — ✅ DONE
+
+A style has **many** colourways ("color combos"), each with its own child code
+(`…_A_05180` → `_001`, `_002`). Decision (pro-dev): **do NOT fold colour-combo
+fields into Style Create.** Model color combos as **first-class child rows of a
+style**, empty on create, added afterwards from the **style detail page**.
+
+- **`color_combos`** table: `style_id` (cascade), **`name` (required)**,
+  `colorway_selection`, `pantone_code` (manual), `color_palette`, auto
+  `combo_code` = `<style_code>_<NNN>` (per-style sequence), `status`, creator.
+- **Colorway Selection** and **Color Palette** become **admin-managed reference
+  lists** (like the others). Colorway Selection is intended to be **brand-scoped**
+  ("Pantone", "Swatch", … per brand): shipped first as global admin lists, with
+  **brand-scoping documented as the next refinement** (needs a brand column + admin
+  brand picker + combo-form filter) to avoid blocking the core flow.
+- **Add to BOM(s)** is a **stub button** on each combo now; it will attach the combo
+  to reusable BOM templates in the **future BOM/supplier phase** (Step 3+).
+- Also added: optional **MATKL Description 3** on styles, and a **Color combos**
+  count column in the styles list. **Copied From / duplicate-style** noted as a
+  follow-up (the `content_copy` action in your sample).
+
+**Where combos live in the UI:** a "Color combos" section on `/styles/[id]` — list
+of combos (name, code, colorway selection, pantone, palette, status) with add /
+edit / delete and the Add-to-BOM stub.
+
+**Extended (per your detailed spec):** combos gained more fields — **Colour Family,
+Generic, Pack, Drop, Month, Image** — plus two new surfaces:
+- **Global list** `/color-combos` — every combo across all styles with parent
+  context (Season, Brand/Division, Product Type, Style, Style Code), an **Active**
+  toggle, **search filter**, **20/page pagination**, and **Add new colour combo**
+  (pick a style + name → opens the combo detail).
+- **Per-combo detail** `/color-combos/[id]` — view read-only parent context and
+  **manually fill every combo field** (family, generic, pantone, pack, drop, month,
+  palette, colorway selection, image, status). Combo rows link here from both the
+  in-style section and the global list. `content_copy` (duplicate) still a follow-up.
+
+---
+
+> **Phases 5–7** (Spec/Quality, Sourcing/Quotes/Costing, SKUs/PO/Approvals) are
+> specced in detail from the Centric PLM screenshots in **[PHASES_5_7.md](PHASES_5_7.md)**.
+
+#### Phase 4 — Bill of Materials (the "Add to BOM(s)" target) — ✅ DONE
+
+A **BOM is a reusable bill of materials** (header + material lines). Because the
+same BOM is reused across styles/combos, a colour combo attaches to **many** BOMs
+(many-to-many via `bom_combos`) — that is what "Add to BOM(s)" now does for real.
+
+- **Tables:** `boms` (name, auto `code` `BOM-NNNNN`, description, status),
+  `bom_lines` (component, category, material, colour, detail, quantity, uom, seq),
+  `bom_combos` (join, unique per bom+combo).
+- **`/boms`** list (line & combo counts) + **`/boms/[id]`** detail — edit header,
+  full CRUD on material lines, and see which colour combos use the BOM.
+- **Add to BOM(s)** on the colour-combo detail page (`/color-combos/[id]`): a
+  checkbox picker of all BOMs (attach/detach) plus inline "create BOM". The
+  in-style combo action and global list link here. Collaborative across all roles.
+- **API:** `/api/boms` (+`/[id]`), `/api/boms/[id]/lines`, `/api/bom-lines/[id]`,
+  and `/api/color-combos/[id]/boms` (GET memberships, PUT to set them).
 
 ---
 

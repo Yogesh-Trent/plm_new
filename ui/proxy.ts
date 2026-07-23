@@ -8,7 +8,19 @@ import { SESSION_COOKIE } from "@/lib/auth-cookie";
 // components / route handlers (via lib/auth.getSession), not here — proxy runs in
 // a limited runtime and, per the Next docs, should not be the authz source.
 
-const PROTECTED = ["/designer", "/buyer", "/technologist", "/all"];
+const PROTECTED = [
+  "/designer",
+  "/buyer",
+  "/technologist",
+  "/all",
+  "/admin",
+  "/styles",
+  "/color-combos",
+  "/boms",
+  "/supplier-requests",
+  "/supplier-quotes",
+  "/purchase-orders",
+];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -28,5 +40,17 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/designer/:path*", "/buyer/:path*", "/technologist/:path*", "/all/:path*"],
+  matcher: [
+    "/designer/:path*",
+    "/buyer/:path*",
+    "/technologist/:path*",
+    "/all/:path*",
+    "/admin/:path*",
+    "/styles/:path*",
+    "/color-combos/:path*",
+    "/boms/:path*",
+    "/supplier-requests/:path*",
+    "/supplier-quotes/:path*",
+    "/purchase-orders/:path*",
+  ],
 };

@@ -3,7 +3,13 @@
 // route; today every role renders the same full workflow (role-specific extras
 // arrive in Phase 2). See IMPLEMENTATION.md.
 
-export const ROLES = ["designer", "buyer", "technologist", "all"] as const;
+export const ROLES = [
+  "designer",
+  "buyer",
+  "technologist",
+  "all",
+  "admin",
+] as const;
 
 export type Role = (typeof ROLES)[number];
 
@@ -16,6 +22,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   buyer: "Buyer",
   technologist: "Technologist",
   all: "All",
+  admin: "Admin",
 };
 
 export const ROLE_BLURBS: Record<Role, string> = {
@@ -23,6 +30,7 @@ export const ROLE_BLURBS: Record<Role, string> = {
   buyer: "Supplier commercial & PO planning workspace",
   technologist: "Size ratio & technical validation workspace",
   all: "Full workspace across every role",
+  admin: "Manage reference data: departments, brands, types, templates",
 };
 
 // Each role owns its own separate run/workspace (confirmed decision #4).

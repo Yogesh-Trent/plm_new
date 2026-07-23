@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Threadline PLM
 
-## Getting Started
+Threadline is a role-aware fashion product lifecycle workspace built with Next.js
+and Neon Postgres. It covers seasons, styles, colourways, BOMs, specification and
+quality data, supplier requests and quotes, sampling, purchase orders,
+inspections, approvals, and audit history.
 
-First, run the development server:
+The frontend is being rebuilt in three controlled phases so working business
+logic remains available throughout the migration.
+
+## Frontend rebuild
+
+| Phase | Focus                                                                               | Status      |
+| ----- | ----------------------------------------------------------------------------------- | ----------- |
+| 1     | Design system, role access, shared application shell, and role command centres      | Implemented |
+| 2     | Operational lists: seasons, styles, colourways, BOMs, sourcing, and purchase orders | Planned     |
+| 3     | Record detail workflows, admin, accessibility, performance, and legacy removal      | Planned     |
+
+The full roadmap, boundaries, and acceptance criteria live in
+[docs/frontend-rebuild/README.md](docs/frontend-rebuild/README.md).
+
+## Run locally
+
+1. Copy `.env.example` to `.env` and supply `DATABASE_URL` and `AUTH_SECRET`.
+2. Install dependencies with `npm install`.
+3. Prepare the database with `npm run db:reset`.
+4. Start the app with `npm run dev`.
+
+Useful checks:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architecture
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `app/` — pages, client workspaces, route handlers, and the Phase 1 shell
+- `app/components/` — shared frontend foundation introduced in Phase 1
+- `app/Dashboard.tsx` — legacy automation/manual workflow, retained at each
+  role’s `/workflow` route until Phase 3
+- `lib/` — server-only query, authentication, parsing, and validation modules
+- `db/schema.sql` — idempotent Postgres schema
+- `docs/frontend-rebuild/` — frontend migration plan and phase specifications
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Database credentials are used only in server-only modules. Role sessions are
+signed and stored in an HTTP-only cookie.
