@@ -311,7 +311,7 @@
 .workspace-shell-v2 {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 248px minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   background: var(--workspace-paper);
   color: var(--workspace-ink);
   font-family: var(--workspace-sans);
@@ -324,9 +324,16 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 248px;
   padding: 24px 18px 18px;
-  background: #152321;
+  background: rgba(21, 35, 33, 0.88);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
   color: #eef0eb;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  transition:
+    width 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .workspace-brand-v2 {
@@ -384,6 +391,10 @@
   font-weight: 600;
   text-decoration: none;
   transition:
+    width 250ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 250ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 250ms ease,
+    gap 250ms ease,
     background 160ms ease,
     color 160ms ease;
 }
@@ -1045,6 +1056,231 @@
 
 .workspace-scrim-v2 {
   display: none;
+}
+
+/* ── Sidebar collapse toggle ── */
+
+.workspace-rail-toggle-v2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(238, 240, 235, 0.38);
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.workspace-rail-toggle-v2:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(238, 240, 235, 0.72);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.workspace-rail-toggle-v2 svg {
+  flex: 0 0 auto;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workspace-rail-toggle-v2 span {
+  transition: opacity 200ms ease;
+}
+
+/* ── Collapsed sidebar (icon-only) ── */
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-v2 {
+  width: 68px;
+  padding: 20px 0 14px;
+  align-items: center;
+}
+
+/* Brand — hide text label */
+
+.workspace-shell-v2.is-rail-collapsed .workspace-brand-v2 {
+  padding: 0 0 18px;
+  justify-content: center;
+}
+
+.workspace-brand-v2 > span:nth-child(2) {
+  overflow: hidden;
+  max-width: 200px;
+  opacity: 1;
+  transition:
+    opacity 200ms ease 80ms,
+    max-width 300ms ease 80ms;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-brand-v2 > span:nth-child(2) {
+  max-width: 0;
+  opacity: 0;
+  transition:
+    opacity 200ms ease,
+    max-width 300ms ease;
+}
+
+/* Nav section title */
+
+.workspace-nav-v2 > p {
+  overflow: hidden;
+  max-height: 30px;
+  opacity: 1;
+  transition:
+    opacity 150ms ease 100ms,
+    max-height 250ms ease 100ms,
+    margin 250ms ease 100ms,
+    padding 250ms ease 100ms;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 > p {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  transition:
+    opacity 150ms ease,
+    max-height 250ms ease,
+    margin 250ms ease,
+    padding 250ms ease;
+}
+
+/* Nav items — collapse to icon-only circles */
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 27px;
+  padding: 0;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a {
+  padding: 0 !important;
+  min-height: 42px;
+  width: 42px;
+  margin: 0;
+  border-radius: 10px;
+  gap: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-nav-v2 a span {
+  overflow: hidden;
+  max-width: 120px;
+  opacity: 1;
+  transition:
+    opacity 150ms ease 100ms,
+    max-width 200ms ease 100ms;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a span {
+  max-width: 0;
+  opacity: 0;
+  transition:
+    opacity 150ms ease,
+    max-width 200ms ease;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a::before {
+  left: -10px;
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Rail note */
+
+.workspace-rail-note-v2 {
+  transition:
+    grid-template-columns 300ms ease,
+    padding 300ms ease,
+    gap 300ms ease;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-note-v2 {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding: 12px 4px;
+  text-align: center;
+}
+
+.workspace-rail-note-v2 > div {
+  overflow: hidden;
+  max-width: 200px;
+  opacity: 1;
+  transition:
+    opacity 180ms ease 80ms,
+    max-width 250ms ease 80ms;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-note-v2 > div {
+  max-width: 0;
+  opacity: 0;
+  transition:
+    opacity 180ms ease,
+    max-width 250ms ease;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-note-index {
+  font-size: 10px;
+}
+
+/* Toggle button */
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-toggle-v2 {
+  padding: 8px;
+  aspect-ratio: 1;
+  width: 36px;
+  margin: 8px auto 0;
+  border-radius: 8px;
+  gap: 0;
+}
+
+.workspace-rail-toggle-v2 span {
+  overflow: hidden;
+  max-width: 80px;
+  opacity: 1;
+  transition:
+    opacity 150ms ease 100ms,
+    max-width 200ms ease 100ms;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-toggle-v2 span {
+  max-width: 0;
+  opacity: 0;
+  transition:
+    opacity 150ms ease,
+    max-width 200ms ease;
+}
+
+.workspace-rail-toggle-v2 svg {
+  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-toggle-v2 svg {
+  transform: rotate(180deg);
+}
+
+/* Adjust topbar left offset when sidebar is collapsed */
+
+.workspace-shell-v2.is-rail-collapsed .workspace-topbar-v2 {
+  left: 90px;
 }
 
 /* Route-level loading and recoverable failure states */
@@ -2241,6 +2477,10 @@ body {
   backdrop-filter: blur(24px) saturate(125%);
 }
 
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-v2 {
+  background: rgba(5, 14, 34, 0.86);
+}
+
 .workspace-stage-v2 {
   background: transparent;
 }
@@ -3226,11 +3466,15 @@ body {
   -webkit-backdrop-filter: blur(30px) saturate(175%);
   transform-origin: top center;
   will-change: transform, opacity;
-  transition: none;
+  transition: left 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .workspace-shell-v2.is-admin-shell .workspace-topbar-v2 {
   left: 22px;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-topbar-v2 {
+  left: 90px;
 }
 
 .global-navbar-reveal {
@@ -3528,6 +3772,44 @@ body {
 
 .workspace-rail-note-v2 strong {
   color: #252525;
+}
+
+/* Light glass — collapse toggle */
+
+.workspace-rail-toggle-v2 {
+  border-color: rgba(56, 106, 145, 0.1);
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(37, 37, 37, 0.4);
+}
+
+.workspace-rail-toggle-v2:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: rgba(37, 37, 37, 0.72);
+  border-color: rgba(56, 106, 145, 0.18);
+}
+
+/* Light glass — collapsed sidebar */
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-v2 {
+  background: rgba(248, 253, 255, 0.72);
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a {
+  color: rgba(37, 37, 37, 0.68);
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: #252525;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 a.is-active {
+  background: rgba(106, 174, 255, 0.22);
+  color: #1e5f9c;
+}
+
+.workspace-shell-v2.is-rail-collapsed .workspace-rail-note-index {
+  color: #348de4;
 }
 
 .workspace-stage-v2 {
@@ -3992,5 +4274,126 @@ body {
 @media (max-width: 620px) {
   .record-page-v3 .detail-main .season-fields {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Navbar record command bar — a detail page publishes its breadcrumb, status
+   and primary action into the glass navbar (see RecordHeaderContext). */
+.navbar-record-v2 {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.navbar-crumbs-v2 {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.navbar-crumbs-v2 a {
+  color: rgba(37, 37, 37, 0.6);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.navbar-crumbs-v2 a:hover {
+  color: #1f6eaf;
+}
+.navbar-crumbs-v2 > svg {
+  color: rgba(37, 37, 37, 0.3);
+}
+.navbar-record-title-v2 {
+  min-width: 0;
+  overflow: hidden;
+  color: #252525;
+  font-size: 14px;
+  font-weight: 720;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.navbar-record-status-v2 {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border: 1px solid rgba(66, 117, 157, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  color: rgba(37, 37, 37, 0.62);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  text-transform: capitalize;
+}
+.navbar-record-status-v2.tone-active {
+  border-color: rgba(61, 168, 115, 0.28);
+  background: rgba(127, 229, 168, 0.2);
+  color: #26794e;
+}
+.navbar-record-status-v2.tone-inactive {
+  border-color: rgba(178, 58, 77, 0.2);
+  background: rgba(255, 223, 227, 0.55);
+  color: #922e40;
+}
+.navbar-record-action-v2 {
+  flex: 0 0 auto;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px;
+  border: 1px solid rgba(74, 139, 193, 0.3);
+  border-radius: 11px;
+  background: #4d9ff2;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.navbar-record-action-v2:hover:not(:disabled) {
+  background: #267acb;
+}
+.navbar-record-action-v2:disabled {
+  opacity: 0.55;
+}
+.navbar-record-action-v2.is-ghost {
+  border-color: rgba(66, 117, 157, 0.22);
+  background: rgba(255, 255, 255, 0.5);
+  color: #1f6eaf;
+}
+.navbar-record-delete-v2 {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(178, 58, 77, 0.2);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.4);
+  color: #b23a4d;
+}
+.navbar-record-delete-v2:hover:not(:disabled) {
+  background: rgba(255, 223, 227, 0.6);
+}
+.navbar-record-action-v2:focus-visible,
+.navbar-record-delete-v2:focus-visible,
+.navbar-crumbs-v2 a:focus-visible {
+  outline: 2px solid #267acb;
+  outline-offset: 2px;
+}
+@media (max-width: 860px) {
+  .navbar-crumbs-v2 {
+    display: none;
+  }
+}
+@media (max-width: 620px) {
+  .navbar-record-title-v2 {
+    max-width: 38vw;
+  }
+  .navbar-record-status-v2 {
+    display: none;
   }
 }

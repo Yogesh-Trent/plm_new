@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FloppyDisk, Image as ImageIcon, Trash } from "@phosphor-icons/react";
+import { Image as ImageIcon } from "@phosphor-icons/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ConfirmAction } from "@/app/components/ConfirmAction";
-import { FieldError, RecordHeader } from "@/app/components/RecordWorkspace";
+import { FieldError } from "@/app/components/RecordWorkspace";
+import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 import { ColorCombos } from "./ColorCombos";
 import { SpecQuality } from "./SpecQuality";
 import { StyleAssign } from "./StyleAssign";
@@ -115,11 +114,10 @@ function formatDate(iso: string | null) {
 export function StyleDetail({
   style,
   options,
-  roleLabel,
 }: {
   style: Style;
   options: Options;
-  roleLabel: string;
+  roleLabel?: string;
 }) {
   const router = useRouter();
   const initialFormValues: StyleFormValues = {
@@ -278,35 +276,32 @@ export function StyleDetail({
     }
   };
 
+  useSetRecordHeader({
+    crumbs: [{ label: "Styles", href: "/styles" }],
+    title: form.styleName || "Untitled style",
+    status: {
+      label: form.status === "active" ? "Active" : "Inactive",
+      tone: form.status === "active" ? "active" : "inactive",
+    },
+    action: {
+      label: "Save changes",
+      icon: "save",
+      onClick: () => void handleSubmit(save)(),
+      disabled: isSubmitting,
+      busy: isSubmitting,
+    },
+    onDelete: {
+      onConfirm: remove,
+      title: `Delete ${form.styleName || "this style"}?`,
+      description:
+        "This permanently removes the style and may affect linked colourways, BOMs, and sourcing records.",
+      confirmLabel: "Delete style",
+      disabled: deleting,
+    },
+  });
+
   return (
     <div className="record-page-v3">
-      <RecordHeader
-        backHref="/styles"
-        backLabel="All styles"
-        eyebrow={`Style record · ${code || "code pending"}`}
-        title={form.styleName || "Untitled style"}
-        meta={`${roleLabel} workspace · ${isDirty || imageDirty ? "Unsaved changes" : "All changes saved"}`}
-        actions={
-          <ConfirmAction
-            title={`Delete ${form.styleName || "this style"}?`}
-            description="This permanently removes the style and may affect linked colourways, BOMs, and sourcing records."
-            confirmLabel="Delete style"
-            destructive
-            onConfirm={remove}
-            trigger={
-              <button
-                className="icon-action is-danger"
-                disabled={deleting}
-                title="Delete style"
-                aria-label="Delete style"
-              >
-                <Trash size={16} />
-              </button>
-            }
-          />
-        }
-      />
-
       {/* Not a <form>: this record contains independent sub-forms (colour
           combos, artwork, sourcing, sampling). Nested forms are invalid HTML
           and break hydration, so saving is driven by the button below. */}
@@ -609,21 +604,6 @@ export function StyleDetail({
               All changes saved.
             </p>
           )}
-
-          <div className="detail-save-bar">
-            <Link href="/styles" className="ghost-button">
-              Back
-            </Link>
-            <button
-              type="button"
-              className="primary-button"
-              onClick={handleSubmit(save)}
-              disabled={isSubmitting}
-            >
-              <FloppyDisk size={16} />{" "}
-              {isSubmitting ? "Saving…" : "Save changes"}
-            </button>
-          </div>
         </aside>
       </div>
     </div>

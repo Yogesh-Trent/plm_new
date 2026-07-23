@@ -3,8 +3,8 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FloppyDisk, Image as ImageIcon, Trash } from "@phosphor-icons/react";
-import { RecordHeader } from "@/app/components/RecordWorkspace";
+import { Image as ImageIcon } from "@phosphor-icons/react";
+import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 import { BomPicker } from "./BomPicker";
 
 type Combo = {
@@ -85,8 +85,8 @@ export function ComboDetail({
     reader.readAsDataURL(file);
   };
 
-  const save = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const save = async (event?: React.FormEvent) => {
+    event?.preventDefault();
     if (!form.name.trim()) {
       setError("Colour combo name is required.");
       return;
@@ -138,26 +138,32 @@ export function ComboDetail({
     }
   };
 
+  useSetRecordHeader({
+    crumbs: [{ label: "Colourways", href: "/color-combos" }],
+    title: form.name || "Untitled combo",
+    status: {
+      label: form.status === "active" ? "Active" : "Inactive",
+      tone: form.status === "active" ? "active" : "inactive",
+    },
+    action: {
+      label: "Save changes",
+      icon: "save",
+      onClick: () => void save(),
+      disabled: saving,
+      busy: saving,
+    },
+    onDelete: {
+      onConfirm: remove,
+      title: `Delete ${form.name || "this combo"}?`,
+      description:
+        "This permanently removes the colourway and its links to BOMs and orders.",
+      confirmLabel: "Delete combo",
+      disabled: deleting,
+    },
+  });
+
   return (
     <div className="styles-page">
-      <RecordHeader
-        backHref="/color-combos"
-        backLabel="All colour combos"
-        eyebrow={`Colour combo · ${combo.combo_code || "no code"}`}
-        title={form.name || "Untitled combo"}
-        actions={
-          <button
-            className="icon-action is-danger detail-delete"
-            onClick={remove}
-            disabled={deleting}
-            title="Delete combo"
-            aria-label="Delete combo"
-          >
-            <Trash size={16} />
-          </button>
-        }
-      />
-
       <form className="styles-body detail-grid" onSubmit={save}>
         <div className="detail-main">
           <section className="season-create">
@@ -302,13 +308,6 @@ export function ComboDetail({
 
           {error && <p className="login-error" role="alert">{error}</p>}
           {saved && !error && <p className="detail-saved" role="status">Saved.</p>}
-
-          <div className="detail-save-bar">
-            <Link href="/color-combos" className="ghost-button">Back</Link>
-            <button type="submit" className="primary-button" disabled={saving}>
-              <FloppyDisk size={16} /> {saving ? "Saving…" : "Save changes"}
-            </button>
-          </div>
         </aside>
       </form>
     </div>

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
-import { RecordHeader } from "@/app/components/RecordWorkspace";
+import { CheckCircle, Plus, Trash } from "@phosphor-icons/react";
+import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 import { Inspections } from "./Inspections";
 
 type Po = {
@@ -82,8 +82,8 @@ export function PoDetail({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const saveProps = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const saveProps = async (event?: React.FormEvent) => {
+    event?.preventDefault();
     setSaving(true);
     setError("");
     try {
@@ -170,20 +170,26 @@ export function PoDetail({
     { key: "merchandiser_acceptance", label: "Merchandiser acceptance", done: po.merchandiser_acceptance, prereq: po.send_to_merchandiser },
   ];
 
+  useSetRecordHeader({
+    crumbs: [{ label: "Purchase orders", href: "/purchase-orders" }],
+    title: po.po_number ?? "Purchase order",
+    status: {
+      label: po.state,
+      tone: ["issued", "ready", "closed"].includes(po.state)
+        ? "active"
+        : "neutral",
+    },
+    action: {
+      label: "Save properties",
+      icon: "save",
+      onClick: () => void saveProps(),
+      disabled: saving,
+      busy: saving,
+    },
+  });
+
   return (
     <div className="styles-page">
-      <RecordHeader
-        backHref="/purchase-orders"
-        backLabel="All POs"
-        eyebrow={`Supplier PO · ${po.state.toUpperCase()}${po.sap_po_number ? ` · ${po.sap_po_number}` : ""}`}
-        title={po.po_number ?? "Purchase order"}
-        actions={
-          <span className={["issued", "ready", "closed"].includes(po.state) ? "status-pill is-active" : "status-pill is-inactive"}>
-            <span className="status-dot" />{po.state}
-          </span>
-        }
-      />
-
       <div className="styles-body detail-grid">
         <div className="detail-main">
           <form className="season-create" onSubmit={saveProps}>
@@ -227,10 +233,11 @@ export function PoDetail({
               </label>
             </div>
             {error && <p className="login-error" role="alert">{error}</p>}
-            <div className="season-actions">
-              {saved && <span className="detail-saved">Saved.</span>}
-              <button type="submit" className="primary-button" disabled={saving}><FloppyDisk size={16} /> {saving ? "Saving…" : "Save properties"}</button>
-            </div>
+            {saved && (
+              <div className="season-actions">
+                <span className="detail-saved">Saved.</span>
+              </div>
+            )}
           </form>
 
           <section className="season-create">

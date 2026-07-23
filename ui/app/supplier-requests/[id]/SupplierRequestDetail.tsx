@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowSquareOut, Plus, Trash } from "@phosphor-icons/react";
-import { RecordHeader } from "@/app/components/RecordWorkspace";
+import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 
 type Request = {
   id: string;
@@ -37,7 +37,6 @@ export function SupplierRequestDetail({
   request,
   initialQuotes,
   styleName,
-  styleCode,
   styleId,
 }: {
   request: Request;
@@ -127,14 +126,17 @@ export function SupplierRequestDetail({
     }
   };
 
+  useSetRecordHeader({
+    crumbs: [{ label: styleName || "Style", href: `/styles/${styleId}` }],
+    title: request.vendor || "Supplier request",
+    status: {
+      label: state,
+      tone: state === "draft" ? "neutral" : "active",
+    },
+  });
+
   return (
     <div className="styles-page">
-      <RecordHeader
-        backHref={`/styles/${styleId}`}
-        backLabel={styleName || "Style"}
-        eyebrow={`Supplier request · ${request.request_code}${styleCode ? ` · ${styleCode}` : ""}`}
-        title={request.vendor || "Supplier request"}
-      />
 
       <div className="styles-body">
         <section className="season-create">

@@ -3,9 +3,13 @@
 import {
   Bell,
   CaretDown,
+  CaretRight,
+  CheckCircle,
+  FloppyDisk,
   List,
   MagnifyingGlass,
   SignOut,
+  Trash,
   X,
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
@@ -13,7 +17,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ROLE_LABELS, type Role } from "@/lib/roles";
+import { ConfirmAction } from "./ConfirmAction";
 import { useAdminSearch } from "./AdminSearchContext";
+import { useRecordHeader } from "./RecordHeaderContext";
 
 type GlobalNavbarProps = {
   role: Role;
@@ -124,6 +130,9 @@ export function GlobalNavbar({
   const homeHref = role === "admin" ? "/admin" : `/${role}`;
   const accountInitial = userName.trim().slice(0, 1).toUpperCase() || "U";
   const section = sectionTitle(pathname, role);
+  const recordHeader = useRecordHeader();
+  // On a record detail page the navbar becomes the record's command bar.
+  const record = role === "admin" ? null : recordHeader;
 
   return (
     <>
@@ -180,6 +189,25 @@ export function GlobalNavbar({
               <span>TL</span>
               <strong>Threadline</strong>
             </Link>
+          ) : record ? (
+            <nav className="navbar-record-v2" aria-label="Record">
+              <span className="navbar-crumbs-v2">
+                {record.crumbs.map((crumb) => (
+                  <Link key={crumb.href} href={crumb.href}>
+                    {crumb.label}
+                  </Link>
+                ))}
+                <CaretRight size={12} weight="bold" aria-hidden="true" />
+              </span>
+              <strong className="navbar-record-title-v2">{record.title}</strong>
+              {record.status && (
+                <span
+                  className={`navbar-record-status-v2 tone-${record.status.tone}`}
+                >
+                  {record.status.label}
+                </span>
+              )}
+            </nav>
           ) : (
             <div className="workspace-context-v2">
               <span>Workspace</span>
@@ -189,6 +217,41 @@ export function GlobalNavbar({
         </div>
 
         <div className="workspace-top-actions-v2">
+          {record?.action && (
+            <button
+              type="button"
+              className={`navbar-record-action-v2${record.action.ghost ? " is-ghost" : ""}`}
+              onClick={record.action.onClick}
+              disabled={record.action.disabled || record.action.busy}
+            >
+              {record.action.icon === "save" && <FloppyDisk size={16} />}
+              {(record.action.icon === "issue" ||
+                record.action.icon === "approve") && (
+                <CheckCircle size={16} weight="fill" />
+              )}
+              {record.action.busy ? "Working…" : record.action.label}
+            </button>
+          )}
+          {record?.onDelete && (
+            <ConfirmAction
+              title={record.onDelete.title}
+              description={record.onDelete.description}
+              confirmLabel={record.onDelete.confirmLabel}
+              destructive
+              onConfirm={record.onDelete.onConfirm}
+              trigger={
+                <button
+                  type="button"
+                  className="navbar-record-delete-v2"
+                  disabled={record.onDelete.disabled}
+                  aria-label={record.onDelete.confirmLabel}
+                >
+                  <Trash size={17} />
+                </button>
+              }
+            />
+          )}
+
           <span className="workspace-live-v2">
             <i /> Live
           </span>

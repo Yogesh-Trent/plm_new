@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
-import { RecordHeader } from "@/app/components/RecordWorkspace";
+import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 
 type Bom = {
   id: string;
@@ -71,8 +71,8 @@ export function BomDetail({
   const setL = (patch: Partial<typeof EMPTY_LINE>) =>
     setLine((current) => ({ ...current, ...patch }));
 
-  const saveHeader = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const saveHeader = async (event?: React.FormEvent) => {
+    event?.preventDefault();
     if (!header.name.trim()) {
       setError("BOM name is required.");
       return;
@@ -166,25 +166,34 @@ export function BomDetail({
   };
 
   const deleteBom = async () => {
-    if (!window.confirm(`Delete BOM "${bom.name}" and all its lines?`)) return;
     const response = await fetch(`/api/boms/${bom.id}`, { method: "DELETE" });
     if (response.ok) router.push("/boms");
   };
 
+  useSetRecordHeader({
+    crumbs: [{ label: "BOM library", href: "/boms" }],
+    title: header.name || "Untitled BOM",
+    status: {
+      label: header.status === "active" ? "Active" : "Inactive",
+      tone: header.status === "active" ? "active" : "inactive",
+    },
+    action: {
+      label: "Save details",
+      icon: "save",
+      onClick: () => void saveHeader(),
+      disabled: savingHeader,
+      busy: savingHeader,
+    },
+    onDelete: {
+      onConfirm: deleteBom,
+      title: `Delete BOM "${bom.name}"?`,
+      description: "This permanently removes the BOM and all of its lines.",
+      confirmLabel: "Delete BOM",
+    },
+  });
+
   return (
     <div className="styles-page">
-      <RecordHeader
-        backHref="/boms"
-        backLabel="All BOMs"
-        eyebrow={`BOM · ${bom.code || "no code"}`}
-        title={header.name || "Untitled BOM"}
-        actions={
-          <button className="icon-action is-danger detail-delete" onClick={deleteBom} title="Delete BOM" aria-label="Delete BOM">
-            <Trash size={16} />
-          </button>
-        }
-      />
-
       <div className="styles-body">
         <section className="season-create">
           <h2>BOM details</h2>
@@ -206,12 +215,11 @@ export function BomDetail({
                 </select>
               </label>
             </div>
-            <div className="season-actions">
-              {headerSaved && <span className="detail-saved">Saved.</span>}
-              <button type="submit" className="primary-button" disabled={savingHeader}>
-                <FloppyDisk size={16} /> {savingHeader ? "Saving…" : "Save details"}
-              </button>
-            </div>
+            {headerSaved && (
+              <div className="season-actions">
+                <span className="detail-saved">Saved.</span>
+              </div>
+            )}
           </form>
         </section>
 

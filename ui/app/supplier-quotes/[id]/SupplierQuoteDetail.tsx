@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
-import { RecordHeader } from "@/app/components/RecordWorkspace";
+import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 
 type Quote = {
   id: string;
@@ -60,7 +60,6 @@ export function SupplierQuoteDetail({
   initialLines,
   boms,
   canApprove,
-  roleLabel,
 }: {
   quote: Quote;
   initialLines: Line[];
@@ -173,25 +172,26 @@ export function SupplierQuoteDetail({
 
   const approved = summary.state === "approved";
 
+  useSetRecordHeader({
+    crumbs: [{ label: "Supplier quotes", href: "/supplier-quotes" }],
+    title: header.supplier || "Supplier quote",
+    status: {
+      label: summary.state,
+      tone: approved ? "active" : "neutral",
+    },
+    action: canApprove
+      ? {
+          label: approved ? "Un-approve" : "Approve quote",
+          icon: "approve",
+          ghost: approved,
+          onClick: () =>
+            patchQuote({ state: approved ? "draft" : "approved" }),
+        }
+      : undefined,
+  });
+
   return (
     <div className="styles-page">
-      <RecordHeader
-        backHref="/supplier-quotes"
-        backLabel="All quotes"
-        eyebrow={`Supplier quote · ${quote.quote_code ?? ""} · ${roleLabel}`}
-        title={header.supplier || "Supplier quote"}
-        actions={
-          canApprove ? (
-            <button
-              type="button"
-              className={approved ? "ghost-button" : "primary-button"}
-              onClick={() => patchQuote({ state: approved ? "draft" : "approved" })}
-            >
-              <CheckCircle size={16} /> {approved ? "Un-approve" : "Approve quote"}
-            </button>
-          ) : undefined
-        }
-      />
 
       {/* A <div>, not a <form>: the Material costs sub-form below would
           otherwise be an invalid nested form and break hydration. */}

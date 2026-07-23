@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CaretDoubleLeft,
   Handshake,
   House,
   List,
@@ -13,9 +14,10 @@ import {
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Role } from "@/lib/roles";
 import { AdminSearchProvider } from "./AdminSearchContext";
+import { RecordHeaderProvider } from "./RecordHeaderContext";
 import { GlobalNavbar } from "./GlobalNavbar";
 
 type WorkspaceShellProps = {
@@ -33,6 +35,28 @@ export function WorkspaceShell({
 }: WorkspaceShellProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  // Restore the persisted collapsed preference on the client.
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCollapsed(localStorage.getItem("threadline-rail-collapsed") === "1");
+    } catch {
+      /* localStorage unavailable — keep the default */
+    }
+  }, []);
+
+  const toggleCollapsed = () =>
+    setCollapsed((value) => {
+      const next = !value;
+      try {
+        localStorage.setItem("threadline-rail-collapsed", next ? "1" : "0");
+      } catch {
+        /* ignore persistence failures */
+      }
+      return next;
+    });
 
   const nav = [
     { href: `/${role}`, label: "Overview", icon: House },
@@ -53,16 +77,19 @@ export function WorkspaceShell({
 
   return (
     <AdminSearchProvider>
+      <RecordHeaderProvider>
       <div
-        className={`workspace-shell-v2${role === "admin" ? " is-admin-shell" : ""}`}
+        className={`workspace-shell-v2${role === "admin" ? " is-admin-shell" : ""}${
+          role !== "admin" && collapsed ? " is-rail-collapsed" : ""
+        }`}
       >
         {role !== "admin" && (
           <aside className={`workspace-rail-v2${mobileOpen ? " is-open" : ""}`}>
             <div className="workspace-brand-v2">
-              <span className="workspace-brand-mark-v2">TL</span>
+              <span className="workspace-brand-mark-v2">PLM</span>
               <span>
-                <strong>Threadline</strong>
-                <small>Product lifecycle</small>
+                <strong>PLM</strong>
+                <small>Trent Ltd</small>
               </span>
               <button
                 className="workspace-mobile-close"
@@ -86,6 +113,7 @@ export function WorkspaceShell({
                     href={href}
                     className={active ? "is-active" : ""}
                     aria-current={active ? "page" : undefined}
+                    title={label}
                     onClick={() => setMobileOpen(false)}
                   >
                     <Icon size={19} weight={active ? "fill" : "regular"} />
@@ -106,6 +134,17 @@ export function WorkspaceShell({
                 </p>
               </div>
             </div>
+
+            <button
+              type="button"
+              className="workspace-rail-toggle-v2"
+              onClick={toggleCollapsed}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <CaretDoubleLeft size={15} weight="bold" />
+              <span>Collapse</span>
+            </button>
           </aside>
         )}
 
@@ -128,6 +167,7 @@ export function WorkspaceShell({
           {children}
         </div>
       </div>
+      </RecordHeaderProvider>
     </AdminSearchProvider>
   );
 }
