@@ -36,6 +36,7 @@ import {
 } from "@phosphor-icons/react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import Link from "next/link";
+import { ThemeToggle } from "./components/ThemeToggle";
 import data from "./data/prototype.json";
 import type { Role } from "@/lib/roles";
 import { ROLE_LABELS } from "@/lib/roles";
@@ -491,6 +492,7 @@ function Header({
             <SidebarSimple size={21} />
           </motion.span>
         </button>
+        <ThemeToggle variant="compact" />
         <div
           className="dashboard-switch"
           role="group"

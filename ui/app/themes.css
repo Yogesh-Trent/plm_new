@@ -109,3 +109,17 @@
 .theme-apple .dashboard-switch button.selected {
   background: #0071e3;
 }
+
+/* ---------------------------------------------------------------------------
+   Theme toggle — Apple variant: pill shape, blue selected, soft-shadow row.
+   --------------------------------------------------------------------------- */
+.theme-apple .theme-switch {
+  border-radius: 980px;
+}
+.theme-apple .theme-switch button.selected {
+  background: #0071e3;
+}
+.theme-apple .theme-switch-row {
+  box-shadow: var(--shadow-card);
+  border-color: transparent;
+}

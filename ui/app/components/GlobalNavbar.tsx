@@ -18,6 +18,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ROLE_LABELS, type Role } from "@/lib/roles";
 import { ConfirmAction } from "./ConfirmAction";
+import { ThemeToggle } from "./ThemeToggle";
 import { useAdminSearch } from "./AdminSearchContext";
 import { useRecordHeader } from "./RecordHeaderContext";
 
@@ -251,6 +252,8 @@ export function GlobalNavbar({
               }
             />
           )}
+
+          <ThemeToggle variant="compact" />
 
           <span className="workspace-live-v2">
             <i /> Live

@@ -38,6 +38,7 @@ import { toast } from "@/app/components/toast";
 import { z } from "zod";
 import { ConfirmAction } from "@/app/components/ConfirmAction";
 import { useAdminSearch } from "@/app/components/AdminSearchContext";
+import { ThemeToggle } from "@/app/components/ThemeToggle";
 import { FieldError } from "@/app/components/RecordWorkspace";
 import type { RefItem } from "@/lib/admin-data";
 
@@ -412,6 +413,9 @@ export function AdminWorkspace({ initialData }: { initialData: AdminData }) {
 
   return (
     <main className="admin-command" aria-label="Reference data administration">
+      <section className="admin-appearance" aria-label="Appearance">
+        <ThemeToggle variant="labeled" />
+      </section>
       {visibleLists.length ? (
         <section className="admin-card-grid" aria-label="Reference data sets">
           {visibleLists.map((list, index) => {
