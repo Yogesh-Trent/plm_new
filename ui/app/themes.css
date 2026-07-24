@@ -40,3 +40,27 @@
 .theme-apple body {
   background: #f5f5f7;
 }
+
+/* ---------------------------------------------------------------------------
+   Typography — serif display headings become tight, Apple-style sans.
+   Targets every Georgia/serif heading rule defined in globals.css.
+   --------------------------------------------------------------------------- */
+.theme-apple .screen-heading h1,
+.theme-apple .manual-heading h1,
+.theme-apple .resolve-main h2,
+.theme-apple .manual-section h2,
+.theme-apple .supplier-grid h2,
+.theme-apple .sku-grid h2,
+.theme-apple .stat strong,
+.theme-apple .summary-stats .stat strong {
+  font-family: var(--heading-font);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.theme-apple .screen-heading h1,
+.theme-apple .manual-heading h1 {
+  font-size: 42px;
+  line-height: 1.06;
+  color: #1d1d1f;
+}
