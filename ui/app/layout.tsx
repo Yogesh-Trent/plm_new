@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppToaster } from "./components/AppToaster";
 import { GlobalBackground } from "./components/GlobalBackground";
+import { ThemeScript } from "./components/ThemeScript";
 import "./globals.css";
 import "./workspace.css";
 import { Geist } from "next/font/google";
@@ -22,7 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
+      <head>
+        <ThemeScript />
+      </head>
       <body>
         <GlobalBackground />
         <a className="workspace-skip-link" href="#main-content">
