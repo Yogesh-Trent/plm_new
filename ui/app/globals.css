@@ -6654,36 +6654,221 @@ table.bulk-preview td {
 }
 
 /* ── Phase 7: SKUs matrix + PO routing ─────────────────────────────────── */
-.sku-combo-picks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.sku-pick {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 11px;
-  font-size: 13px;
+/* Builder: one compact card that reads as "set up the colour × size matrix". */
+.sku-builder {
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  background: var(--soft);
+  padding: 16px;
+}
+.sku-builder-grid {
+  display: grid;
+  gap: 16px;
+}
+.sku-builder-axis {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.sku-builder-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sku-builder-labelrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sku-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+/* Colourway toggles — pressed = brand accent, so the matrix inputs read at a glance. */
+.sku-toggle {
+  padding: 6px 13px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
   background: var(--paper-raised);
   cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }
-.sku-pick input { width: 15px; height: 15px; }
-.sku-inline {
-  width: 100%;
-  min-width: 80px;
+.sku-toggle:hover {
+  border-color: var(--muted);
+}
+.sku-toggle.is-on {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+}
+/* Size presets — quick fills, quiet so they don't compete with the chips. */
+.sku-presets {
+  display: inline-flex;
+  gap: 4px;
+}
+.sku-preset {
+  padding: 3px 9px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+.sku-preset:hover {
+  color: var(--ink);
+  background: var(--paper-raised);
+  border-color: var(--line);
+}
+.sku-size-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 6px 5px 11px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.sku-size-chip button {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--muted);
+  border: 0;
+  border-radius: 999px;
+  background: var(--soft);
+  cursor: pointer;
+}
+.sku-size-chip button:hover {
+  color: #fff;
+  background: var(--red);
+}
+.sku-size-input {
+  flex: 1;
+  min-width: 180px;
   height: 30px;
-  padding: 0 8px;
-  font-size: 12px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--ink);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: transparent;
+}
+.sku-size-input:focus {
+  outline: none;
+  border-style: solid;
+  border-color: var(--muted);
+  background: var(--paper-raised);
+}
+.sku-builder-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.sku-builder-count {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.sku-builder-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Sheet: the generated matrix, styled as an editable spec sheet. */
+.sku-sheet .season-table th { color: var(--muted); }
+.sku-id-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.sku-id-code {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.sku-size-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+/* Cells read as editable text, not boxed form fields — box appears on hover/focus. */
+.sku-cell {
+  width: 100%;
+  min-width: 84px;
+  height: 30px;
+  padding: 0 7px;
+  font-size: 13px;
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+}
+.sku-cell-sm { min-width: 60px; }
+.sku-cell::placeholder { color: var(--line-strong); }
+.sku-cell:hover { border-color: var(--line); }
+.sku-cell:focus {
+  outline: none;
+  border-color: var(--muted);
+  background: var(--paper-raised);
+}
+.sku-cell-select {
+  min-width: 96px;
+  height: 30px;
+  padding: 0 6px;
+  font-size: 13px;
+  color: var(--ink);
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--paper-raised);
-  color: var(--ink);
 }
-.sku-inline-sm { min-width: 60px; }
+.sku-mrp {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.sku-mrp-cur {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.sku-mrp .sku-cell { min-width: 64px; text-align: right; }
+
+@media (max-width: 720px) {
+  .sku-builder-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sku-builder-actions { justify-content: flex-end; }
+}
 
 .po-steps {
   list-style: none;

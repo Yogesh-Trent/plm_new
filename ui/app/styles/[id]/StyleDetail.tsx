@@ -185,22 +185,27 @@ export function StyleDetail({
     const t = new URLSearchParams(window.location.search).get("tab");
     return TABS.some((tab) => tab.key === t) ? (t as TabKey) : "overview";
   });
+  // Layout switch: "stacked" (default, all six sections down the page — the full
+  // record at a glance) or "tabs" (one section at a time). Persisted per user.
+  // Default is "stacked" so a fresh visit / refresh shows the whole form; only an
+  // explicit "tabs" choice narrows it. Server render must match this default, so
+  // it starts "stacked" and the effect below narrows to tabs if the user picked
+  // it (avoids a hydration mismatch).
+  const [layout, setLayout] = useState<"tabs" | "stacked">("stacked");
+  // Stacked mounts every section, so seed all tabs as visited up front.
   const [visited, setVisited] = useState<Set<TabKey>>(
-    () => new Set<TabKey>([activeTab]),
+    () => new Set<TabKey>(TABS.map((t) => t.key)),
   );
-  // Layout switch: "tabs" (default, one section at a time) or "stacked" (all six
-  // sections down the page, the classic long-scroll view). Persisted per user.
-  const [layout, setLayout] = useState<"tabs" | "stacked">("tabs");
   useEffect(() => {
     let saved: string | null = null;
     try {
       saved = localStorage.getItem("threadline-style-layout");
     } catch {
-      /* localStorage unavailable — keep tabs */
+      /* localStorage unavailable — keep stacked */
     }
-    if (saved === "stacked") {
+    if (saved === "tabs") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLayout("stacked");
+      setLayout("tabs");
     }
   }, []);
   const changeLayout = (next: "tabs" | "stacked") => {
@@ -630,7 +635,7 @@ export function StyleDetail({
           </section>
 
           <section className="season-create">
-            <h2>Production &amp; commercial</h2>
+             <h2>Commercial</h2>
             <p className="styles-note" style={{ marginTop: 0 }}>
               These fill from a matching template on create; edit any of them
               here.
@@ -736,6 +741,8 @@ export function StyleDetail({
               <StyleSkus
                 styleId={style.id}
                 onCount={countSkus}
+                activeTab={activeTab}
+                stacked={stacked}
               />
             )}
           </div>

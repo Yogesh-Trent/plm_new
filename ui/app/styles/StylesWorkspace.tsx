@@ -88,7 +88,7 @@ const EMPTY = {
   styleName: "",
   matkl: "",
   businessUnit: "",
-  // Production & commercial — previously only editable on the detail page. Kept
+  // Commercial — previously only editable on the detail page. Kept
   // here so a style can be created complete in one place.
   pack: "",
   dropName: "",
@@ -610,7 +610,7 @@ export function StylesWorkspace({
               fill in later.
             </p>
 
-            <h3 className="styles-subhead">Production &amp; commercial</h3>
+            <h3 className="styles-subhead">Commercial</h3>
             <div className="season-fields">
               <label className="season-field">
                 <span>Pack</span>
