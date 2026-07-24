@@ -1,7 +1,7 @@
 # Phase 2 — Apple Clean Style Layer
 
 **Part of:** [Dual-Theme System plan](../2026-07-24-dual-theme-apple-clean.md)
-**Status:** Pending (starts after Phase 1)
+**Status:** ✅ Complete — verified in-browser (Apple vars/typography/shadows/blue buttons apply; Paper regression clean)
 
 ## Goal
 
