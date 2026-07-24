@@ -18,6 +18,37 @@ export function isStyleObjectKind(v: unknown): v is StyleObjectKind {
   return typeof v === "string" && (STYLE_OBJECT_KINDS as readonly string[]).includes(v);
 }
 
+// Artwork objects may carry multiple images in `data.images` (base64 data URIs).
+// Guard the size/count server-side so a huge upload is rejected gracefully.
+export const MAX_ARTWORK_IMAGES = 8;
+export const MAX_ARTWORK_IMAGE_CHARS = 500_000; // ~350 KB image as base64
+
+export function validateArtworkImages(
+  data: Record<string, unknown>,
+): { error: string; status: number } | null {
+  if (!Object.prototype.hasOwnProperty.call(data, "images")) return null;
+  const images = data.images;
+  if (images == null) return null;
+  if (!Array.isArray(images)) {
+    return { error: "Images must be a list.", status: 400 };
+  }
+  if (images.length > MAX_ARTWORK_IMAGES) {
+    return {
+      error: `Add at most ${MAX_ARTWORK_IMAGES} images.`,
+      status: 400,
+    };
+  }
+  for (const img of images) {
+    if (typeof img !== "string") {
+      return { error: "Each image must be a data URL string.", status: 400 };
+    }
+    if (img.length > MAX_ARTWORK_IMAGE_CHARS) {
+      return { error: "An image is too large (max ~350 KB each).", status: 413 };
+    }
+  }
+  return null;
+}
+
 export type DbStyleObject = {
   id: string;
   style_id: string;

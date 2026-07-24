@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Image as ImageIcon } from "@phosphor-icons/react";
+import {
+  Cards as CardsIcon,
+  Image as ImageIcon,
+  Rows as RowsIcon,
+} from "@phosphor-icons/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
@@ -183,6 +187,34 @@ export function StyleDetail({
   const [visited, setVisited] = useState<Set<TabKey>>(
     () => new Set<TabKey>([activeTab]),
   );
+  // Layout switch: "tabs" (default, one section at a time) or "stacked" (all six
+  // sections down the page, the classic long-scroll view). Persisted per user.
+  const [layout, setLayout] = useState<"tabs" | "stacked">("tabs");
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem("threadline-style-layout");
+    } catch {
+      /* localStorage unavailable — keep tabs */
+    }
+    if (saved === "stacked") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLayout("stacked");
+    }
+  }, []);
+  const changeLayout = (next: "tabs" | "stacked") => {
+    setLayout(next);
+    if (next === "stacked") {
+      // Mount every section so the whole record is visible at once.
+      setVisited(new Set(TABS.map((t) => t.key)));
+    }
+    try {
+      localStorage.setItem("threadline-style-layout", next);
+    } catch {
+      /* ignore */
+    }
+  };
+  const stacked = layout === "stacked";
   // Per-tab item counts shown as badges. Colourways is seeded free from the
   // style record; the others fill in when their tab is first opened and update
   // live as items are added/removed (each child reports via onCount).
@@ -373,39 +405,73 @@ export function StyleDetail({
           and break hydration, so saving is driven by the button below. */}
       <div className="styles-body detail-grid record-form-v3">
         <div className="detail-main">
-          <div className="record-tabs" role="tablist" aria-label="Style sections">
-            {TABS.map((tab, index) => {
-              const selected = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  role="tab"
-                  id={`style-tab-${tab.key}`}
-                  aria-selected={selected}
-                  aria-controls={`style-panel-${tab.key}`}
-                  tabIndex={selected ? 0 : -1}
-                  className={`record-tab${selected ? " is-active" : ""}`}
-                  onClick={() => selectTab(tab.key)}
-                  onKeyDown={(event) => onTabKeyDown(event, index)}
-                >
-                  {tab.label}
-                  {tab.key !== "overview" &&
-                    typeof counts[tab.key] === "number" && (
-                      <span className="record-tab-count">
-                        {counts[tab.key]}
-                      </span>
-                    )}
-                </button>
-              );
-            })}
+          <div className="record-tabs-row">
+            <div
+              className="view-toggle"
+              role="group"
+              aria-label="Switch section layout"
+            >
+              <button
+                type="button"
+                className={`view-toggle-btn is-icon${!stacked ? " is-active" : ""}`}
+                aria-pressed={!stacked}
+                aria-label="Tabs — one section at a time"
+                title="Tabs — one section at a time"
+                onClick={() => changeLayout("tabs")}
+              >
+                <CardsIcon size={17} weight={!stacked ? "fill" : "regular"} />
+              </button>
+              <button
+                type="button"
+                className={`view-toggle-btn is-icon${stacked ? " is-active" : ""}`}
+                aria-pressed={stacked}
+                aria-label="All sections on one page"
+                title="All sections on one page"
+                onClick={() => changeLayout("stacked")}
+              >
+                <RowsIcon size={17} weight={stacked ? "fill" : "regular"} />
+              </button>
+            </div>
+            {!stacked && (
+              <div
+                className="record-tabs"
+                role="tablist"
+                aria-label="Style sections"
+              >
+                {TABS.map((tab, index) => {
+                  const selected = activeTab === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      role="tab"
+                      id={`style-tab-${tab.key}`}
+                      aria-selected={selected}
+                      aria-controls={`style-panel-${tab.key}`}
+                      tabIndex={selected ? 0 : -1}
+                      className={`record-tab${selected ? " is-active" : ""}`}
+                      onClick={() => selectTab(tab.key)}
+                      onKeyDown={(event) => onTabKeyDown(event, index)}
+                    >
+                      {tab.label}
+                      {tab.key !== "overview" &&
+                        typeof counts[tab.key] === "number" && (
+                          <span className="record-tab-count">
+                            {counts[tab.key]}
+                          </span>
+                        )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div
             role="tabpanel"
             id="style-panel-overview"
             aria-labelledby="style-tab-overview"
-            hidden={activeTab !== "overview"}
+            hidden={!stacked && activeTab !== "overview"}
           >
           <section className="season-create">
             <h2>Identity</h2>
@@ -625,7 +691,7 @@ export function StyleDetail({
             role="tabpanel"
             id="style-panel-colourways"
             aria-labelledby="style-tab-colourways"
-            hidden={activeTab !== "colourways"}
+            hidden={!stacked && activeTab !== "colourways"}
           >
             {visited.has("colourways") && (
               <ColorCombos
@@ -639,7 +705,7 @@ export function StyleDetail({
             role="tabpanel"
             id="style-panel-spec"
             aria-labelledby="style-tab-spec"
-            hidden={activeTab !== "spec"}
+            hidden={!stacked && activeTab !== "spec"}
           >
             {visited.has("spec") && <SpecQuality styleId={style.id} />}
           </div>
@@ -648,7 +714,7 @@ export function StyleDetail({
             role="tabpanel"
             id="style-panel-sourcing"
             aria-labelledby="style-tab-sourcing"
-            hidden={activeTab !== "sourcing"}
+            hidden={!stacked && activeTab !== "sourcing"}
           >
             {visited.has("sourcing") && (
               <Sourcing
@@ -662,7 +728,7 @@ export function StyleDetail({
             role="tabpanel"
             id="style-panel-skus"
             aria-labelledby="style-tab-skus"
-            hidden={activeTab !== "skus"}
+            hidden={!stacked && activeTab !== "skus"}
           >
             {visited.has("skus") && (
               <StyleSkus
@@ -676,7 +742,7 @@ export function StyleDetail({
             role="tabpanel"
             id="style-panel-sampling"
             aria-labelledby="style-tab-sampling"
-            hidden={activeTab !== "sampling"}
+            hidden={!stacked && activeTab !== "sampling"}
           >
             {visited.has("sampling") && (
               <Sampling

@@ -21,6 +21,11 @@ import {
   OperationalTableRegion,
 } from "@/app/components/OperationalWorkspace";
 import { ConfirmAction } from "@/app/components/ConfirmAction";
+import { ViewToggle, useRecordView } from "@/app/components/ViewToggle";
+import {
+  RecordCardGrid,
+  type RecordCardModel,
+} from "@/app/components/RecordCardGrid";
 
 type Style = {
   id: string;
@@ -126,6 +131,7 @@ export function StylesWorkspace({
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [view, setView] = useRecordView("threadline-styles-view");
 
   useEffect(() => {
     let active = true;
@@ -327,6 +333,75 @@ export function StylesWorkspace({
     const query = params.toString();
     router.replace(query ? `/styles?${query}` : "/styles", { scroll: false });
   };
+
+  // Map a style to the reusable card model (same data + actions as its table row).
+  const styleToCard = (style: Style): RecordCardModel => ({
+    id: style.id,
+    imageUrl: style.image_url,
+    title: (
+      <Link href={`/styles/${style.id}`} className="style-name-link">
+        {cell(style.style_name)}
+      </Link>
+    ),
+    subtitle: style.style_code || "Code pending",
+    badge: (
+      <button
+        type="button"
+        className={
+          style.status === "active"
+            ? "status-pill is-active"
+            : "status-pill is-inactive"
+        }
+        onClick={() => toggleStatus(style)}
+        disabled={busyId === style.id}
+        title="Toggle status"
+      >
+        <span className="status-dot" />
+        {style.status === "active" ? "Active" : "Inactive"}
+      </button>
+    ),
+    fields: [
+      { label: "Season", value: cell(style.season_name) },
+      { label: "Brand", value: cell(style.brand) },
+      { label: "Product", value: cell(style.product_type) },
+      { label: "Colourways", value: style.combo_count },
+      {
+        label: "Assigned",
+        value: style.assigned_role
+          ? (ASSIGN_LABELS[style.assigned_role] ?? style.assigned_role)
+          : "—",
+      },
+    ],
+    actions: (
+      <>
+        <Link
+          href={`/styles/${style.id}`}
+          className="ghost-button"
+          title="Open / edit style"
+        >
+          <PencilSimple size={15} /> Open
+        </Link>
+        <ConfirmAction
+          title={`Delete ${style.style_name || "this style"}?`}
+          description="This permanently removes the style and may affect linked colourways and sourcing records."
+          confirmLabel="Delete style"
+          destructive
+          onConfirm={() => remove(style)}
+          trigger={
+            <button
+              type="button"
+              className="icon-action is-danger"
+              disabled={busyId === style.id}
+              title="Delete style"
+              aria-label={`Delete ${style.style_name}`}
+            >
+              <Trash size={16} />
+            </button>
+          }
+        />
+      </>
+    ),
+  });
 
   return (
     <OperationalPage>
@@ -604,7 +679,13 @@ export function StylesWorkspace({
           )}
         </section>
 
-        <OperationalPanel title="Styles" count={styles.length}>
+        <OperationalPanel
+          title="Styles"
+          count={styles.length}
+          actions={
+            <ViewToggle view={view} onChange={setView} label="styles" />
+          }
+        >
           {loadError ? (
             <OperationalState
               kind="error"
@@ -639,6 +720,8 @@ export function StylesWorkspace({
                   : "Use the form above to create the first product record."
               }
             />
+          ) : view === "grid" ? (
+            <RecordCardGrid cards={styles.map(styleToCard)} />
           ) : (
             <OperationalTableRegion>
               <table className="season-table">

@@ -6,6 +6,7 @@ import {
   deleteStyleObject,
   getStyleObjectById,
   updateStyleObject,
+  validateArtworkImages,
 } from "@/lib/spec-queries";
 
 const STATES = ["draft", "approved", "issued"];
@@ -46,6 +47,10 @@ export async function PATCH(
     patch.state = body.state;
   }
   if (body.data && typeof body.data === "object" && !Array.isArray(body.data)) {
+    const imageError = validateArtworkImages(body.data as Record<string, unknown>);
+    if (imageError) {
+      return NextResponse.json({ error: imageError.error }, { status: imageError.status });
+    }
     patch.data = body.data;
   }
 

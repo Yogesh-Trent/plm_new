@@ -1,8 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PencilSimple, Plus, Trash } from "@phosphor-icons/react";
+import { ImageSquare, PencilSimple, Plus, Trash, X } from "@phosphor-icons/react";
 import type { StyleObjectKind } from "@/lib/spec-queries";
+
+// Artwork supports multiple reference images stored in `data.images` (base64).
+const MAX_IMAGES = 8;
+const MAX_IMAGE_BYTES = 350 * 1024;
+
+function asImageList(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((v): v is string => typeof v === "string")
+    : [];
+}
 
 type SpecOptions = {
   specTypes: string[];
@@ -32,7 +42,7 @@ export const OBJECT_CONFIGS: Record<StyleObjectKind, Config> = {
       { key: "color_combos", label: "Colour combos", scope: "data", input: "text" },
       { key: "description", label: "Description", scope: "top", input: "text" },
     ],
-    columns: ["code", "name", "subtype", "color_combos", "state"],
+    columns: ["code", "name", "images", "subtype", "color_combos", "state"],
   },
   size_chart: {
     fields: [
@@ -74,7 +84,7 @@ type ObjRow = {
   data: Record<string, unknown>;
 };
 
-const COLUMN_LABELS: Record<string, string> = { code: "Code", state: "Status", name: "Name" };
+const COLUMN_LABELS: Record<string, string> = { code: "Code", state: "Status", name: "Name", images: "Images" };
 
 export function StyleObjects({
   styleId,
@@ -84,14 +94,51 @@ export function StyleObjects({
   kind: StyleObjectKind;
 }) {
   const config = OBJECT_CONFIGS[kind];
+  const isArtwork = kind === "artwork";
   const [rows, setRows] = useState<ObjRow[]>([]);
   const [options, setOptions] = useState<SpecOptions>({ specTypes: [], sizeRanges: [], sizeChartTemplates: [], sealers: [] });
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Record<string, string | boolean>>({});
+  const [images, setImages] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const readFile = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("read failed"));
+      reader.readAsDataURL(file);
+    });
+
+  const onPickImages = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setError("");
+    const room = MAX_IMAGES - images.length;
+    if (room <= 0) {
+      setError(`You can add up to ${MAX_IMAGES} images.`);
+      return;
+    }
+    const picked = Array.from(files).slice(0, room);
+    const next: string[] = [];
+    for (const file of picked) {
+      if (file.size > MAX_IMAGE_BYTES) {
+        setError("Each image must be under 350 KB.");
+        continue;
+      }
+      try {
+        next.push(await readFile(file));
+      } catch {
+        setError("An image could not be read.");
+      }
+    }
+    if (next.length) setImages((current) => [...current, ...next]);
+  };
+
+  const removeImage = (index: number) =>
+    setImages((current) => current.filter((_, i) => i !== index));
 
   useEffect(() => {
     let alive = true;
@@ -128,6 +175,7 @@ export function StyleObjects({
 
   const reset = () => {
     setForm({});
+    setImages([]);
     setEditingId(null);
     setError("");
   };
@@ -144,6 +192,7 @@ export function StyleObjects({
       }
     }
     setForm(next);
+    setImages(isArtwork ? asImageList(row.data?.images) : []);
   };
 
   const submit = async (event: React.FormEvent) => {
@@ -164,6 +213,7 @@ export function StyleObjects({
       else if (f.key === "description") description = v ? String(v).trim() : null;
       else if (f.scope === "data") data[f.key] = f.input === "checkbox" ? Boolean(v) : (v ? String(v) : null);
     }
+    if (isArtwork) data.images = images;
     try {
       const response = await fetch(
         editingId ? `/api/style-objects/${editingId}` : `/api/styles/${styleId}/objects`,
@@ -255,6 +305,52 @@ export function StyleObjects({
             </label>
           ))}
         </div>
+
+        {isArtwork && (
+          <div className="artwork-images">
+            <div className="artwork-images-head">
+              <span>Images ({images.length}/{MAX_IMAGES})</span>
+              <label className="ghost-button artwork-upload">
+                <ImageSquare size={15} /> Add images
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  disabled={images.length >= MAX_IMAGES}
+                  onChange={(e) => {
+                    void onPickImages(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            </div>
+            {images.length === 0 ? (
+              <p className="styles-note" style={{ margin: 0 }}>
+                No images yet. Add up to {MAX_IMAGES} reference images (max 350 KB each).
+              </p>
+            ) : (
+              <div className="artwork-thumb-grid">
+                {images.map((src, index) => (
+                  <div className="artwork-thumb" key={index}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`Artwork ${index + 1}`} />
+                    <button
+                      type="button"
+                      className="artwork-thumb-remove"
+                      onClick={() => removeImage(index)}
+                      aria-label={`Remove image ${index + 1}`}
+                      title="Remove"
+                    >
+                      <X size={13} weight="bold" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {error && <p className="login-error" role="alert">{error}</p>}
         <div className="season-actions">
           {editingId && (
@@ -297,6 +393,22 @@ export function StyleObjects({
                           <span className="status-dot" />
                           {row.state === "approved" ? "Approved" : "Draft"}
                         </button>
+                      </td>
+                    ) : c === "images" ? (
+                      <td key={c}>
+                        {(() => {
+                          const imgs = asImageList(row.data?.images);
+                          if (imgs.length === 0) return <span className="artwork-nostrip">—</span>;
+                          return (
+                            <span className="artwork-strip" title={`${imgs.length} image${imgs.length === 1 ? "" : "s"}`}>
+                              {imgs.slice(0, 3).map((src, i) => (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img key={i} src={src} alt="" />
+                              ))}
+                              {imgs.length > 3 && <span className="artwork-more">+{imgs.length - 3}</span>}
+                            </span>
+                          );
+                        })()}
                       </td>
                     ) : (
                       <td key={c} className={c === "name" ? "season-name-cell" : undefined}>

@@ -17,8 +17,9 @@
   --workspace-warm-soft: #f5e8df;
   --workspace-radius: 10px;
   --workspace-shadow: 0 18px 50px rgba(23, 36, 33, 0.08);
-  --workspace-display: Georgia, "Times New Roman", serif;
+  /* One typeface across the app — display + body share the sidebar's sans. */
   --workspace-sans: "Segoe UI Variable", "Segoe UI", Aptos, Arial, sans-serif;
+  --workspace-display: var(--workspace-sans);
 }
 
 .workspace-skip-link {

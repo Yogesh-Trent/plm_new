@@ -6,6 +6,7 @@ import {
   createStyleObject,
   getStyleObjects,
   isStyleObjectKind,
+  validateArtworkImages,
 } from "@/lib/spec-queries";
 
 // GET/POST /api/styles/[id]/objects?kind=artwork|size_chart|spec_sheet|test_run
@@ -58,6 +59,11 @@ export async function POST(
     body.data && typeof body.data === "object" && !Array.isArray(body.data)
       ? (body.data as Record<string, unknown>)
       : {};
+
+  const imageError = validateArtworkImages(data);
+  if (imageError) {
+    return NextResponse.json({ error: imageError.error }, { status: imageError.status });
+  }
 
   const object = await createStyleObject(id, kind, {
     name,

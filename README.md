@@ -182,6 +182,10 @@ mount (5 spinners at once) with the Save button far away in the navbar.
   as you add/remove. Spec & Quality has no badge (it's a 4-kind wrapper with no
   single count). The Colourways tab itself already provides full add / list /
   edit / delete / status / "Add to BOM(s)" for a style's colourways.
+- **Tabs | All-sections toggle:** a layout switch at the right of the tab bar
+  flips between **Tabs** (default, one section at a time) and **All sections**
+  (the classic long-scroll with all six stacked vertically down the page). The
+  choice persists per user in `localStorage`.
 - Verified: `tsc`, `npm run lint`, and `npm run build` all pass.
 
 **3b. Consolidate the sidebar — fewer items, grouped by stage.**  ✅ _Done._
@@ -216,6 +220,56 @@ Some deletes use the polished `ConfirmAction` dialog; others use raw
 `window.confirm` (`Sourcing.tsx`, `ComboDetail.tsx`, `SupplierRequestDetail.tsx`)
 and PO order-remove has none. Route every destructive action through
 `ConfirmAction` for a consistent, on-brand experience.
+
+**5b. Table / card view toggle — reusable across list pages.**  ✅ _Styles done; reusable._
+Wide tables (Styles = 22 columns) force horizontal scrolling. A **view toggle**
+now flips the list between the existing **Table** and an image-forward **Card**
+grid. Built as **reusable components** so every list can adopt it:
+
+- [`ViewToggle`](ui/app/components/ViewToggle.tsx) — the Table|Cards switch +
+  a `useRecordView(storageKey)` hook that persists the choice per list in
+  `localStorage`. Styled as a **frosted-glass pill** (translucent + backdrop
+  blur, soft shadow, filled icon on the active side) — the shared `.view-toggle`
+  look also used by the style-detail Tabs | All-sections switch. Both toggles are
+  **icon-only** (labels kept as `aria-label`/tooltip) and **neutral grey** (no
+  accent tint). On the style detail the toggle sits **in the same row as the
+  tabs, pinned right**, and the tab strip scrolls horizontally if space is tight
+  so the toggle never overlaps the tabs. The app also uses **one global typeface**
+  (`Segoe UI Variable`, the sidebar's font) — `body` and `--workspace-display`
+  both point at the sans, so headings are no longer serif.
+- **Fixed a regression:** the design-system `--muted` token had been overwritten
+  to near-white (`oklch(0.97 0 0)`), which made all secondary text (tab labels,
+  captions) nearly invisible. Restored to `#6d7074`; tab labels now use
+  `--ink-soft` for strong contrast.
+- [`RecordCardGrid`](ui/app/components/RecordCardGrid.tsx) — a generic responsive
+  card grid; a page maps each record to a small `RecordCardModel` (image, title,
+  subtitle, a few fields, a status badge, actions).
+- Wired into **Styles** first ([`StylesWorkspace.tsx`](ui/app/styles/StylesWorkspace.tsx)):
+  Table stays the default; Cards shows image + name/code + status + season/brand/
+  product/colourways/assignee with the same Open / delete / status actions. No
+  horizontal scroll. Editing still happens on the detail page.
+- Shared card + toggle CSS in [`globals.css`](ui/app/globals.css) (paper palette).
+  Verified: `tsc`, `npm run lint`, `npm run build` pass.
+- **Next:** drop the same `ViewToggle` + `RecordCardGrid` into Colourways, BOMs,
+  and Purchase orders (a small `*ToCard` mapper each — no new components needed).
+
+### New feature — Artwork multiple images
+
+**Artwork now supports multiple reference images.**  ✅ _Done (frontend + small backend guard)._
+Under a style's **Spec & Quality → Artwork**, each artwork object can carry up to
+**8 images** (uploaded from disk, ~350 KB each).
+
+- Storage reuses the existing `style_objects.data` jsonb (`data.images: string[]`
+  as base64 data-URIs) — **no schema or query change**.
+- **Backend guard** ([`lib/spec-queries.ts`](ui/lib/spec-queries.ts) →
+  `validateArtworkImages`, called from the objects `POST` and style-object
+  `PATCH` routes): rejects a non-array, more than 8 images (400), or any image
+  over ~350 KB (413), so oversized uploads fail gracefully.
+- **UI** ([`StyleObjects.tsx`](ui/app/styles/[id]/StyleObjects.tsx)): a multi-file
+  picker + thumbnail grid with per-image remove in the add/edit form; the artwork
+  table shows a compact thumbnail strip (first 3 + "+N"). Images load on edit and
+  save with the object.
+- Verified: `tsc`, `npm run lint`, `npm run build` all pass.
 
 ### Tier 2 — meaningful polish
 
