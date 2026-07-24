@@ -9,6 +9,7 @@ import {
   Plus,
   Trash,
 } from "@phosphor-icons/react";
+import { DatePicker } from "@/app/components/DatePicker";
 
 type Request = {
   id: string;
@@ -352,7 +353,7 @@ export function Sourcing({
           </label>
           <label className="season-field">
             <span>Issue date</span>
-            <input type="date" value={form.issueDate} onChange={(e) => setForm({ ...form, issueDate: e.target.value })} />
+            <DatePicker value={form.issueDate} onChange={(v) => setForm({ ...form, issueDate: v })} ariaLabel="Issue date" />
           </label>
         </div>
         {error && <p className="login-error" role="alert">{error}</p>}

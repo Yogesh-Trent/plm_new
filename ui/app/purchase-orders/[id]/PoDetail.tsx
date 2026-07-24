@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Plus, Trash } from "@phosphor-icons/react";
 import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
+import { DatePicker } from "@/app/components/DatePicker";
 import { Inspections } from "./Inspections";
 
 type Po = {
@@ -242,13 +243,13 @@ export function PoDetail({
                 <input value={form.supplier} onChange={(e) => { setForm({ ...form, supplier: e.target.value }); setSaved(false); }} />
               </label>
               <label className="season-field"><span>Launch date</span>
-                <input type="date" value={form.launchDate} onChange={(e) => { setForm({ ...form, launchDate: e.target.value }); setSaved(false); }} />
+                <DatePicker value={form.launchDate} onChange={(v) => { setForm({ ...form, launchDate: v }); setSaved(false); }} ariaLabel="Launch date" />
               </label>
               <label className="season-field"><span>Ex-factory</span>
-                <input type="date" value={form.exFactory} onChange={(e) => { setForm({ ...form, exFactory: e.target.value }); setSaved(false); }} />
+                <DatePicker value={form.exFactory} onChange={(v) => { setForm({ ...form, exFactory: v }); setSaved(false); }} ariaLabel="Ex-factory date" />
               </label>
               <label className="season-field"><span>Shipment date</span>
-                <input type="date" value={form.shipmentDate} onChange={(e) => { setForm({ ...form, shipmentDate: e.target.value }); setSaved(false); }} />
+                <DatePicker value={form.shipmentDate} onChange={(v) => { setForm({ ...form, shipmentDate: v }); setSaved(false); }} ariaLabel="Shipment date" />
               </label>
               <label className="season-field"><span>Holiday calendar</span>
                 <select value={form.holidayCalendar} onChange={(e) => { setForm({ ...form, holidayCalendar: e.target.value }); setSaved(false); }}>

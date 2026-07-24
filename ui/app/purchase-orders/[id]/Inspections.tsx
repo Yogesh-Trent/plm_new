@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Trash } from "@phosphor-icons/react";
+import { DatePicker } from "@/app/components/DatePicker";
 
 type Inspection = {
   id: string;
@@ -109,7 +110,7 @@ export function Inspections({ poId }: { poId: string }) {
             </select>
           </label>
           <label className="season-field"><span>Date</span>
-            <input type="date" value={form.inspectionDate} onChange={(e) => setForm({ ...form, inspectionDate: e.target.value })} />
+            <DatePicker value={form.inspectionDate} onChange={(v) => setForm({ ...form, inspectionDate: v })} ariaLabel="Inspection date" />
           </label>
           <label className="season-field"><span>Inspector</span>
             <input value={form.inspector} onChange={(e) => setForm({ ...form, inspector: e.target.value })} />

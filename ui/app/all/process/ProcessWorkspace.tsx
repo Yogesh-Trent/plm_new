@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/app/components/toast";
 import {
   CalendarBlank,
   CheckCircle,
@@ -20,6 +20,7 @@ import {
   OperationalTableRegion,
 } from "@/app/components/OperationalWorkspace";
 import { ConfirmAction } from "@/app/components/ConfirmAction";
+import { DatePicker } from "@/app/components/DatePicker";
 
 type Season = {
   id: string;
@@ -315,10 +316,11 @@ export function ProcessWorkspace({ userName }: { userName: string }) {
               </label>
               <label className="season-field">
                 <span>Season complete date</span>
-                <input
-                  type="datetime-local"
+                <DatePicker
+                  withTime
                   value={form.completeDate}
-                  onChange={(e) => set({ completeDate: e.target.value })}
+                  onChange={(v) => set({ completeDate: v })}
+                  ariaLabel="Season complete date"
                 />
               </label>
               <label className="season-field">

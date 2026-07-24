@@ -9,9 +9,10 @@ import {
 } from "@phosphor-icons/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/app/components/toast";
 import { z } from "zod";
 import { FieldError } from "@/app/components/RecordWorkspace";
+import { DatePicker } from "@/app/components/DatePicker";
 import { useSetRecordHeader } from "@/app/components/RecordHeaderContext";
 import { ColorCombos } from "./ColorCombos";
 import { SpecQuality } from "./SpecQuality";
@@ -661,10 +662,11 @@ export function StyleDetail({
               </label>
               <label className="season-field">
                 <span>Issue date</span>
-                <input
-                  type="datetime-local"
+                <DatePicker
+                  withTime
                   value={form.issueDate}
-                  onChange={(e) => set({ issueDate: e.target.value })}
+                  onChange={(v) => set({ issueDate: v })}
+                  ariaLabel="Issue date"
                 />
               </label>
               <label className="season-field">

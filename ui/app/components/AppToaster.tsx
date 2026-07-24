@@ -1,23 +1,15 @@
 "use client";
 
-import { Toaster } from "sonner";
+import { Toaster } from "react-hot-toast";
 
+// Renders custom toast cards (see components/toast.tsx). Card styling lives on
+// each toast, so the react-hot-toast wrapper stays minimal.
 export function AppToaster() {
   return (
     <Toaster
       position="bottom-right"
-      closeButton
-      richColors={false}
-      toastOptions={{
-        classNames: {
-          toast: "threadline-toast",
-          title: "threadline-toast-title",
-          description: "threadline-toast-description",
-          actionButton: "threadline-toast-action",
-          cancelButton: "threadline-toast-cancel",
-          closeButton: "threadline-toast-close",
-        },
-      }}
+      gutter={10}
+      toastOptions={{ duration: 4000 }}
     />
   );
 }

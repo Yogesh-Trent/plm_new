@@ -298,6 +298,39 @@ individual attention.
 (nothing linked to them). Removed the route files and the stale `Workflow` entry
 in `GlobalNavbar`'s `SECTION_TITLES`.
 
+### Modern date picker  ✅ _Done._
+
+Replaced every native `<input type="date">` / `datetime-local` (~10, OS-default
+calendars) with a **custom date picker** — a styled trigger showing the formatted
+date that opens a **month-grid calendar in a Radix popover**, matching the paper
+palette (month nav, today/selected states, an optional time field, Clear/Today).
+
+- Component: [`app/components/DatePicker.tsx`](ui/app/components/DatePicker.tsx),
+  built on the already-installed `radix-ui` **Popover** — **no new dependencies**
+  (no react-day-picker/date-fns). `withTime` adds a time field for datetime
+  fields. Keyboard/focus accessible; respects `prefers-reduced-motion`.
+- Value stays the same string format the inputs used (`YYYY-MM-DD` /
+  `YYYY-MM-DDTHH:mm`), so it's a **drop-in swap** — no data/endpoint changes.
+- Rolled across all date fields: Styles (list + detail), Seasons, Sourcing,
+  Purchase orders (list + detail), Inspections. Styles in
+  [`globals.css`](ui/app/globals.css).
+
+### Custom toast (react-hot-toast)  ✅ _Done._
+
+Switched notifications from `sonner` to **react-hot-toast** with a **custom card**
+adapted to the paper palette (Tailwind-styled): a status icon, a title, an
+optional message, and a Close button, with a coloured left border per variant
+(green / red / neutral) and slide-in/out animations.
+
+- Helper: [`app/components/toast.tsx`](ui/app/components/toast.tsx) exposes
+  `toast.success/error/info(title, { description })` — the **same call shape** the
+  app already used, so the 5 call sites only needed their import swapped.
+- [`AppToaster`](ui/app/components/AppToaster.tsx) now renders react-hot-toast's
+  `<Toaster>`. Animations (`animate-custom-enter/leave`) live in
+  [`globals.css`](ui/app/globals.css) and respect `prefers-reduced-motion`.
+- No external assets (the original example's Unsplash avatar / indigo were
+  dropped in favour of the app's own look). `sonner` is no longer imported.
+
 ### UI refinement pass  ✅ _Done._
 
 A subtle polish over the existing warm/paper identity (no restructuring, additive

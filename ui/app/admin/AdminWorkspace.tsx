@@ -34,7 +34,7 @@ import {
 } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/app/components/toast";
 import { z } from "zod";
 import { ConfirmAction } from "@/app/components/ConfirmAction";
 import { useAdminSearch } from "@/app/components/AdminSearchContext";

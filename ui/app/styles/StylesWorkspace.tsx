@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "@/app/components/toast";
 import {
   ImageSquare,
   Palette,
@@ -21,6 +21,7 @@ import {
   OperationalTableRegion,
 } from "@/app/components/OperationalWorkspace";
 import { ConfirmAction } from "@/app/components/ConfirmAction";
+import { DatePicker } from "@/app/components/DatePicker";
 import { ViewToggle, useRecordView } from "@/app/components/ViewToggle";
 import {
   RecordCardGrid,
@@ -637,10 +638,11 @@ export function StylesWorkspace({
               </label>
               <label className="season-field">
                 <span>Issue date</span>
-                <input
-                  type="datetime-local"
+                <DatePicker
+                  withTime
                   value={form.issueDate}
-                  onChange={(e) => set({ issueDate: e.target.value })}
+                  onChange={(v) => set({ issueDate: v })}
+                  ariaLabel="Issue date"
                 />
               </label>
               <label className="season-field">

@@ -18,6 +18,7 @@ import {
   OperationalState,
   OperationalTableRegion,
 } from "@/app/components/OperationalWorkspace";
+import { DatePicker } from "@/app/components/DatePicker";
 
 type Po = {
   id: string;
@@ -353,22 +354,18 @@ export function PurchaseOrders({
                 </label>
                 <label className="season-field">
                   <span>Launch date</span>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={form.launchDate}
-                    onChange={(e) =>
-                      setForm({ ...form, launchDate: e.target.value })
-                    }
+                    onChange={(v) => setForm({ ...form, launchDate: v })}
+                    ariaLabel="Launch date"
                   />
                 </label>
                 <label className="season-field">
                   <span>Ex-factory</span>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={form.exFactory}
-                    onChange={(e) =>
-                      setForm({ ...form, exFactory: e.target.value })
-                    }
+                    onChange={(v) => setForm({ ...form, exFactory: v })}
+                    ariaLabel="Ex-factory date"
                   />
                 </label>
                 <label className="season-field">
