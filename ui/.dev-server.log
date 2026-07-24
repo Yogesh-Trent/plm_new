@@ -68,3 +68,313 @@
  GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/color-combos 200 in 804ms (next.js: 29ms, application-code: 775ms)
  GET /api/spec-options 200 in 1180ms (next.js: 24ms, application-code: 1156ms)
  GET /?next=%2Fstyles 200 in 28ms (next.js: 1833µs, application-code: 26ms)
+✓ Compiled in 112ms
+ GET /purchase-orders 200 in 312ms (next.js: 138ms, proxy.ts: 41ms, application-code: 133ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 314ms (next.js: 234ms, proxy.ts: 41ms, application-code: 39ms)
+✓ Compiled in 171ms
+ GET /purchase-orders 200 in 162ms (next.js: 56ms, proxy.ts: 34ms, application-code: 72ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 129ms (next.js: 14ms, proxy.ts: 91ms, application-code: 24ms)
+✓ Compiled in 74ms
+ GET /purchase-orders 200 in 177ms (next.js: 58ms, proxy.ts: 36ms, application-code: 83ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 177ms (next.js: 104ms, proxy.ts: 38ms, application-code: 35ms)
+✓ Compiled in 71ms
+ GET /purchase-orders 200 in 168ms (next.js: 60ms, proxy.ts: 35ms, application-code: 73ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 131ms (next.js: 14ms, proxy.ts: 91ms, application-code: 25ms)
+✓ Compiled in 112ms
+ GET /purchase-orders 200 in 137ms (next.js: 58ms, proxy.ts: 3ms, application-code: 76ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 174ms (next.js: 112ms, proxy.ts: 37ms, application-code: 25ms)
+✓ Compiled in 101ms
+ GET /purchase-orders 200 in 163ms (next.js: 56ms, proxy.ts: 37ms, application-code: 70ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 165ms (next.js: 104ms, proxy.ts: 36ms, application-code: 24ms)
+✓ Compiled in 66ms
+ GET /purchase-orders 200 in 178ms (next.js: 62ms, proxy.ts: 40ms, application-code: 76ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 179ms (next.js: 113ms, proxy.ts: 40ms, application-code: 27ms)
+✓ Compiled in 65ms
+ GET /purchase-orders 200 in 220ms (next.js: 70ms, proxy.ts: 43ms, application-code: 106ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 220ms (next.js: 144ms, proxy.ts: 43ms, application-code: 32ms)
+✓ Compiled in 71ms
+ GET /purchase-orders 200 in 185ms (next.js: 60ms, proxy.ts: 38ms, application-code: 87ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 186ms (next.js: 109ms, proxy.ts: 38ms, application-code: 39ms)
+ GET /color-combos 200 in 651ms (next.js: 410ms, proxy.ts: 22ms, application-code: 219ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 2.5s (next.js: 249ms, application-code: 2.2s)
+ GET /styles 200 in 646ms (next.js: 404ms, proxy.ts: 14ms, application-code: 228ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 1068ms (next.js: 12ms, application-code: 1056ms)
+ GET /api/styles 200 in 597ms (next.js: 163ms, application-code: 434ms)
+ GET /api/styles 200 in 285ms (next.js: 6ms, application-code: 280ms)
+ GET /api/style-options 200 in 1267ms (next.js: 314ms, application-code: 953ms)
+ GET /api/style-options 200 in 282ms (next.js: 6ms, application-code: 276ms)
+✓ Compiled in 158ms
+ GET /styles 200 in 171ms (next.js: 60ms, proxy.ts: 40ms, application-code: 71ms)
+ GET /purchase-orders 200 in 170ms (next.js: 111ms, proxy.ts: 40ms, application-code: 19ms)
+✓ Compiled in 72ms
+ GET /styles 200 in 167ms (next.js: 59ms, proxy.ts: 40ms, application-code: 68ms)
+ GET /purchase-orders 200 in 167ms (next.js: 110ms, proxy.ts: 40ms, application-code: 18ms)
+✓ Compiled in 58ms
+ GET /purchase-orders 200 in 160ms (next.js: 107ms, proxy.ts: 38ms, application-code: 15ms)
+ GET /styles 200 in 161ms (next.js: 58ms, proxy.ts: 37ms, application-code: 66ms)
+✓ Compiled in 80ms
+ GET /styles 200 in 173ms (next.js: 60ms, proxy.ts: 36ms, application-code: 76ms)
+ GET /purchase-orders 200 in 172ms (next.js: 115ms, proxy.ts: 37ms, application-code: 20ms)
+✓ Compiled in 83ms
+ GET /purchase-orders 200 in 167ms (next.js: 61ms, proxy.ts: 37ms, application-code: 69ms)
+ GET /styles 200 in 166ms (next.js: 108ms, proxy.ts: 37ms, application-code: 22ms)
+✓ Compiled in 91ms
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+ GET /styles 500 in 1587ms (next.js: 1439ms, proxy.ts: 39ms, application-code: 108ms)
+ GET /purchase-orders 500 in 1587ms (next.js: 1443ms, proxy.ts: 40ms, application-code: 104ms)
+ GET /purchase-orders 500 in 13ms (next.js: 4ms, proxy.ts: 4ms, application-code: 5ms)
+ GET /purchase-orders 500 in 14ms (next.js: 5ms, proxy.ts: 3ms, application-code: 5ms)
+ GET /styles 500 in 18ms (next.js: 10ms, proxy.ts: 3ms, application-code: 5ms)
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] Uncaught Error: ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx
+
+
+    at <unknown> (Error: ./app/boms/BomsList.tsx:486:21)
+    at <unknown> (Error: (./app/boms/BomsList.tsx:486:21)
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+[browser] Uncaught Error: ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx
+
+
+    at <unknown> (Error: ./app/boms/BomsList.tsx:486:21)
+    at <unknown> (Error: (./app/boms/BomsList.tsx:486:21)
+[browser] ./app/boms/BomsList.tsx:486:21
+Expected '</', got ')'
+  484 |                         )}
+  485 |                       </React.Fragment>
+> 486 |                     );
+      |                     ^
+  487 |                   })}
+  488 |                 </tbody>
+  489 |               </table>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/boms/BomsList.tsx
+    ./app/boms/page.tsx 
+✓ Compiled in 73ms
+ GET /styles 200 in 1205ms (next.js: 851ms, proxy.ts: 38ms, application-code: 316ms)
+ GET /purchase-orders 200 in 1206ms (next.js: 61ms, proxy.ts: 38ms, application-code: 1107ms)
+ GET /api/styles 200 in 956ms (next.js: 39ms, application-code: 918ms)
+ GET /api/style-options 200 in 974ms (next.js: 67ms, application-code: 908ms)
+ GET /api/supplier-pos?view=all 200 in 933ms (next.js: 38ms, application-code: 895ms)
+ GET /styles 200 in 166ms (next.js: 58ms, proxy.ts: 39ms, application-code: 69ms)
+ GET /purchase-orders 200 in 166ms (next.js: 111ms, proxy.ts: 39ms, application-code: 16ms)
+ GET /styles 200 in 202ms (next.js: 81ms, proxy.ts: 49ms, application-code: 72ms)
+ GET /purchase-orders 200 in 142ms (next.js: 21ms, proxy.ts: 105ms, application-code: 16ms)
+✓ Compiled in 288ms
+ GET /styles 200 in 184ms (next.js: 65ms, proxy.ts: 39ms, application-code: 80ms)
+ GET /purchase-orders 200 in 184ms (next.js: 24ms, proxy.ts: 135ms, application-code: 25ms)
+ GET /styles 200 in 175ms (next.js: 69ms, proxy.ts: 34ms, application-code: 71ms)
+ GET /purchase-orders 200 in 140ms (next.js: 20ms, proxy.ts: 101ms, application-code: 19ms)
+ GET /styles 200 in 169ms (next.js: 61ms, proxy.ts: 34ms, application-code: 74ms)
+ GET /purchase-orders 200 in 134ms (next.js: 19ms, proxy.ts: 101ms, application-code: 15ms)
+ GET /styles 200 in 172ms (next.js: 63ms, proxy.ts: 40ms, application-code: 69ms)
+ GET /purchase-orders 200 in 171ms (next.js: 113ms, proxy.ts: 40ms, application-code: 17ms)
+✓ Compiled in 119ms
+ GET /styles 200 in 236ms (next.js: 60ms, proxy.ts: 36ms, application-code: 140ms)
+ GET /purchase-orders 200 in 234ms (next.js: 167ms, proxy.ts: 35ms, application-code: 32ms)
+✓ Compiled in 77ms
+ GET /purchase-orders 200 in 273ms (next.js: 203ms, proxy.ts: 35ms, application-code: 35ms)
+ GET /styles 200 in 275ms (next.js: 62ms, proxy.ts: 34ms, application-code: 178ms)
+ GET /api/supplier-pos?view=all 200 in 993ms (next.js: 131ms, application-code: 862ms)
+✓ Compiled in 84ms
+ GET /styles 200 in 231ms (next.js: 63ms, proxy.ts: 34ms, application-code: 134ms)
+ GET /purchase-orders 200 in 230ms (next.js: 163ms, proxy.ts: 35ms, application-code: 32ms)
+ GET /api/supplier-pos?view=all 200 in 851ms (next.js: 39ms, application-code: 812ms)
+✓ Compiled in 65ms
+ GET /styles 200 in 185ms (next.js: 64ms, proxy.ts: 37ms, application-code: 84ms)
+ GET /purchase-orders 200 in 184ms (next.js: 123ms, proxy.ts: 37ms, application-code: 24ms)
+✓ Compiled in 79ms
+ GET /styles 200 in 161ms (next.js: 43ms, proxy.ts: 37ms, application-code: 81ms)
+ GET /purchase-orders 200 in 123ms (next.js: 33ms, proxy.ts: 75ms, application-code: 15ms)
+✓ Compiled in 69ms
+ GET /styles 200 in 164ms (next.js: 43ms, proxy.ts: 35ms, application-code: 86ms)
+ GET /purchase-orders 200 in 129ms (next.js: 35ms, proxy.ts: 77ms, application-code: 17ms)
+✓ Compiled in 84ms
+ GET /styles 200 in 158ms (next.js: 42ms, proxy.ts: 37ms, application-code: 79ms)
+ GET /purchase-orders 200 in 157ms (next.js: 98ms, proxy.ts: 38ms, application-code: 21ms)
+[browser] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [all]
+Incoming: [all, 0] 
+    at PurchaseOrders (app/purchase-orders/PurchaseOrders.tsx:223:39)
+  221 |   const [error, setError] = useState("");
+  222 |   const [expandedId, setExpandedId] = useState<string | null>(null);
+> 223 |   const [reloadTick, setReloadTick] = useState(0);
+      |                                       ^
+  224 |
+  225 |   const toggleExpanded = (id: string) =>
+  226 |     setExpandedId((current) => (current === id ? null : id)); (app/purchase-orders/PurchaseOrders.tsx:223:39)

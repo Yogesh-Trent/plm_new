@@ -81,7 +81,17 @@ const EMPTY = {
   styleName: "",
   matkl: "",
   businessUnit: "",
+  // Production & commercial — previously only editable on the detail page. Kept
+  // here so a style can be created complete in one place.
+  pack: "",
+  dropName: "",
+  supplierRequest: "",
+  issueDate: "",
+  colorCombo: "",
+  vendors: "",
 };
+
+const MAX_IMAGE_BYTES = 350 * 1024;
 
 function cell(value: string | null) {
   return value && value.trim() ? value : "—";
@@ -114,6 +124,7 @@ export function StylesWorkspace({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -158,11 +169,39 @@ export function StylesWorkspace({
 
   const resetForm = () => {
     setForm({ ...EMPTY });
+    setImageUrl(null);
     setError("");
   };
 
-  // The list form creates styles; editing the full record happens on the
-  // per-style detail page (/styles/[id]).
+  const onPickImage = (file: File | undefined) => {
+    setError("");
+    if (!file) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Image must be under 350 KB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setImageUrl(String(reader.result));
+    reader.readAsDataURL(file);
+  };
+
+  // Fields the create endpoint doesn't accept — saved in a follow-up PATCH so the
+  // whole record is captured from one form (no create-then-open second step).
+  const hasExtraFields = () =>
+    Boolean(
+      form.pack ||
+        form.dropName ||
+        form.supplierRequest ||
+        form.issueDate ||
+        form.colorCombo ||
+        form.vendors ||
+        imageUrl,
+    );
+
+  // The list form now captures the full record. Identity/classification fields
+  // go in the create POST; the production/commercial fields + image (which the
+  // create endpoint doesn't accept) are saved in a follow-up PATCH, so the user
+  // fills everything in one place instead of create-then-open-to-fill.
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!form.styleName.trim()) {
@@ -191,9 +230,38 @@ export function StylesWorkspace({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.error ?? "Could not save style.");
-      setStyles((current) => [data.style, ...current]);
+      let created = data.style;
+
+      // Persist the extra fields in one follow-up PATCH when any were provided.
+      if (hasExtraFields()) {
+        const patchRes = await fetch(`/api/styles/${created.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pack: form.pack || null,
+            dropName: form.dropName || null,
+            supplierRequest: form.supplierRequest || null,
+            issueDate: form.issueDate || null,
+            colorCombo: form.colorCombo || null,
+            vendors: form.vendors || null,
+            imageUrl: imageUrl || null,
+          }),
+        });
+        const patchData = await patchRes.json().catch(() => null);
+        if (patchRes.ok && patchData?.style) {
+          created = patchData.style;
+        } else {
+          // The style exists; only the extras failed. Surface it, keep the row.
+          setError(
+            patchData?.error ??
+              "Style created, but some production details could not be saved.",
+          );
+        }
+      }
+
+      setStyles((current) => [created, ...current]);
       toast.success("Style created", {
-        description: `${data.style.style_name} is ready for product development.`,
+        description: `${created.style_name} is ready for product development.`,
       });
       resetForm();
     } catch (err) {
@@ -435,6 +503,72 @@ export function StylesWorkspace({
               details pre-fill automatically. Unmatched fields stay empty to
               fill in later.
             </p>
+
+            <h3 className="styles-subhead">Production &amp; commercial</h3>
+            <div className="season-fields">
+              <label className="season-field">
+                <span>Pack</span>
+                <input
+                  value={form.pack}
+                  onChange={(e) => set({ pack: e.target.value })}
+                  placeholder="e.g. P1"
+                />
+              </label>
+              <label className="season-field">
+                <span>Drop</span>
+                <input
+                  value={form.dropName}
+                  onChange={(e) => set({ dropName: e.target.value })}
+                  placeholder="e.g. ALL"
+                />
+              </label>
+              <label className="season-field">
+                <span>Supplier request</span>
+                <input
+                  value={form.supplierRequest}
+                  onChange={(e) => set({ supplierRequest: e.target.value })}
+                  placeholder="Request reference"
+                />
+              </label>
+              <label className="season-field">
+                <span>Issue date</span>
+                <input
+                  type="datetime-local"
+                  value={form.issueDate}
+                  onChange={(e) => set({ issueDate: e.target.value })}
+                />
+              </label>
+              <label className="season-field">
+                <span>Colour combo</span>
+                <input
+                  value={form.colorCombo}
+                  onChange={(e) => set({ colorCombo: e.target.value })}
+                  placeholder="e.g. Blue Seal-A"
+                />
+              </label>
+              <label className="season-field">
+                <span>Vendors</span>
+                <input
+                  value={form.vendors}
+                  onChange={(e) => set({ vendors: e.target.value })}
+                  placeholder="Vendor name(s)"
+                />
+              </label>
+              <label className="season-field">
+                <span>Image</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => onPickImage(e.target.files?.[0])}
+                />
+              </label>
+            </div>
+            {imageUrl && (
+              <div className="season-logo" aria-label="Selected image">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={imageUrl} alt="" />
+              </div>
+            )}
 
             {error && (
               <p className="login-error" role="alert">

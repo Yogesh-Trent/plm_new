@@ -5504,6 +5504,36 @@ table.bulk-preview td {
   font-size: 15px;
   color: var(--ink);
 }
+.styles-subhead {
+  margin: 20px 0 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+/* Inline row expansion (manage child records without leaving the list). */
+.season-table tr.is-expanded-row > td {
+  background: var(--soft);
+}
+.bom-name-toggle {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+.inline-expand-row > td {
+  background: var(--soft);
+  padding: 16px;
+}
+.inline-expand-row .bom-inline-lines {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
 .season-fields {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

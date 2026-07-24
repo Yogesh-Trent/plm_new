@@ -46,14 +46,23 @@ export function SupplierRequestDetail({
   styleId: string;
 }) {
   const router = useRouter();
+  // Saved (server) values vs. the current edits. State/tech no longer PATCH on
+  // change — the user batches edits and commits them with the navbar Save
+  // button, matching Styles / BOMs / Colourways / POs.
+  const [savedState, setSavedState] = useState(request.state);
+  const [savedTech, setSavedTech] = useState(request.tech_approval_status);
   const [state, setState] = useState(request.state);
   const [tech, setTech] = useState(request.tech_approval_status);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [quotes, setQuotes] = useState<Quote[]>(initialQuotes);
   const [vendors, setVendors] = useState<string[]>([]);
   const [form, setForm] = useState({ ...EMPTY });
   const [submitting, setSubmitting] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const dirty = state !== savedState || tech !== savedTech;
 
   useEffect(() => {
     let alive = true;
@@ -68,23 +77,42 @@ export function SupplierRequestDetail({
     };
   }, []);
 
-  const patchRequest = async (patch: Record<string, unknown>) => {
+  // Warn before leaving with unsaved request edits (matches StyleDetail).
+  useEffect(() => {
+    if (!dirty) return;
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    return () => window.removeEventListener("beforeunload", warnBeforeUnload);
+  }, [dirty]);
+
+  const saveRequest = async () => {
+    if (!dirty) return;
+    setSaving(true);
     setError("");
-    const response = await fetch(`/api/supplier-requests/${request.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch),
-    });
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      setError(data?.error ?? "Could not update.");
-      return;
+    try {
+      const response = await fetch(`/api/supplier-requests/${request.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state, techApprovalStatus: tech }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        setError(data?.error ?? "Could not save.");
+        return;
+      }
+      const nextState = data.request?.state ?? state;
+      const nextTech = data.request?.tech_approval_status ?? tech;
+      setState(nextState);
+      setTech(nextTech);
+      setSavedState(nextState);
+      setSavedTech(nextTech);
+      setSaved(true);
+      router.refresh();
+    } finally {
+      setSaving(false);
     }
-    if (data.request) {
-      setState(data.request.state);
-      setTech(data.request.tech_approval_status);
-    }
-    router.refresh();
   };
 
   const addQuote = async (event: React.FormEvent) => {
@@ -130,8 +158,16 @@ export function SupplierRequestDetail({
     crumbs: [{ label: styleName || "Style", href: `/styles/${styleId}` }],
     title: request.vendor || "Supplier request",
     status: {
-      label: state,
-      tone: state === "draft" ? "neutral" : "active",
+      label: savedState,
+      tone: savedState === "draft" ? "neutral" : "active",
+    },
+    action: {
+      label: dirty ? "Save changes" : "Saved",
+      icon: "save",
+      onClick: saveRequest,
+      disabled: !dirty || saving,
+      busy: saving,
+      ghost: !dirty,
     },
   });
 
@@ -144,7 +180,7 @@ export function SupplierRequestDetail({
           <div className="season-fields">
             <label className="season-field">
               <span>State</span>
-              <select value={state} onChange={(e) => patchRequest({ state: e.target.value })}>
+              <select value={state} onChange={(e) => { setState(e.target.value); setSaved(false); }}>
                 <option value="draft">Draft</option>
                 <option value="issued">Issued</option>
                 <option value="complete">Complete</option>
@@ -152,7 +188,7 @@ export function SupplierRequestDetail({
             </label>
             <label className="season-field">
               <span>Tech approval</span>
-              <select value={tech} onChange={(e) => patchRequest({ techApprovalStatus: e.target.value })}>
+              <select value={tech} onChange={(e) => { setTech(e.target.value); setSaved(false); }}>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
@@ -168,6 +204,7 @@ export function SupplierRequestDetail({
             </label>
           </div>
           {error && <p className="login-error" role="alert">{error}</p>}
+          {saved && !dirty && <p className="detail-saved">Saved.</p>}
         </section>
 
         <section className="season-list">

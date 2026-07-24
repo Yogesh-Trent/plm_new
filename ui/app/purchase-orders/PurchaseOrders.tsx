@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowSquareOut, Plus } from "@phosphor-icons/react";
+import {
+  ArrowSquareOut,
+  CaretDown,
+  CaretRight,
+  Plus,
+  Trash,
+} from "@phosphor-icons/react";
 import {
   OperationalContent,
   OperationalHeader,
@@ -24,6 +30,142 @@ type Po = {
   total_order_quantity: string | null;
   state: string;
 };
+type Order = {
+  id: string;
+  seq: number;
+  colour_combo: string | null;
+  size: string | null;
+  qty: string | null;
+};
+
+// Inline order-lines editor — add/manage a PO's split quantities under its
+// expanded row. The 6-step approval routing + PO properties stay on the detail
+// page (too heavy for a table row); this covers order-lines only.
+// Reuses /api/supplier-pos/[id]/orders and /api/po-orders/[id].
+function PoOrdersInline({
+  poId,
+  canAction,
+}: {
+  poId: string;
+  canAction: boolean;
+}) {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState({ colourCombo: "", size: "", qty: "" });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let alive = true;
+    fetch(`/api/supplier-pos/${poId}/orders`)
+      .then((r) => (r.ok ? r.json() : { orders: [] }))
+      .then((data) => {
+        if (alive) setOrders(data.orders ?? []);
+      })
+      .catch(() => {
+        if (alive) setError("Order lines could not be loaded.");
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [poId]);
+
+  const addOrder = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      const response = await fetch(`/api/supplier-pos/${poId}/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.error ?? "Could not add.");
+      setOrders((c) => [...c, data.order]);
+      setOrder({ colourCombo: "", size: "", qty: "" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not add.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeOrder = async (o: Order) => {
+    setBusy(true);
+    try {
+      const response = await fetch(`/api/po-orders/${o.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Could not delete.");
+      setOrders((c) => c.filter((x) => x.id !== o.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="bom-inline-lines">
+      {canAction && (
+        <form className="combo-form" onSubmit={addOrder}>
+          <div className="season-fields">
+            <label className="season-field"><span>Colour combo</span>
+              <input value={order.colourCombo} onChange={(e) => setOrder({ ...order, colourCombo: e.target.value })} placeholder="e.g. Blue Seal-A" />
+            </label>
+            <label className="season-field"><span>Size</span>
+              <input value={order.size} onChange={(e) => setOrder({ ...order, size: e.target.value })} placeholder="e.g. M" />
+            </label>
+            <label className="season-field"><span>Qty</span>
+              <input value={order.qty} inputMode="numeric" onChange={(e) => setOrder({ ...order, qty: e.target.value })} />
+            </label>
+          </div>
+          <div className="season-actions">
+            <button type="submit" className="primary-button" disabled={busy}>
+              <Plus size={16} /> Add order line
+            </button>
+          </div>
+        </form>
+      )}
+      {error && <p className="login-error" role="alert">{error}</p>}
+
+      {loading ? (
+        <p className="season-empty">Loading order lines…</p>
+      ) : orders.length === 0 ? (
+        <p className="season-empty">No order lines yet.</p>
+      ) : (
+        <div className="season-table-wrap">
+          <table className="season-table">
+            <thead>
+              <tr><th>#</th><th>Colour combo</th><th>Size</th><th>Qty</th><th aria-label="Actions" /></tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr key={o.id}>
+                  <td>{o.seq}</td>
+                  <td className="season-name-cell">{o.colour_combo || "—"}</td>
+                  <td>{o.size || "—"}</td>
+                  <td>{o.qty ?? "—"}</td>
+                  <td>
+                    {canAction && (
+                      <button type="button" className="icon-action is-danger" onClick={() => removeOrder(o)} disabled={busy} title="Delete" aria-label="Delete order line">
+                        <Trash size={16} />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
 type Options = {
   vendors: string[];
   holidayCalendars: string[];
@@ -77,6 +219,11 @@ export function PurchaseOrders({
   const [form, setForm] = useState({ ...EMPTY });
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [reloadTick, setReloadTick] = useState(0);
+
+  const toggleExpanded = (id: string) =>
+    setExpandedId((current) => (current === id ? null : id));
 
   useEffect(() => {
     let alive = true;
@@ -97,7 +244,7 @@ export function PurchaseOrders({
     return () => {
       alive = false;
     };
-  }, [view]);
+  }, [view, reloadTick]);
 
   const openAdd = async () => {
     setAdding((v) => !v);
@@ -125,7 +272,14 @@ export function PurchaseOrders({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.error ?? "Could not create PO.");
-      router.push(`/purchase-orders/${data.po.id}`);
+      // Stay on the list: reset the form, reload the view, and expand the new PO
+      // so its order lines can be added right here.
+      setForm({ ...EMPTY });
+      setAdding(false);
+      setCreating(false);
+      setExpandedId(data.po.id);
+      setLoading(true);
+      setReloadTick((t) => t + 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create PO.");
       setCreating(false);
@@ -288,7 +442,7 @@ export function PurchaseOrders({
                   className="primary-button"
                   disabled={creating}
                 >
-                  {creating ? "Creating…" : "Create & open"}
+                  {creating ? "Creating…" : "Create PO"}
                 </button>
               </div>
             </form>
@@ -348,6 +502,7 @@ export function PurchaseOrders({
               <table className="season-table">
                 <thead>
                   <tr>
+                    <th aria-label="Expand" />
                     <th>PO</th>
                     <th>Style</th>
                     <th>Supplier</th>
@@ -360,46 +515,82 @@ export function PurchaseOrders({
                   </tr>
                 </thead>
                 <tbody>
-                  {pos.map((p) => (
-                    <tr key={p.id}>
-                      <td className="season-name-cell">
-                        <Link
-                          href={`/purchase-orders/${p.id}`}
-                          className="style-name-link"
-                        >
-                          {p.po_number}
-                        </Link>
-                      </td>
-                      <td>{p.style_name || "—"}</td>
-                      <td>{p.supplier || "—"}</td>
-                      <td>{p.category || "—"}</td>
-                      <td>{fmt(p.ex_factory)}</td>
-                      <td>{fmt(p.launch_date)}</td>
-                      <td>{p.total_order_quantity ?? "—"}</td>
-                      <td>
-                        <span
-                          className={
-                            ["issued", "ready", "closed"].includes(p.state)
-                              ? "status-pill is-active"
-                              : "status-pill is-inactive"
-                          }
-                        >
-                          <span className="status-dot" />
-                          {p.state}
-                        </span>
-                      </td>
-                      <td>
-                        <Link
-                          href={`/purchase-orders/${p.id}`}
-                          className="icon-action"
-                          title="Open"
-                          aria-label="Open PO"
-                        >
-                          <ArrowSquareOut size={16} />
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
+                  {pos.map((p) => {
+                    const expanded = expandedId === p.id;
+                    return (
+                      <Fragment key={p.id}>
+                        <tr className={expanded ? "is-expanded-row" : undefined}>
+                          <td>
+                            <button
+                              type="button"
+                              className="icon-action"
+                              onClick={() => toggleExpanded(p.id)}
+                              aria-expanded={expanded}
+                              aria-label={expanded ? "Hide order lines" : "Show order lines"}
+                              title={expanded ? "Hide order lines" : "Manage order lines"}
+                            >
+                              {expanded ? <CaretDown size={16} /> : <CaretRight size={16} />}
+                            </button>
+                          </td>
+                          <td className="season-name-cell">
+                            <button
+                              type="button"
+                              className="bom-name-toggle style-name-link"
+                              onClick={() => toggleExpanded(p.id)}
+                            >
+                              {p.po_number}
+                            </button>
+                          </td>
+                          <td>{p.style_name || "—"}</td>
+                          <td>{p.supplier || "—"}</td>
+                          <td>{p.category || "—"}</td>
+                          <td>{fmt(p.ex_factory)}</td>
+                          <td>{fmt(p.launch_date)}</td>
+                          <td>{p.total_order_quantity ?? "—"}</td>
+                          <td>
+                            <span
+                              className={
+                                ["issued", "ready", "closed"].includes(p.state)
+                                  ? "status-pill is-active"
+                                  : "status-pill is-inactive"
+                              }
+                            >
+                              <span className="status-dot" />
+                              {p.state}
+                            </span>
+                          </td>
+                          <td>
+                            <Link
+                              href={`/purchase-orders/${p.id}`}
+                              className="icon-action"
+                              title="Open full PO (properties & approval routing)"
+                              aria-label="Open PO"
+                            >
+                              <ArrowSquareOut size={16} />
+                            </Link>
+                          </td>
+                        </tr>
+                        {expanded && (
+                          <tr className="inline-expand-row">
+                            <td colSpan={10}>
+                              <PoOrdersInline poId={p.id} canAction={canAction} />
+                              <p className="styles-note" style={{ marginTop: 12 }}>
+                                Properties and the approval routing (Sourcing →
+                                Accounts → Merch → Issue) live on the{" "}
+                                <Link
+                                  href={`/purchase-orders/${p.id}`}
+                                  className="style-name-link"
+                                >
+                                  full PO page
+                                </Link>
+                                .
+                              </p>
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
             </OperationalTableRegion>

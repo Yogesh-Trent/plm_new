@@ -48,6 +48,26 @@ type StyleOption = {
 };
 
 const PAGE_SIZE = 20;
+const MAX_IMAGE_BYTES = 350 * 1024;
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+// Full create form — mirrors the fields on the combo detail page so a colourway
+// can be created complete in one place instead of create-then-open-to-fill.
+const EMPTY_COMBO = {
+  styleId: "",
+  name: "",
+  colourFamily: "",
+  generic: "",
+  colorwaySelection: "",
+  pantoneCode: "",
+  colorPalette: "",
+  pack: "",
+  dropName: "",
+  month: "",
+};
 
 function cell(value: string | null) {
   return value && value.trim() ? value : "—";
@@ -71,10 +91,18 @@ export function ColorCombosList({
 
   const [adding, setAdding] = useState(false);
   const [styles, setStyles] = useState<StyleOption[]>([]);
-  const [newStyleId, setNewStyleId] = useState("");
-  const [newName, setNewName] = useState("");
+  const [comboOptions, setComboOptions] = useState<{
+    colorwaySelections: string[];
+    colorPalettes: string[];
+  }>({ colorwaySelections: [], colorPalettes: [] });
+  const [form, setForm] = useState({ ...EMPTY_COMBO });
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+  const [reloadTick, setReloadTick] = useState(0);
+
+  const setField = (patch: Partial<typeof EMPTY_COMBO>) =>
+    setForm((current) => ({ ...current, ...patch }));
 
   // State is set only inside async callbacks (never synchronously in the effect).
   useEffect(() => {
@@ -101,42 +129,80 @@ export function ColorCombosList({
     return () => {
       alive = false;
     };
-  }, [offset, search]);
+  }, [offset, search, reloadTick]);
 
   const openAdd = async () => {
     setAdding((v) => !v);
     setError("");
     if (styles.length === 0) {
-      const data = await fetch("/api/styles")
-        .then((r) => (r.ok ? r.json() : { styles: [] }))
-        .catch(() => ({ styles: [] }));
-      setStyles(data.styles ?? []);
+      const [stylesData, optionsData] = await Promise.all([
+        fetch("/api/styles")
+          .then((r) => (r.ok ? r.json() : { styles: [] }))
+          .catch(() => ({ styles: [] })),
+        fetch("/api/combo-options")
+          .then((r) => (r.ok ? r.json() : { options: null }))
+          .catch(() => ({ options: null })),
+      ]);
+      setStyles(stylesData.styles ?? []);
+      if (optionsData.options) setComboOptions(optionsData.options);
     }
+  };
+
+  const onPickImage = (file: File | undefined) => {
+    setError("");
+    if (!file) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Image must be under 350 KB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setImageUrl(String(reader.result));
+    reader.readAsDataURL(file);
   };
 
   const create = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!newStyleId) {
+    if (!form.styleId) {
       setError("Pick a style for the combo.");
       return;
     }
-    if (!newName.trim()) {
+    if (!form.name.trim()) {
       setError("Colour combo name is required.");
       return;
     }
     setCreating(true);
     setError("");
     try {
-      const response = await fetch(`/api/styles/${newStyleId}/color-combos`, {
+      // The create endpoint accepts the full field set, so the colourway is
+      // saved complete in one request — no create-then-open second step.
+      const response = await fetch(`/api/styles/${form.styleId}/color-combos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newName.trim() }),
+        body: JSON.stringify({
+          name: form.name.trim(),
+          colourFamily: form.colourFamily || null,
+          generic: form.generic || null,
+          colorwaySelection: form.colorwaySelection || null,
+          pantoneCode: form.pantoneCode || null,
+          colorPalette: form.colorPalette || null,
+          pack: form.pack || null,
+          dropName: form.dropName || null,
+          month: form.month || null,
+          imageUrl: imageUrl || null,
+        }),
       });
       const data = await response.json().catch(() => null);
       if (!response.ok)
         throw new Error(data?.error ?? "Could not create combo.");
-      // Jump to the new combo's detail page to fill in the rest.
-      router.push(`/color-combos/${data.combo.id}`);
+      // Stay on the list; reset the form, close it, and reload the table so the
+      // new row shows with its joined style/season context.
+      setForm({ ...EMPTY_COMBO });
+      setImageUrl(null);
+      setAdding(false);
+      setCreating(false);
+      setLoading(true);
+      setReloadTick((t) => t + 1);
+      return;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create combo.");
       setCreating(false);
@@ -200,30 +266,130 @@ export function ColorCombosList({
         {adding && (
           <section className="season-create">
             <h2>New colour combo</h2>
-            <form className="combo-add-form" onSubmit={create}>
-              <label className="season-field">
-                <span>Style *</span>
-                <select
-                  value={newStyleId}
-                  onChange={(e) => setNewStyleId(e.target.value)}
-                >
-                  <option value="">Select style…</option>
-                  {styles.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.style_name} {s.style_code ? `· ${s.style_code}` : ""}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="season-field">
-                <span>Colour combo name *</span>
-                <input
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="e.g. BLACK"
-                />
-              </label>
-              <div className="season-actions" style={{ marginTop: 0 }}>
+            <form onSubmit={create}>
+              <div className="season-fields">
+                <label className="season-field">
+                  <span>Style *</span>
+                  <select
+                    value={form.styleId}
+                    onChange={(e) => setField({ styleId: e.target.value })}
+                  >
+                    <option value="">Select style…</option>
+                    {styles.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.style_name} {s.style_code ? `· ${s.style_code}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="season-field">
+                  <span>Colour combo name *</span>
+                  <input
+                    value={form.name}
+                    onChange={(e) => setField({ name: e.target.value })}
+                    placeholder="e.g. BLACK"
+                  />
+                </label>
+                <label className="season-field">
+                  <span>Colour family</span>
+                  <input
+                    value={form.colourFamily}
+                    onChange={(e) => setField({ colourFamily: e.target.value })}
+                    placeholder="e.g. Blues"
+                  />
+                </label>
+                <label className="season-field">
+                  <span>Generic</span>
+                  <input
+                    value={form.generic}
+                    onChange={(e) => setField({ generic: e.target.value })}
+                    placeholder="e.g. AW26"
+                  />
+                </label>
+                <label className="season-field">
+                  <span>Colorway selection</span>
+                  <select
+                    value={form.colorwaySelection}
+                    onChange={(e) =>
+                      setField({ colorwaySelection: e.target.value })
+                    }
+                  >
+                    <option value="">Select…</option>
+                    {comboOptions.colorwaySelections.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="season-field">
+                  <span>Pantone code</span>
+                  <input
+                    value={form.pantoneCode}
+                    onChange={(e) => setField({ pantoneCode: e.target.value })}
+                    placeholder="e.g. 19-4052 TCX"
+                  />
+                </label>
+                <label className="season-field">
+                  <span>Colour palette</span>
+                  <select
+                    value={form.colorPalette}
+                    onChange={(e) => setField({ colorPalette: e.target.value })}
+                  >
+                    <option value="">Select…</option>
+                    {comboOptions.colorPalettes.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="season-field">
+                  <span>Pack</span>
+                  <input
+                    value={form.pack}
+                    onChange={(e) => setField({ pack: e.target.value })}
+                    placeholder="e.g. P1"
+                  />
+                </label>
+                <label className="season-field">
+                  <span>Drop</span>
+                  <input
+                    value={form.dropName}
+                    onChange={(e) => setField({ dropName: e.target.value })}
+                    placeholder="e.g. ALL"
+                  />
+                </label>
+                <label className="season-field">
+                  <span>Month</span>
+                  <select
+                    value={form.month}
+                    onChange={(e) => setField({ month: e.target.value })}
+                  >
+                    <option value="">Select…</option>
+                    {MONTHS.map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="season-field">
+                  <span>Image</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => onPickImage(e.target.files?.[0])}
+                  />
+                </label>
+              </div>
+              {imageUrl && (
+                <div className="season-logo" aria-label="Selected image">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imageUrl} alt="" />
+                </div>
+              )}
+              <div className="season-actions">
                 <button
                   type="button"
                   className="ghost-button"
@@ -236,7 +402,7 @@ export function ColorCombosList({
                   className="primary-button"
                   disabled={creating}
                 >
-                  {creating ? "Creating…" : "Create & open"}
+                  {creating ? "Creating…" : "Create colourway"}
                 </button>
               </div>
             </form>
