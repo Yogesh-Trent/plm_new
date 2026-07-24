@@ -1,30 +1,37 @@
 "use client";
 
+import { FileText, Sparkle } from "@phosphor-icons/react";
 import { useTheme } from "./ThemeProvider";
-import { THEMES, THEME_LABELS } from "@/app/lib/theme";
+import { THEME_LABELS } from "@/app/lib/theme";
 
 export function ThemeToggle({
   variant = "compact",
 }: {
   variant?: "compact" | "labeled";
 }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, toggle } = useTheme();
 
-  const control = (
-    <div className="theme-switch" role="group" aria-label="Appearance theme">
-      {THEMES.map((option) => (
-        <button
-          key={option}
-          type="button"
-          className={theme === option ? "selected" : ""}
-          aria-pressed={theme === option}
-          onClick={() => setTheme(option)}
-          title={THEME_LABELS[option]}
-        >
-          {option === "paper" ? "Paper" : "Apple"}
-        </button>
-      ))}
-    </div>
+  // The icon shows the theme you'll switch TO on click: sparkle → Apple Clean,
+  // paper/article → Paper & Ink. The tooltip and aria-label spell it out.
+  const next = theme === "apple" ? "paper" : "apple";
+  const nextLabel = THEME_LABELS[next];
+  const hint = `Switch to ${nextLabel}`;
+
+  const button = (
+    <button
+      type="button"
+      className="theme-icon-toggle"
+      onClick={toggle}
+      title={hint}
+      aria-label={hint}
+      data-theme={theme}
+    >
+      {theme === "apple" ? (
+        <FileText size={19} weight="regular" />
+      ) : (
+        <Sparkle size={19} weight="fill" />
+      )}
+    </button>
   );
 
   if (variant === "labeled") {
@@ -32,11 +39,13 @@ export function ThemeToggle({
       <div className="theme-switch-row">
         <div className="theme-switch-copy">
           <strong>Appearance</strong>
-          <span>Switch between the Paper &amp; Ink and Apple Clean looks.</span>
+          <span>
+            Currently {THEME_LABELS[theme]}. Tap to switch to {nextLabel}.
+          </span>
         </div>
-        {control}
+        {button}
       </div>
     );
   }
-  return control;
+  return button;
 }

@@ -111,13 +111,18 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Theme toggle — Apple variant: pill shape, blue selected, soft-shadow row.
+   Theme toggle — Apple variant: clean blue-tinted icon button, soft-shadow row.
    --------------------------------------------------------------------------- */
-.theme-apple .theme-switch {
-  border-radius: 980px;
+.theme-apple .theme-icon-toggle {
+  border-color: transparent;
+  background: var(--soft);
+  color: #0071e3;
+  box-shadow: var(--shadow-card);
 }
-.theme-apple .theme-switch button.selected {
-  background: #0071e3;
+.theme-apple .theme-icon-toggle:hover {
+  color: #0071e3;
+  border-color: transparent;
+  background: var(--red-soft);
 }
 .theme-apple .theme-switch-row {
   box-shadow: var(--shadow-card);
