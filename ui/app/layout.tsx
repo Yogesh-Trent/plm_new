@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AppToaster } from "./components/AppToaster";
 import { GlobalBackground } from "./components/GlobalBackground";
 import { ThemeScript } from "./components/ThemeScript";
+import { ThemeProvider } from "./components/ThemeProvider";
 import "./globals.css";
 import "./workspace.css";
 import { Geist } from "next/font/google";
@@ -32,12 +33,14 @@ export default function RootLayout({
         <ThemeScript />
       </head>
       <body>
-        <GlobalBackground />
-        <a className="workspace-skip-link" href="#main-content">
-          Skip to main content
-        </a>
-        {children}
-        <AppToaster />
+        <ThemeProvider>
+          <GlobalBackground />
+          <a className="workspace-skip-link" href="#main-content">
+            Skip to main content
+          </a>
+          {children}
+          <AppToaster />
+        </ThemeProvider>
       </body>
     </html>
   );
