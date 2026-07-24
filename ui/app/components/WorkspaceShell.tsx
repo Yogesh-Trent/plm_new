@@ -6,8 +6,6 @@ import {
   House,
   List,
   Package,
-  Palette,
-  Receipt,
   Stack,
   TShirt,
   X,
@@ -58,21 +56,35 @@ export function WorkspaceShell({
       return next;
     });
 
-  const nav = [
-    { href: `/${role}`, label: "Overview", icon: House },
-    ...(role === "all"
-      ? [{ href: "/all/process", label: "Seasons", icon: List }]
-      : []),
-    { href: "/styles", label: "Styles", icon: TShirt },
-    { href: "/color-combos", label: "Colourways", icon: Palette },
-    { href: "/boms", label: "BOM library", icon: Stack },
+  // Grouped sidebar: fewer top-level items, organised by workflow stage.
+  // "Sourcing" now covers supplier requests + quotes (one merged workspace).
+  const navGroups = [
     {
-      href: "/supplier-requests",
-      label: "Supplier requests",
-      icon: Handshake,
+      heading: "Plan",
+      items: [
+        { href: `/${role}`, label: "Overview", icon: House },
+        ...(role === "all"
+          ? [{ href: "/all/process", label: "Seasons", icon: List }]
+          : []),
+      ],
     },
-    { href: "/supplier-quotes", label: "Supplier quotes", icon: Receipt },
-    { href: "/purchase-orders", label: "Purchase orders", icon: Package },
+    {
+      heading: "Product",
+      items: [
+        // Colourways live under each style (Style → Colourways tab), so they're
+        // not a top-level item. The cross-style list stays at /color-combos,
+        // linked from the Styles page.
+        { href: "/styles", label: "Styles", icon: TShirt },
+        { href: "/boms", label: "BOM library", icon: Stack },
+      ],
+    },
+    {
+      heading: "Sourcing & orders",
+      items: [
+        { href: "/sourcing", label: "Sourcing", icon: Handshake },
+        { href: "/purchase-orders", label: "Purchase orders", icon: Package },
+      ],
+    },
   ];
 
   return (
@@ -102,25 +114,35 @@ export function WorkspaceShell({
             </div>
 
             <nav className="workspace-nav-v2" aria-label="Primary navigation">
-              <p>Workspace</p>
-              {nav.map(({ href, label, icon: Icon }) => {
-                const active =
-                  pathname === href ||
-                  (href !== `/${role}` && pathname.startsWith(`${href}/`));
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={active ? "is-active" : ""}
-                    aria-current={active ? "page" : undefined}
-                    title={label}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    <Icon size={19} weight={active ? "fill" : "regular"} />
-                    <span>{label}</span>
-                  </Link>
-                );
-              })}
+              {navGroups.map((group) => (
+                <div className="workspace-nav-group-v2" key={group.heading}>
+                  <p>{group.heading}</p>
+                  {group.items.map(({ href, label, icon: Icon }) => {
+                    // Sourcing also owns the supplier request/quote detail routes.
+                    const owns =
+                      href === "/sourcing"
+                        ? pathname.startsWith("/sourcing") ||
+                          pathname.startsWith("/supplier-requests") ||
+                          pathname.startsWith("/supplier-quotes")
+                        : pathname === href ||
+                          (href !== `/${role}` &&
+                            pathname.startsWith(`${href}/`));
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        className={owns ? "is-active" : ""}
+                        aria-current={owns ? "page" : undefined}
+                        title={label}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <Icon size={19} weight={owns ? "fill" : "regular"} />
+                        <span>{label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
             </nav>
 
             <div className="workspace-rail-note-v2">

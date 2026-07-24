@@ -378,3 +378,1474 @@ Incoming: [all, 0]
   224 |
   225 |   const toggleExpanded = (id: string) =>
   226 |     setExpandedId((current) => (current === id ? null : id)); (app/purchase-orders/PurchaseOrders.tsx:223:39)
+ GET /styles 200 in 144ms (next.js: 46ms, proxy.ts: 46ms, application-code: 52ms)
+ GET /purchase-orders 200 in 144ms (next.js: 80ms, proxy.ts: 47ms, application-code: 17ms)
+ GET /styles 200 in 131ms (next.js: 41ms, proxy.ts: 37ms, application-code: 54ms)
+ GET /purchase-orders 200 in 130ms (next.js: 75ms, proxy.ts: 37ms, application-code: 18ms)
+ GET /styles 500 in 60ms (next.js: 8ms, proxy.ts: 39ms, application-code: 13ms)
+ GET /purchase-orders 500 in 60ms (next.js: 16ms, proxy.ts: 40ms, application-code: 5ms)
+ GET /purchase-orders 500 in 22ms (next.js: 9ms, proxy.ts: 3ms, application-code: 11ms)
+ GET /styles 500 in 18ms (next.js: 5ms, proxy.ts: 5ms, application-code: 8ms)
+ GET /purchase-orders 500 in 18ms (next.js: 9ms, proxy.ts: 5ms, application-code: 4ms)
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] Uncaught Error: ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx
+
+
+    at <unknown> (Error: ./app/styles/[id]/StyleDetail.tsx:684:1)
+    at <unknown> (Error: (./app/styles/[id]/StyleDetail.tsx:684:1)
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] Uncaught Error: ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx
+
+
+    at <unknown> (Error: ./app/styles/[id]/StyleDetail.tsx:684:1)
+    at <unknown> (Error: (./app/styles/[id]/StyleDetail.tsx:684:1)
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+[browser] ./app/styles/[id]/StyleDetail.tsx:684:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  682 |     </div>
+  683 |   );
+> 684 | }
+      | ^
+  685 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/styles/[id]/StyleDetail.tsx
+    ./app/styles/[id]/page.tsx 
+✓ Compiled in 70ms
+ GET /purchase-orders 200 in 252ms (next.js: 28ms, proxy.ts: 38ms, application-code: 186ms)
+ GET /styles 200 in 252ms (next.js: 115ms, proxy.ts: 38ms, application-code: 99ms)
+ GET /api/style-options 200 in 1359ms (next.js: 23ms, application-code: 1336ms)
+ GET /api/supplier-pos?view=all 200 in 1329ms (next.js: 20ms, application-code: 1309ms)
+ GET /api/styles 200 in 1409ms (next.js: 39ms, application-code: 1370ms)
+✓ Compiled in 1189ms
+ GET /all/process 200 in 282ms (next.js: 174ms, proxy.ts: 15ms, application-code: 93ms)
+ GET /api/seasons 200 in 1012ms (next.js: 153ms, application-code: 859ms)
+ GET /api/departments 200 in 1017ms (next.js: 330ms, application-code: 687ms)
+ GET /api/seasons 200 in 262ms (next.js: 8ms, application-code: 255ms)
+ GET /api/departments 200 in 266ms (next.js: 19ms, application-code: 248ms)
+ GET /styles 200 in 81ms (next.js: 9ms, proxy.ts: 13ms, application-code: 59ms)
+ GET /api/styles 200 in 679ms (next.js: 6ms, application-code: 673ms)
+ GET /api/style-options 200 in 720ms (next.js: 21ms, application-code: 699ms)
+ GET /api/styles 200 in 228ms (next.js: 7ms, application-code: 221ms)
+ GET /api/style-options 200 in 243ms (next.js: 6ms, application-code: 238ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 917ms (next.js: 309ms, proxy.ts: 14ms, application-code: 594ms)
+ GET /color-combos 200 in 215ms (next.js: 111ms, proxy.ts: 14ms, application-code: 90ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 1437ms (next.js: 122ms, application-code: 1315ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 428ms (next.js: 6ms, application-code: 422ms)
+ GET /boms 200 in 686ms (next.js: 271ms, proxy.ts: 13ms, application-code: 402ms)
+ GET /supplier-requests 200 in 543ms (next.js: 176ms, proxy.ts: 13ms, application-code: 355ms)
+ GET /supplier-quotes 200 in 562ms (next.js: 191ms, proxy.ts: 18ms, application-code: 353ms)
+ GET /styles 200 in 110ms (next.js: 11ms, proxy.ts: 15ms, application-code: 84ms)
+ GET /api/styles 200 in 240ms (next.js: 8ms, application-code: 233ms)
+ GET /api/styles 200 in 353ms (next.js: 12ms, application-code: 341ms)
+ GET /api/style-options 200 in 836ms (next.js: 19ms, application-code: 818ms)
+ GET /api/style-options 200 in 247ms (next.js: 7ms, application-code: 240ms)
+ GET /styles/910caf7a-04d2-4324-9138-2785e4a6fec6 200 in 553ms (next.js: 49ms, proxy.ts: 16ms, application-code: 488ms)
+ GET /color-combos 200 in 110ms (next.js: 11ms, proxy.ts: 15ms, application-code: 84ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 1293ms (next.js: 12ms, application-code: 1282ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 434ms (next.js: 7ms, application-code: 427ms)
+ GET /boms 200 in 773ms (next.js: 10ms, proxy.ts: 11ms, application-code: 753ms)
+ GET /api/boms/dc41c11c-b6ec-47fd-a566-4b0eefbe6de3/lines 200 in 1427ms (next.js: 786ms, application-code: 641ms)
+ GET /api/boms/dc41c11c-b6ec-47fd-a566-4b0eefbe6de3/lines 200 in 248ms (next.js: 27ms, application-code: 221ms)
+ GET /api/boms/dc41c11c-b6ec-47fd-a566-4b0eefbe6de3/lines 200 in 242ms (next.js: 24ms, application-code: 217ms)
+ GET /api/boms/dc41c11c-b6ec-47fd-a566-4b0eefbe6de3/lines 200 in 231ms (next.js: 7ms, application-code: 224ms)
+ GET /api/boms/584d26be-31e1-4fb0-a7ae-4063a80c6852/lines 200 in 646ms (next.js: 20ms, application-code: 626ms)
+ GET /api/boms/584d26be-31e1-4fb0-a7ae-4063a80c6852/lines 200 in 249ms (next.js: 24ms, application-code: 225ms)
+ GET /supplier-requests 200 in 364ms (next.js: 10ms, proxy.ts: 15ms, application-code: 339ms)
+ GET /supplier-quotes 200 in 347ms (next.js: 9ms, proxy.ts: 12ms, application-code: 325ms)
+ GET /supplier-requests 200 in 347ms (next.js: 15ms, proxy.ts: 11ms, application-code: 322ms)
+ GET /purchase-orders 200 in 110ms (next.js: 12ms, proxy.ts: 15ms, application-code: 83ms)
+ GET /api/supplier-pos?view=all 200 in 231ms (next.js: 6ms, application-code: 224ms)
+ GET /api/supplier-pos?view=all 200 in 233ms (next.js: 6ms, application-code: 228ms)
+ GET /api/supplier-pos/916fa3ba-3be8-45a8-ac32-2cb55a93e593/orders 200 in 965ms (next.js: 730ms, application-code: 235ms)
+ GET /api/supplier-pos/916fa3ba-3be8-45a8-ac32-2cb55a93e593/orders 200 in 240ms (next.js: 24ms, application-code: 216ms)
+ GET /api/supplier-pos/9a9b1479-b132-40e3-8cce-b3ca7c0b3b5d/orders 200 in 677ms (next.js: 23ms, application-code: 654ms)
+ GET /api/supplier-pos/9a9b1479-b132-40e3-8cce-b3ca7c0b3b5d/orders 200 in 254ms (next.js: 25ms, application-code: 229ms)
+ POST /api/supplier-pos/9a9b1479-b132-40e3-8cce-b3ca7c0b3b5d/orders 201 in 2.3s (next.js: 25ms, application-code: 2.3s)
+ POST /api/supplier-pos/9a9b1479-b132-40e3-8cce-b3ca7c0b3b5d/orders 201 in 1469ms (next.js: 26ms, application-code: 1443ms)
+ GET /all/process 200 in 102ms (next.js: 9ms, proxy.ts: 13ms, application-code: 80ms)
+ GET /api/seasons 200 in 648ms (next.js: 8ms, application-code: 640ms)
+ GET /api/departments 200 in 657ms (next.js: 18ms, application-code: 639ms)
+ GET /api/seasons 200 in 237ms (next.js: 9ms, application-code: 228ms)
+ GET /api/departments 200 in 242ms (next.js: 24ms, application-code: 218ms)
+ GET /styles 200 in 107ms (next.js: 11ms, proxy.ts: 14ms, application-code: 82ms)
+ GET /api/styles 200 in 681ms (next.js: 8ms, application-code: 672ms)
+ GET /api/style-options 200 in 740ms (next.js: 18ms, application-code: 721ms)
+ GET /api/styles 200 in 224ms (next.js: 6ms, application-code: 219ms)
+ GET /api/style-options 200 in 238ms (next.js: 5ms, application-code: 233ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 541ms (next.js: 37ms, proxy.ts: 12ms, application-code: 492ms)
+ GET /all/process 200 in 103ms (next.js: 9ms, proxy.ts: 11ms, application-code: 84ms)
+ GET /api/seasons 200 in 652ms (next.js: 7ms, application-code: 645ms)
+ GET /api/departments 200 in 661ms (next.js: 18ms, application-code: 644ms)
+ GET /api/seasons 200 in 227ms (next.js: 8ms, application-code: 219ms)
+ GET /api/departments 200 in 223ms (next.js: 5ms, application-code: 218ms)
+ GET /styles 200 in 102ms (next.js: 10ms, proxy.ts: 15ms, application-code: 77ms)
+ GET /api/styles 200 in 240ms (next.js: 9ms, application-code: 231ms)
+ GET /api/styles 200 in 224ms (next.js: 6ms, application-code: 218ms)
+ GET /api/style-options 200 in 714ms (next.js: 20ms, application-code: 694ms)
+ GET /api/style-options 200 in 244ms (next.js: 6ms, application-code: 238ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 542ms (next.js: 32ms, proxy.ts: 15ms, application-code: 495ms)
+ GET /?next=%2Fstyles 200 in 182ms (next.js: 35ms, application-code: 147ms)
+✓ Compiled in 66ms
+ GET /purchase-orders 200 in 142ms (next.js: 49ms, proxy.ts: 6ms, application-code: 87ms)
+ GET /purchase-orders 200 in 141ms (next.js: 106ms, proxy.ts: 7ms, application-code: 28ms)
+ GET /purchase-orders 200 in 180ms (next.js: 35ms, proxy.ts: 42ms, application-code: 104ms)
+ GET /purchase-orders 200 in 142ms (next.js: 96ms, proxy.ts: 7ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 184ms (next.js: 88ms, proxy.ts: 39ms, application-code: 57ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 6ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 6ms, proxy.ts: 2ms, application-code: 20ms)
+✓ Compiled in 61ms
+ GET /purchase-orders 200 in 124ms (next.js: 26ms, proxy.ts: 33ms, application-code: 66ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 124ms (next.js: 64ms, proxy.ts: 33ms, application-code: 28ms)
+ GET /purchase-orders 200 in 41ms (next.js: 3ms, proxy.ts: 4ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 16ms, proxy.ts: 4ms, application-code: 20ms)
+ GET /purchase-orders 200 in 42ms (next.js: 1590µs, proxy.ts: 3ms, application-code: 38ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1733µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 30ms (next.js: 3ms, proxy.ts: 2ms, application-code: 24ms)
+ GET /purchase-orders 500 in 59ms (next.js: 10ms, proxy.ts: 38ms, application-code: 10ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 64ms (next.js: 22ms, proxy.ts: 38ms, application-code: 4ms)
+ GET /purchase-orders 500 in 11ms (proxy.ts: 4ms)
+ GET /purchase-orders 500 in 10ms (proxy.ts: 4ms)
+ GET /purchase-orders 500 in 11ms (next.js: 3ms, proxy.ts: 3ms, application-code: 5ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 10ms (next.js: 4ms, proxy.ts: 1967µs, application-code: 4ms)
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-quotes/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] Uncaught Error: ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx
+
+
+    at <unknown> (Error: ./app/components/SourcingQueues.tsx:192:7)
+    at <unknown> (Error: (./app/components/SourcingQueues.tsx:192:7)
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-quotes/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] Uncaught Error: ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx
+
+
+    at <unknown> (Error: ./app/components/SourcingQueues.tsx:192:7)
+    at <unknown> (Error: (./app/components/SourcingQueues.tsx:192:7)
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:192:7
+Expected corresponding JSX closing tag for <Frame>
+  190 |         </OperationalPanel>
+  191 |       </OperationalContent>
+> 192 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  193 |   );
+  194 | }
+  195 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+✓ Compiled in 66ms
+ GET /purchase-orders 200 in 245ms (next.js: 28ms, proxy.ts: 34ms, application-code: 183ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 1419ms (next.js: 170ms, proxy.ts: 34ms, application-code: 1214ms)
+ GET /api/supplier-pos?view=all 200 in 247ms (next.js: 36ms, application-code: 211ms)
+ GET /purchase-orders 500 in 72ms (next.js: 15ms, proxy.ts: 38ms, application-code: 19ms)
+ GET /purchase-orders 500 in 72ms (next.js: 19ms, proxy.ts: 39ms, application-code: 14ms)
+ GET /purchase-orders 500 in 71ms (next.js: 23ms, proxy.ts: 39ms, application-code: 9ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 90ms (next.js: 37ms, proxy.ts: 38ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 91ms (next.js: 43ms, proxy.ts: 38ms, application-code: 10ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 89ms (next.js: 44ms, proxy.ts: 39ms, application-code: 6ms)
+ GET /purchase-orders 500 in 15ms (next.js: 6ms, proxy.ts: 4ms, application-code: 5ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 23ms (next.js: 12ms, proxy.ts: 4ms, application-code: 7ms)
+ GET /purchase-orders 500 in 10ms (next.js: 3ms, proxy.ts: 2ms, application-code: 5ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 500 in 11ms (next.js: 4ms, proxy.ts: 2ms, application-code: 5ms)
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-quotes/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] Uncaught Error: ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx
+
+
+    at <unknown> (Error: ./app/components/SourcingQueues.tsx:308:7)
+    at <unknown> (Error: (./app/components/SourcingQueues.tsx:308:7)
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-quotes/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+[browser] Uncaught Error: ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx
+
+
+    at <unknown> (Error: ./app/components/SourcingQueues.tsx:308:7)
+    at <unknown> (Error: (./app/components/SourcingQueues.tsx:308:7)
+[browser] ./app/components/SourcingQueues.tsx:308:7
+Expected corresponding JSX closing tag for <Frame>
+  306 |         </OperationalPanel>
+  307 |       </OperationalContent>
+> 308 |     </OperationalPage>
+      |       ^^^^^^^^^^^^^^^
+  309 |   );
+  310 | }
+  311 |
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./app/components/SourcingQueues.tsx
+    ./app/supplier-requests/page.tsx 
+✓ Compiled in 74ms
+ GET /purchase-orders 200 in 250ms (next.js: 26ms, proxy.ts: 34ms, application-code: 189ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 908ms (next.js: 170ms, proxy.ts: 35ms, application-code: 704ms)
+ GET /api/supplier-pos?view=all 200 in 245ms (next.js: 39ms, application-code: 206ms)
+ GET /purchase-orders 200 in 128ms (next.js: 25ms, proxy.ts: 36ms, application-code: 66ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 130ms (next.js: 67ms, proxy.ts: 34ms, application-code: 29ms)
+ GET /purchase-orders 200 in 47ms (next.js: 1995µs, proxy.ts: 6ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 8ms, proxy.ts: 15ms, application-code: 21ms)
+ GET /purchase-orders 200 in 44ms (next.js: 1760µs, proxy.ts: 2ms, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 44ms (next.js: 1609µs, proxy.ts: 3ms, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 30ms (next.js: 3ms, proxy.ts: 2ms, application-code: 25ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1717µs, proxy.ts: 2ms, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 20ms (next.js: 4ms, proxy.ts: 3ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 2ms, proxy.ts: 1875µs, application-code: 37ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1864µs, proxy.ts: 2ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 6ms, proxy.ts: 2ms, application-code: 35ms)
+ GET /purchase-orders 200 in 16ms (next.js: 1878µs, proxy.ts: 2ms, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 3ms, proxy.ts: 1903µs, application-code: 37ms)
+ GET /purchase-orders 200 in 16ms (next.js: 1497µs, proxy.ts: 1978µs, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 2ms, proxy.ts: 1761µs, application-code: 37ms)
+ GET /purchase-orders 200 in 19ms (next.js: 4ms, proxy.ts: 2ms, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 2ms, proxy.ts: 1857µs, application-code: 42ms)
+ GET /purchase-orders 200 in 24ms (next.js: 1603µs, proxy.ts: 3ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 3ms, proxy.ts: 1903µs, application-code: 35ms)
+ GET /purchase-orders 200 in 16ms (next.js: 1594µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 3ms, proxy.ts: 1875µs, application-code: 38ms)
+ GET /purchase-orders 200 in 16ms (next.js: 1717µs, proxy.ts: 3ms, application-code: 12ms)
+ GET /purchase-orders 200 in 46ms (next.js: 1847µs, proxy.ts: 3ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 22ms, proxy.ts: 3ms, application-code: 23ms)
+ GET /purchase-orders 200 in 38ms (next.js: 3ms, proxy.ts: 3ms, application-code: 32ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 37ms (next.js: 15ms, proxy.ts: 3ms, application-code: 19ms)
+ GET /purchase-orders 200 in 41ms (next.js: 5ms, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 19ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1666µs, proxy.ts: 1964µs, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 3ms, proxy.ts: 2ms, application-code: 35ms)
+ GET /purchase-orders 200 in 16ms (next.js: 1595µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 3ms, proxy.ts: 2ms, application-code: 37ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1632µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 3ms, proxy.ts: 2ms, application-code: 38ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1725µs, proxy.ts: 2ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 3ms, proxy.ts: 1970µs, application-code: 38ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1668µs, proxy.ts: 3ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 6ms, proxy.ts: 2ms, application-code: 38ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1686µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 4ms, proxy.ts: 1927µs, application-code: 34ms)
+ GET /purchase-orders 200 in 37ms (next.js: 23ms, proxy.ts: 2ms, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 3ms, proxy.ts: 2ms, application-code: 35ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1511µs, proxy.ts: 3ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 23ms (next.js: 1789µs, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 5ms, proxy.ts: 2ms, application-code: 42ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1885µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /purchase-orders 200 in 44ms (next.js: 6ms, proxy.ts: 2ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 3ms, application-code: 19ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1465µs, proxy.ts: 1881µs, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 6ms, proxy.ts: 2ms, application-code: 35ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1545µs, proxy.ts: 3ms, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 3ms, proxy.ts: 2ms, application-code: 38ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1574µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 3ms, proxy.ts: 1842µs, application-code: 37ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1751µs, proxy.ts: 1940µs, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 3ms, proxy.ts: 1908µs, application-code: 37ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1893µs, proxy.ts: 2ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 53ms (next.js: 5ms, proxy.ts: 2ms, application-code: 45ms)
+ GET /purchase-orders 200 in 48ms (next.js: 2ms, proxy.ts: 29ms, application-code: 17ms)
+ GET /purchase-orders 200 in 77ms (next.js: 3ms, proxy.ts: 3ms, application-code: 71ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 78ms (next.js: 55ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 46ms (next.js: 3ms, proxy.ts: 4ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 19ms, proxy.ts: 4ms, application-code: 23ms)
+ GET /purchase-orders 200 in 39ms (next.js: 3ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 16ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 45ms (next.js: 2ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 3ms, proxy.ts: 2ms, application-code: 37ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1615µs, proxy.ts: 3ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1527µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 3ms, proxy.ts: 1758µs, application-code: 39ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1603µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 39ms (next.js: 3ms, proxy.ts: 1821µs, application-code: 35ms)
+ GET /purchase-orders 200 in 16ms (next.js: 1725µs, proxy.ts: 1983µs, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1746µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 6ms, proxy.ts: 2ms, application-code: 38ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1665µs, proxy.ts: 5ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 4ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1907µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 41ms (next.js: 2ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 18ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 46ms (next.js: 1805µs, proxy.ts: 2ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1683µs, proxy.ts: 2ms, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 5ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 44ms (next.js: 3ms, proxy.ts: 27ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1567µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 45ms (next.js: 1893µs, proxy.ts: 3ms, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 62ms (next.js: 20ms, proxy.ts: 3ms, application-code: 39ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1996µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 39ms (next.js: 1824µs, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 16ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1503µs, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 3ms, proxy.ts: 2ms, application-code: 35ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1637µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /purchase-orders 200 in 45ms (next.js: 3ms, proxy.ts: 3ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 21ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 45ms (next.js: 2ms, proxy.ts: 6ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 16ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 24ms (next.js: 1707µs, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 4ms, proxy.ts: 2ms, application-code: 37ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1748µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1649µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 3ms, proxy.ts: 2ms, application-code: 43ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1881µs, proxy.ts: 3ms, application-code: 17ms)
+ GET /purchase-orders 200 in 39ms (next.js: 3ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 39ms (next.js: 16ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 42ms (next.js: 3ms, proxy.ts: 3ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 19ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 46ms (next.js: 1780µs, proxy.ts: 2ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 36ms (next.js: 6ms, proxy.ts: 3ms, application-code: 27ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1992µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1921µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 38ms (next.js: 2ms, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 39ms (next.js: 16ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 24ms (next.js: 1590µs, proxy.ts: 3ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 3ms, proxy.ts: 2ms, application-code: 36ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1494µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1822µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 1995µs, application-code: 40ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1873µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /purchase-orders 200 in 40ms (next.js: 1761µs, proxy.ts: 3ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 17ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 47ms (next.js: 1778µs, proxy.ts: 2ms, application-code: 43ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 34ms (next.js: 7ms, proxy.ts: 3ms, application-code: 24ms)
+ GET /purchase-orders 200 in 22ms (next.js: 2ms, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 3ms, proxy.ts: 1993µs, application-code: 42ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1906µs, proxy.ts: 2ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 50ms (next.js: 3ms, proxy.ts: 2ms, application-code: 45ms)
+ GET /purchase-orders 200 in 26ms (next.js: 4ms, proxy.ts: 9ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 3ms, application-code: 39ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1841µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 38ms (next.js: 2ms, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 17ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 45ms (next.js: 1581µs, proxy.ts: 2ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 43ms (next.js: 3ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 16ms, proxy.ts: 3ms, application-code: 24ms)
+ GET /purchase-orders 200 in 21ms (next.js: 2ms, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 51ms (next.js: 7ms, proxy.ts: 4ms, application-code: 40ms)
+ GET /purchase-orders 200 in 21ms (next.js: 5ms, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 2ms, proxy.ts: 1875µs, application-code: 41ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1671µs, proxy.ts: 3ms, application-code: 17ms)
+ GET /purchase-orders 200 in 40ms (next.js: 2ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 17ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 42ms (next.js: 1995µs, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 19ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1648µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1729µs, proxy.ts: 3ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 3ms, proxy.ts: 2ms, application-code: 43ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1937µs, proxy.ts: 3ms, application-code: 17ms)
+ GET /purchase-orders 200 in 45ms (next.js: 1977µs, proxy.ts: 3ms, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 21ms, proxy.ts: 3ms, application-code: 23ms)
+ GET /purchase-orders 200 in 46ms (next.js: 3ms, proxy.ts: 3ms, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 21ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1486µs, proxy.ts: 1974µs, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1723µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1925µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /purchase-orders 200 in 40ms (next.js: 2ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 18ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 24ms (next.js: 1421µs, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 3ms, application-code: 39ms)
+ GET /purchase-orders 200 in 18ms (next.js: 3ms, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 3ms, proxy.ts: 2ms, application-code: 42ms)
+ GET /purchase-orders 200 in 19ms (next.js: 2ms, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 7ms, proxy.ts: 1894µs, application-code: 41ms)
+ GET /purchase-orders 200 in 46ms (next.js: 5ms, proxy.ts: 27ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1790µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 40ms (next.js: 2ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 17ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 44ms (next.js: 1563µs, proxy.ts: 2ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1606µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1714µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 3ms, proxy.ts: 2ms, application-code: 42ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1754µs, proxy.ts: 4ms, application-code: 16ms)
+ GET /purchase-orders 200 in 40ms (next.js: 1880µs, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 18ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 25ms (next.js: 2ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 6ms, proxy.ts: 2ms, application-code: 36ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1597µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 1786µs, application-code: 40ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1740µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 21ms (next.js: 4ms, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 3ms, proxy.ts: 1967µs, application-code: 39ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1468µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 38ms (next.js: 21ms, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 5ms, proxy.ts: 1940µs, application-code: 34ms)
+ GET /purchase-orders 200 in 44ms (next.js: 1945µs, proxy.ts: 3ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 21ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1556µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 3ms, proxy.ts: 2ms, application-code: 42ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1811µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 6ms, proxy.ts: 1875µs, application-code: 42ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1760µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /purchase-orders 200 in 42ms (next.js: 1992µs, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 18ms, proxy.ts: 3ms, application-code: 23ms)
+ GET /purchase-orders 200 in 49ms (next.js: 3ms, proxy.ts: 2ms, application-code: 43ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 4ms, proxy.ts: 20ms, application-code: 22ms)
+ GET /purchase-orders 200 in 48ms (next.js: 2ms, proxy.ts: 3ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 67ms (next.js: 17ms, proxy.ts: 3ms, application-code: 47ms)
+ GET /purchase-orders 200 in 24ms (next.js: 2ms, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1730µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /purchase-orders 200 in 58ms (next.js: 2ms, proxy.ts: 3ms, application-code: 54ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 60ms (next.js: 36ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 49ms (next.js: 2ms, proxy.ts: 3ms, application-code: 43ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 24ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 43ms (next.js: 2ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 17ms, proxy.ts: 3ms, application-code: 24ms)
+ GET /purchase-orders 200 in 41ms (next.js: 1557µs, proxy.ts: 1869µs, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 3ms, proxy.ts: 2ms, application-code: 24ms)
+ GET /purchase-orders 200 in 26ms (next.js: 1982µs, proxy.ts: 2ms, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 7ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1971µs, proxy.ts: 4ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 4ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1853µs, proxy.ts: 2ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 3ms, proxy.ts: 2ms, application-code: 44ms)
+ GET /purchase-orders 200 in 23ms (next.js: 1907µs, proxy.ts: 3ms, application-code: 18ms)
+ GET /purchase-orders 200 in 40ms (next.js: 2ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 16ms, proxy.ts: 3ms, application-code: 23ms)
+ GET /purchase-orders 200 in 47ms (next.js: 2ms, proxy.ts: 3ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 23ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1646µs, proxy.ts: 1955µs, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1684µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /purchase-orders 200 in 43ms (next.js: 1737µs, proxy.ts: 3ms, application-code: 38ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 18ms, proxy.ts: 2ms, application-code: 26ms)
+ GET /purchase-orders 200 in 40ms (next.js: 3ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 17ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 24ms (next.js: 1449µs, proxy.ts: 1915µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1486µs, proxy.ts: 3ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1840µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 3ms, proxy.ts: 1867µs, application-code: 40ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1633µs, proxy.ts: 3ms, application-code: 16ms)
+ GET /purchase-orders 200 in 41ms (next.js: 1876µs, proxy.ts: 2ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 19ms, proxy.ts: 2ms, application-code: 22ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1772µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 2ms, application-code: 19ms)
+ GET /purchase-orders 200 in 42ms (next.js: 3ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 16ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /purchase-orders 200 in 42ms (next.js: 2ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 58ms (next.js: 17ms, proxy.ts: 3ms, application-code: 38ms)
+ GET /purchase-orders 200 in 20ms (next.js: 2ms, proxy.ts: 2ms, application-code: 16ms)
+ GET /purchase-orders 200 in 38ms (next.js: 1839µs, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 39ms (next.js: 16ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 46ms (next.js: 2ms, proxy.ts: 3ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 23ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1501µs, proxy.ts: 1857µs, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 25ms (next.js: 1835µs, proxy.ts: 2ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 5ms, proxy.ts: 2ms, application-code: 38ms)
+ GET /purchase-orders 200 in 42ms (next.js: 23ms, proxy.ts: 2ms, application-code: 17ms)
+ GET /purchase-orders 200 in 38ms (next.js: 2ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 18ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 44ms (next.js: 1498µs, proxy.ts: 1826µs, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1559µs, proxy.ts: 2ms, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 30ms (next.js: 3ms, proxy.ts: 3ms, application-code: 24ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 32ms (next.js: 6ms, proxy.ts: 2ms, application-code: 24ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 1985µs, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 1969µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 2ms, proxy.ts: 1805µs, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 2ms, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 1901µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 1963µs, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 31ms (next.js: 6ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 1830µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 1929µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 1975µs, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 2ms, proxy.ts: 1861µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 5ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 4ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 2ms, application-code: 20ms)
+✓ Compiled in 406ms
+ GET /purchase-orders 200 in 179ms (next.js: 34ms, proxy.ts: 33ms, application-code: 112ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 184ms (next.js: 104ms, proxy.ts: 33ms, application-code: 47ms)
+ GET /purchase-orders 200 in 61ms (next.js: 2ms, proxy.ts: 4ms, application-code: 55ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 37ms (next.js: 4ms, proxy.ts: 10ms, application-code: 22ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1641µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 3ms, proxy.ts: 3ms, application-code: 42ms)
+ GET /purchase-orders 200 in 42ms (next.js: 3ms, proxy.ts: 4ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 38ms (next.js: 5ms, proxy.ts: 14ms, application-code: 20ms)
+ GET /purchase-orders 200 in 43ms (next.js: 3ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 20ms, proxy.ts: 4ms, application-code: 20ms)
+ GET /purchase-orders 200 in 23ms (next.js: 1528µs, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 5ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /purchase-orders 200 in 40ms (next.js: 3ms, proxy.ts: 25ms, application-code: 12ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 6ms, proxy.ts: 2ms, application-code: 40ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1584µs, proxy.ts: 3ms, application-code: 16ms)
+ GET /purchase-orders 200 in 37ms (next.js: 2ms, proxy.ts: 3ms, application-code: 32ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 39ms (next.js: 15ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 61ms (next.js: 3ms, proxy.ts: 1794µs, application-code: 57ms)
+ GET /purchase-orders 200 in 103ms (next.js: 2ms, proxy.ts: 19ms, application-code: 82ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 110ms (next.js: 15ms, proxy.ts: 7ms, application-code: 87ms)
+ GET /purchase-orders 200 in 86ms (next.js: 18ms, proxy.ts: 5ms, application-code: 63ms)
+ GET /purchase-orders 200 in 86ms (next.js: 29ms, proxy.ts: 5ms, application-code: 52ms)
+ GET /purchase-orders 200 in 87ms (next.js: 5ms, proxy.ts: 4ms, application-code: 78ms)
+ GET /purchase-orders 200 in 99ms (next.js: 7ms, proxy.ts: 38ms, application-code: 53ms)
+ GET /purchase-orders 200 in 88ms (next.js: 4ms, proxy.ts: 15ms, application-code: 69ms)
+ GET /purchase-orders 200 in 112ms (next.js: 5ms, proxy.ts: 19ms, application-code: 88ms)
+ GET /purchase-orders 200 in 110ms (next.js: 5ms, proxy.ts: 18ms, application-code: 86ms)
+ GET /purchase-orders 200 in 98ms (next.js: 17ms, proxy.ts: 7ms, application-code: 74ms)
+ GET /purchase-orders 200 in 94ms (next.js: 40ms, proxy.ts: 16ms, application-code: 38ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 127ms (next.js: 39ms, proxy.ts: 18ms, application-code: 70ms)
+ GET /purchase-orders 200 in 86ms (next.js: 3ms, proxy.ts: 15ms, application-code: 68ms)
+ GET /purchase-orders 200 in 91ms (next.js: 4ms, proxy.ts: 8ms, application-code: 78ms)
+ GET /purchase-orders 200 in 86ms (next.js: 15ms, proxy.ts: 16ms, application-code: 55ms)
+ GET /purchase-orders 200 in 87ms (next.js: 5ms, proxy.ts: 16ms, application-code: 66ms)
+ GET /purchase-orders 200 in 109ms (next.js: 7ms, proxy.ts: 25ms, application-code: 77ms)
+ GET /purchase-orders 200 in 124ms (next.js: 20ms, proxy.ts: 26ms, application-code: 78ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 171ms (next.js: 13ms, proxy.ts: 5ms, application-code: 153ms)
+ GET /purchase-orders 200 in 163ms (next.js: 42ms, proxy.ts: 4ms, application-code: 116ms)
+ GET /purchase-orders 200 in 129ms (next.js: 8ms, proxy.ts: 21ms, application-code: 100ms)
+ GET /purchase-orders 200 in 126ms (next.js: 54ms, proxy.ts: 21ms, application-code: 52ms)
+ GET /purchase-orders 200 in 143ms (next.js: 22ms, proxy.ts: 55ms, application-code: 66ms)
+ GET /purchase-orders 200 in 139ms (next.js: 14ms, proxy.ts: 70ms, application-code: 55ms)
+ GET /purchase-orders 200 in 110ms (next.js: 18ms, proxy.ts: 4ms, application-code: 89ms)
+ GET /purchase-orders 200 in 112ms (next.js: 6ms, proxy.ts: 4ms, application-code: 101ms)
+ GET /purchase-orders 200 in 104ms (next.js: 5ms, proxy.ts: 41ms, application-code: 58ms)
+ GET /purchase-orders 200 in 63ms (next.js: 17ms, proxy.ts: 17ms, application-code: 29ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 106ms (next.js: 29ms, proxy.ts: 35ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 32ms (next.js: 6ms, proxy.ts: 2ms, application-code: 24ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 2ms, proxy.ts: 1832µs, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 2ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 1843µs, application-code: 23ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 1913µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 1977µs, application-code: 23ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 1918µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 2ms, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 1880µs, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 7ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 1973µs, application-code: 24ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 2ms, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 24ms (next.js: 3ms, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 33ms (next.js: 3ms, proxy.ts: 2ms, application-code: 28ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 4ms, proxy.ts: 2ms, application-code: 22ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 34ms (next.js: 3ms, proxy.ts: 2ms, application-code: 29ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 26ms (next.js: 3ms, proxy.ts: 2ms, application-code: 22ms)
+✓ Compiled in 169ms
+ GET /purchase-orders 200 in 227ms (next.js: 35ms, proxy.ts: 36ms, application-code: 156ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 227ms (next.js: 149ms, proxy.ts: 36ms, application-code: 42ms)
+ GET /purchase-orders 200 in 46ms (next.js: 1669µs, proxy.ts: 2ms, application-code: 42ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 4ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /purchase-orders 200 in 40ms (next.js: 2ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 15ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 38ms (next.js: 3ms, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 37ms (next.js: 15ms, proxy.ts: 3ms, application-code: 19ms)
+ GET /purchase-orders 200 in 44ms (next.js: 6ms, proxy.ts: 4ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 20ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 23ms (next.js: 1618µs, proxy.ts: 2ms, application-code: 19ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 3ms, proxy.ts: 2ms, application-code: 36ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1853µs, proxy.ts: 3ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 39ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1856µs, proxy.ts: 3ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 6ms, proxy.ts: 1690µs, application-code: 41ms)
+ GET /purchase-orders 200 in 24ms (next.js: 6ms, proxy.ts: 4ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 4ms, proxy.ts: 3ms, application-code: 41ms)
+ GET /purchase-orders 200 in 43ms (next.js: 2ms, proxy.ts: 24ms, application-code: 18ms)
+ GET /purchase-orders 200 in 56ms (next.js: 2ms, proxy.ts: 3ms, application-code: 51ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 58ms (next.js: 25ms, proxy.ts: 3ms, application-code: 30ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 35ms (next.js: 5ms, proxy.ts: 3ms, application-code: 27ms)
+ GET /api/supplier-pos?view=all 200 in 1034ms (next.js: 39ms, application-code: 995ms)
+✓ Compiled in 174ms
+ GET /purchase-orders 200 in 174ms (next.js: 30ms, proxy.ts: 34ms, application-code: 109ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 176ms (next.js: 95ms, proxy.ts: 34ms, application-code: 46ms)
+ GET /purchase-orders 200 in 58ms (next.js: 3ms, proxy.ts: 4ms, application-code: 51ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 57ms (next.js: 5ms, proxy.ts: 17ms, application-code: 34ms)
+ GET /purchase-orders 200 in 88ms (next.js: 4ms, proxy.ts: 4ms, application-code: 81ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 84ms (next.js: 4ms, proxy.ts: 21ms, application-code: 59ms)
+ GET /purchase-orders 200 in 51ms (next.js: 3ms, proxy.ts: 5ms, application-code: 43ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 54ms (next.js: 21ms, proxy.ts: 5ms, application-code: 28ms)
+ GET /purchase-orders 200 in 51ms (next.js: 3ms, proxy.ts: 5ms, application-code: 43ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 7ms, proxy.ts: 17ms, application-code: 23ms)
+ GET /purchase-orders 200 in 20ms (next.js: 1694µs, proxy.ts: 2ms, application-code: 16ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 4ms, proxy.ts: 1990µs, application-code: 40ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1591µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 50ms (next.js: 6ms, proxy.ts: 2ms, application-code: 42ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1957µs, proxy.ts: 3ms, application-code: 17ms)
+ GET /purchase-orders 200 in 39ms (next.js: 2ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 17ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 44ms (next.js: 3ms, proxy.ts: 3ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 20ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1755µs, proxy.ts: 1986µs, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 31ms (next.js: 4ms, proxy.ts: 3ms, application-code: 25ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+✓ Compiled in 189ms
+ GET /purchase-orders 200 in 168ms (next.js: 32ms, proxy.ts: 33ms, application-code: 103ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 168ms (next.js: 95ms, proxy.ts: 34ms, application-code: 40ms)
+ GET /purchase-orders 200 in 42ms (next.js: 3ms, proxy.ts: 3ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 16ms, proxy.ts: 3ms, application-code: 23ms)
+ GET /purchase-orders 200 in 21ms (next.js: 2ms, proxy.ts: 2ms, application-code: 16ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 51ms (next.js: 7ms, proxy.ts: 3ms, application-code: 40ms)
+ GET /purchase-orders 200 in 22ms (next.js: 1587µs, proxy.ts: 4ms, application-code: 16ms)
+ GET /purchase-orders 200 in 39ms (next.js: 2ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 17ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 47ms (next.js: 3ms, proxy.ts: 3ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 22ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1570µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 3ms, proxy.ts: 1955µs, application-code: 43ms)
+ GET /purchase-orders 200 in 18ms (next.js: 2ms, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1929µs, proxy.ts: 2ms, application-code: 17ms)
+ GET /purchase-orders 200 in 39ms (next.js: 2ms, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 17ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 24ms (next.js: 1538µs, proxy.ts: 1975µs, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 32ms (next.js: 7ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 25ms (next.js: 3ms, proxy.ts: 1993µs, application-code: 21ms)
+✓ Compiled in 98ms
+ GET /purchase-orders 200 in 134ms (next.js: 30ms, proxy.ts: 36ms, application-code: 68ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 135ms (next.js: 71ms, proxy.ts: 35ms, application-code: 29ms)
+ GET /purchase-orders 200 in 44ms (next.js: 2ms, proxy.ts: 4ms, application-code: 38ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 18ms, proxy.ts: 3ms, application-code: 24ms)
+ GET /purchase-orders 200 in 47ms (next.js: 3ms, proxy.ts: 3ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 16ms, proxy.ts: 3ms, application-code: 28ms)
+ GET /purchase-orders 200 in 64ms (next.js: 5ms, proxy.ts: 4ms, application-code: 55ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 61ms (next.js: 5ms, proxy.ts: 25ms, application-code: 32ms)
+ GET /purchase-orders 200 in 69ms (next.js: 4ms, proxy.ts: 4ms, application-code: 62ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 109ms (next.js: 5ms, proxy.ts: 34ms, application-code: 71ms)
+✓ Compiled in 107ms
+ GET /purchase-orders 200 in 140ms (next.js: 31ms, proxy.ts: 38ms, application-code: 71ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 142ms (next.js: 75ms, proxy.ts: 38ms, application-code: 29ms)
+ GET /purchase-orders 200 in 42ms (next.js: 3ms, proxy.ts: 3ms, application-code: 36ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 42ms (next.js: 17ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 25ms (next.js: 1636µs, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 46ms (next.js: 3ms, proxy.ts: 3ms, application-code: 40ms)
+ GET /purchase-orders 200 in 20ms (next.js: 3ms, proxy.ts: 3ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 49ms (next.js: 3ms, proxy.ts: 2ms, application-code: 44ms)
+ GET /purchase-orders 200 in 19ms (next.js: 1930µs, proxy.ts: 3ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+✓ Compiled in 132ms
+✓ Compiled in 146ms
+ GET /color-combos 200 in 440ms (next.js: 268ms, proxy.ts: 13ms, application-code: 160ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 1817ms (next.js: 233ms, application-code: 1584ms)
+ GET /boms 200 in 713ms (next.js: 259ms, proxy.ts: 12ms, application-code: 441ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 1381ms (next.js: 5ms, application-code: 1376ms)
+ GET /styles 200 in 454ms (next.js: 268ms, proxy.ts: 25ms, application-code: 162ms)
+ GET /api/styles 200 in 541ms (next.js: 125ms, application-code: 415ms)
+ GET /api/styles 200 in 271ms (next.js: 7ms, application-code: 265ms)
+ GET /api/style-options 200 in 1205ms (next.js: 264ms, application-code: 941ms)
+ GET /api/style-options 200 in 281ms (next.js: 7ms, application-code: 274ms)
+ GET /color-combos 200 in 100ms (next.js: 9ms, proxy.ts: 11ms, application-code: 80ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 530ms (next.js: 6ms, application-code: 524ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 526ms (next.js: 7ms, application-code: 519ms)
+ GET /api/styles 200 in 275ms (next.js: 6ms, application-code: 269ms)
+ GET /api/combo-options 200 in 920ms (next.js: 137ms, application-code: 783ms)
+ GET /boms 200 in 1068ms (next.js: 9ms, proxy.ts: 11ms, application-code: 1048ms)
+ GET /styles 200 in 93ms (next.js: 9ms, proxy.ts: 12ms, application-code: 72ms)
+ GET /api/styles 200 in 291ms (next.js: 8ms, application-code: 283ms)
+ GET /api/styles 200 in 245ms (next.js: 6ms, application-code: 239ms)
+ GET /api/style-options 200 in 1014ms (next.js: 18ms, application-code: 997ms)
+ GET /api/style-options 200 in 237ms (next.js: 6ms, application-code: 231ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 523ms (next.js: 21ms, proxy.ts: 10ms, application-code: 492ms)
+ GET /api/style-options 200 in 946ms (next.js: 19ms, application-code: 927ms)
+ GET /api/styles 200 in 960ms (next.js: 8ms, application-code: 953ms)
+ GET /api/style-options 200 in 288ms (next.js: 13ms, application-code: 276ms)
+ GET /api/styles 200 in 275ms (next.js: 6ms, application-code: 269ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 534ms (next.js: 31ms, proxy.ts: 12ms, application-code: 492ms)
+ GET /api/styles 200 in 785ms (next.js: 6ms, application-code: 780ms)
+ GET /api/style-options 200 in 944ms (next.js: 17ms, application-code: 928ms)
+ GET /api/styles 200 in 272ms (next.js: 5ms, application-code: 267ms)
+ GET /api/style-options 200 in 284ms (next.js: 6ms, application-code: 278ms)
+ GET /color-combos 200 in 110ms (next.js: 9ms, proxy.ts: 11ms, application-code: 90ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 539ms (next.js: 6ms, application-code: 533ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 548ms (next.js: 7ms, application-code: 541ms)
+ GET /styles 200 in 89ms (next.js: 8ms, proxy.ts: 8ms, application-code: 74ms)
+ GET /api/styles 200 in 817ms (next.js: 7ms, application-code: 810ms)
+ GET /api/style-options 200 in 941ms (next.js: 17ms, application-code: 924ms)
+ GET /api/styles 200 in 275ms (next.js: 7ms, application-code: 268ms)
+ GET /api/style-options 200 in 282ms (next.js: 7ms, application-code: 275ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 1152ms (next.js: 30ms, proxy.ts: 15ms, application-code: 1106ms)
+✓ Compiled in 391ms
+ GET /purchase-orders 200 in 248ms (next.js: 33ms, proxy.ts: 33ms, application-code: 183ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 217ms (next.js: 54ms, proxy.ts: 54ms, application-code: 108ms)
+ GET /purchase-orders 200 in 162ms (next.js: 98ms, proxy.ts: 4ms, application-code: 59ms)
+ GET /purchase-orders 200 in 45ms (next.js: 1970µs, proxy.ts: 4ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 21ms, proxy.ts: 4ms, application-code: 22ms)
+ GET /purchase-orders 200 in 41ms (next.js: 3ms, proxy.ts: 3ms, application-code: 35ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 18ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 46ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 44ms (next.js: 4ms, proxy.ts: 15ms, application-code: 25ms)
+ GET /purchase-orders 200 in 40ms (next.js: 3ms, proxy.ts: 3ms, application-code: 33ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 16ms, proxy.ts: 4ms, application-code: 20ms)
+ GET /purchase-orders 200 in 48ms (next.js: 6ms, proxy.ts: 3ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 24ms, proxy.ts: 3ms, application-code: 22ms)
+ GET /purchase-orders 200 in 36ms (next.js: 1582µs, proxy.ts: 2ms, application-code: 32ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 43ms (next.js: 3ms, proxy.ts: 3ms, application-code: 38ms)
+ GET /purchase-orders 200 in 18ms (next.js: 1667µs, proxy.ts: 3ms, application-code: 14ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 3ms, proxy.ts: 1824µs, application-code: 43ms)
+ GET /purchase-orders 200 in 23ms (next.js: 1773µs, proxy.ts: 2ms, application-code: 19ms)
+ GET /purchase-orders 200 in 47ms (next.js: 4ms, proxy.ts: 25ms, application-code: 18ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 52ms (next.js: 6ms, proxy.ts: 3ms, application-code: 43ms)
+ GET /purchase-orders 200 in 40ms (next.js: 3ms, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 40ms (next.js: 16ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 45ms (next.js: 1508µs, proxy.ts: 2ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /purchase-orders 200 in 45ms (next.js: 1648µs, proxy.ts: 2ms, application-code: 41ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 3ms, proxy.ts: 2ms, application-code: 24ms)
+ GET /purchase-orders 200 in 43ms (next.js: 1610µs, proxy.ts: 2ms, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 6ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /purchase-orders 200 in 43ms (next.js: 3ms, proxy.ts: 7ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 39ms (next.js: 16ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 43ms (next.js: 1881µs, proxy.ts: 2ms, application-code: 39ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 28ms (next.js: 3ms, proxy.ts: 2ms, application-code: 23ms)
+ GET /purchase-orders 200 in 21ms (next.js: 3ms, proxy.ts: 2ms, application-code: 17ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 47ms (next.js: 3ms, proxy.ts: 2ms, application-code: 41ms)
+ GET /purchase-orders 200 in 17ms (next.js: 1578µs, proxy.ts: 2ms, application-code: 13ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 45ms (next.js: 3ms, proxy.ts: 1928µs, application-code: 40ms)
+ GET /purchase-orders 200 in 21ms (next.js: 1642µs, proxy.ts: 3ms, application-code: 17ms)
+ GET /purchase-orders 200 in 39ms (next.js: 1889µs, proxy.ts: 3ms, application-code: 34ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 41ms (next.js: 17ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 44ms (next.js: 1547µs, proxy.ts: 1987µs, application-code: 40ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /purchase-orders 200 in 48ms (next.js: 1846µs, proxy.ts: 1996µs, application-code: 44ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 34ms (next.js: 7ms, proxy.ts: 2ms, application-code: 25ms)
+ GET /purchase-orders 200 in 41ms (next.js: 1876µs, proxy.ts: 2ms, application-code: 37ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 27ms (next.js: 3ms, proxy.ts: 2ms, application-code: 21ms)
+ GET /purchase-orders 200 in 190ms (next.js: 1578µs, proxy.ts: 5ms, application-code: 183ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 268ms (next.js: 19ms, proxy.ts: 10ms, application-code: 240ms)
+ GET /purchase-orders 200 in 138ms (next.js: 9ms, proxy.ts: 12ms, application-code: 117ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 284ms (next.js: 44ms, proxy.ts: 14ms, application-code: 226ms)
+ GET /purchase-orders 200 in 262ms (next.js: 16ms, proxy.ts: 157ms, application-code: 89ms)
+ GET /purchase-orders 200 in 281ms (next.js: 13ms, proxy.ts: 14ms, application-code: 254ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 299ms (next.js: 133ms, proxy.ts: 16ms, application-code: 151ms)
+ GET /purchase-orders 200 in 269ms (next.js: 15ms, proxy.ts: 15ms, application-code: 240ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 277ms (next.js: 22ms, proxy.ts: 84ms, application-code: 171ms)
+ GET /purchase-orders 200 in 281ms (next.js: 10ms, proxy.ts: 13ms, application-code: 257ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 296ms (next.js: 37ms, proxy.ts: 19ms, application-code: 239ms)
+ GET /purchase-orders 200 in 129ms (next.js: 9ms, proxy.ts: 21ms, application-code: 100ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 290ms (next.js: 25ms, proxy.ts: 11ms, application-code: 255ms)
+ GET /purchase-orders 200 in 276ms (next.js: 14ms, proxy.ts: 151ms, application-code: 111ms)
+ GET /purchase-orders 200 in 274ms (next.js: 12ms, proxy.ts: 17ms, application-code: 245ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 288ms (next.js: 128ms, proxy.ts: 18ms, application-code: 143ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 178ms (next.js: 16ms, proxy.ts: 12ms, application-code: 150ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 180ms (next.js: 36ms, proxy.ts: 12ms, application-code: 132ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 167ms (next.js: 15ms, proxy.ts: 11ms, application-code: 141ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 175ms (next.js: 33ms, proxy.ts: 10ms, application-code: 132ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 164ms (next.js: 15ms, proxy.ts: 12ms, application-code: 138ms)
+✓ Compiled in 469ms
+ GET /all 200 in 6.9s (next.js: 977ms, proxy.ts: 13ms, application-code: 5.9s)
+ GET /purchase-orders 200 in 1480ms (next.js: 306ms, proxy.ts: 224ms, application-code: 950ms)
+ GET /all 200 in 1597ms (next.js: 669ms, proxy.ts: 224ms, application-code: 705ms)
+ GET /purchase-orders 200 in 138ms (next.js: 10ms, proxy.ts: 26ms, application-code: 102ms)
+ GET /purchase-orders 200 in 293ms (next.js: 9ms, proxy.ts: 194ms, application-code: 90ms)
+ GET /all 200 in 410ms (next.js: 14ms, proxy.ts: 14ms, application-code: 382ms)
+ GET /purchase-orders 200 in 341ms (next.js: 15ms, proxy.ts: 16ms, application-code: 311ms)
+ GET /all 200 in 442ms (next.js: 33ms, proxy.ts: 89ms, application-code: 319ms)
+ GET /purchase-orders 200 in 129ms (next.js: 9ms, proxy.ts: 15ms, application-code: 106ms)
+ GET /purchase-orders 200 in 359ms (next.js: 20ms, proxy.ts: 245ms, application-code: 93ms)
+ GET /all 200 in 472ms (next.js: 15ms, proxy.ts: 12ms, application-code: 445ms)
+ GET /purchase-orders 200 in 441ms (next.js: 16ms, proxy.ts: 77ms, application-code: 349ms)
+ GET /all 200 in 463ms (next.js: 15ms, proxy.ts: 87ms, application-code: 362ms)
+ GET /purchase-orders 200 in 189ms (next.js: 9ms, proxy.ts: 10ms, application-code: 171ms)
+ GET /all 200 in 3.8s (next.js: 868ms, proxy.ts: 227ms, application-code: 2.8s)
+ GET /purchase-orders 200 in 324ms (next.js: 22ms, proxy.ts: 193ms, application-code: 109ms)
+ GET /all 200 in 632ms (next.js: 90ms, proxy.ts: 40ms, application-code: 502ms)
+ GET /purchase-orders 200 in 550ms (next.js: 14ms, proxy.ts: 115ms, application-code: 421ms)
+ GET /all 200 in 458ms (next.js: 9ms, proxy.ts: 17ms, application-code: 431ms)
+ GET /purchase-orders 200 in 118ms (next.js: 10ms, proxy.ts: 12ms, application-code: 97ms)
+ GET /all 200 in 228ms (next.js: 9ms, proxy.ts: 13ms, application-code: 206ms)
+ GET /all 200 in 242ms (next.js: 9ms, proxy.ts: 11ms, application-code: 222ms)
+ GET /all 200 in 112ms (next.js: 10ms, proxy.ts: 13ms, application-code: 89ms)
+ GET /all 200 in 42ms (next.js: 1974µs, proxy.ts: 3ms, application-code: 37ms)
+ GET /all 200 in 2.2s (next.js: 11ms, proxy.ts: 11ms, application-code: 2.1s)
+✓ Compiled in 458ms
+ GET /purchase-orders 200 in 985ms (next.js: 480ms, proxy.ts: 214ms, application-code: 290ms)
+ GET /all 200 in 994ms (next.js: 259ms, proxy.ts: 211ms, application-code: 524ms)
+ GET /all/process 200 in 447ms (next.js: 266ms, proxy.ts: 14ms, application-code: 167ms)
+ GET /api/departments 200 in 1206ms (next.js: 390ms, application-code: 816ms)
+ GET /api/seasons 200 in 1299ms (next.js: 235ms, application-code: 1065ms)
+ GET /api/seasons 200 in 230ms (next.js: 6ms, application-code: 225ms)
+ GET /api/departments 200 in 297ms (next.js: 7ms, application-code: 290ms)
+ GET /styles 200 in 429ms (next.js: 248ms, proxy.ts: 12ms, application-code: 169ms)
+ GET /api/styles 200 in 488ms (next.js: 124ms, application-code: 364ms)
+ GET /api/styles 200 in 231ms (next.js: 6ms, application-code: 225ms)
+ GET /api/style-options 200 in 1177ms (next.js: 259ms, application-code: 919ms)
+ GET /api/style-options 200 in 285ms (next.js: 6ms, application-code: 280ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 888ms (next.js: 284ms, proxy.ts: 12ms, application-code: 592ms)
+✓ Compiled in 524ms
+ GET /purchase-orders 200 in 777ms (next.js: 164ms, proxy.ts: 212ms, application-code: 402ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 793ms (next.js: 407ms, proxy.ts: 210ms, application-code: 176ms)
+ GET /purchase-orders 200 in 269ms (next.js: 15ms, proxy.ts: 16ms, application-code: 238ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 350ms (next.js: 25ms, proxy.ts: 87ms, application-code: 237ms)
+ GET /purchase-orders 200 in 142ms (next.js: 9ms, proxy.ts: 14ms, application-code: 118ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 181ms (next.js: 36ms, proxy.ts: 14ms, application-code: 131ms)
+ GET /styles 200 in 428ms (next.js: 252ms, proxy.ts: 15ms, application-code: 161ms)
+ GET /api/styles 200 in 1201ms (next.js: 230ms, application-code: 972ms)
+ GET /api/style-options 200 in 1334ms (next.js: 384ms, application-code: 950ms)
+ GET /api/styles 200 in 282ms (next.js: 6ms, application-code: 275ms)
+ GET /api/style-options 200 in 291ms (next.js: 5ms, application-code: 285ms)
+ GET /styles/910caf7a-04d2-4324-9138-2785e4a6fec6 200 in 530ms (next.js: 33ms, proxy.ts: 12ms, application-code: 485ms)
+ GET /styles 200 in 97ms (next.js: 9ms, proxy.ts: 17ms, application-code: 70ms)
+ GET /api/styles 200 in 910ms (next.js: 8ms, application-code: 903ms)
+ GET /api/style-options 200 in 955ms (next.js: 26ms, application-code: 930ms)
+ GET /api/styles 200 in 226ms (next.js: 6ms, application-code: 220ms)
+ GET /api/style-options 200 in 298ms (next.js: 6ms, application-code: 292ms)
+ GET /color-combos 200 in 492ms (next.js: 303ms, proxy.ts: 13ms, application-code: 177ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 596ms (next.js: 133ms, application-code: 463ms)
+ GET /api/color-combos?limit=20&offset=0 200 in 751ms (next.js: 23ms, application-code: 727ms)
+ GET /api/styles 200 in 371ms (next.js: 8ms, application-code: 363ms)
+ GET /api/combo-options 200 in 1043ms (next.js: 141ms, application-code: 902ms)
+ GET /api/styles 200 in 850ms (next.js: 32ms, application-code: 818ms)
+ GET /api/style-options 200 in 955ms (next.js: 18ms, application-code: 937ms)
+ GET /api/styles 200 in 276ms (next.js: 6ms, application-code: 270ms)
+ GET /api/style-options 200 in 285ms (next.js: 7ms, application-code: 278ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 1609ms (next.js: 45ms, proxy.ts: 18ms, application-code: 1547ms)
+✓ Compiled in 92ms
+ GET /purchase-orders 200 in 183ms (next.js: 31ms, proxy.ts: 42ms, application-code: 110ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 184ms (next.js: 103ms, proxy.ts: 43ms, application-code: 38ms)
+✓ Compiled in 60ms
+ GET /purchase-orders 200 in 176ms (next.js: 31ms, proxy.ts: 36ms, application-code: 110ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 178ms (next.js: 104ms, proxy.ts: 35ms, application-code: 39ms)
+✓ Compiled in 64ms
+ GET /purchase-orders 200 in 170ms (next.js: 26ms, proxy.ts: 38ms, application-code: 107ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 172ms (next.js: 96ms, proxy.ts: 34ms, application-code: 42ms)
+✓ Compiled in 88ms
+ GET /purchase-orders 200 in 171ms (next.js: 27ms, proxy.ts: 35ms, application-code: 110ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 173ms (next.js: 92ms, proxy.ts: 34ms, application-code: 47ms)
+✓ Compiled in 86ms
+ GET /purchase-orders 200 in 178ms (next.js: 30ms, proxy.ts: 38ms, application-code: 109ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 178ms (next.js: 98ms, proxy.ts: 38ms, application-code: 41ms)
+✓ Compiled in 80ms
+ GET /purchase-orders 200 in 175ms (next.js: 27ms, proxy.ts: 38ms, application-code: 110ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 177ms (next.js: 97ms, proxy.ts: 38ms, application-code: 41ms)
+✓ Compiled in 64ms
+ GET /purchase-orders 200 in 179ms (next.js: 28ms, proxy.ts: 37ms, application-code: 115ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 181ms (next.js: 100ms, proxy.ts: 37ms, application-code: 45ms)
+✓ Compiled in 65ms
+ GET /purchase-orders 200 in 178ms (next.js: 29ms, proxy.ts: 36ms, application-code: 113ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 178ms (next.js: 103ms, proxy.ts: 36ms, application-code: 39ms)
+✓ Compiled in 191ms
+ GET /purchase-orders 200 in 172ms (next.js: 32ms, proxy.ts: 36ms, application-code: 105ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 174ms (next.js: 97ms, proxy.ts: 36ms, application-code: 41ms)
+✓ Compiled in 59ms
+ GET /purchase-orders 200 in 182ms (next.js: 33ms, proxy.ts: 38ms, application-code: 111ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 182ms (next.js: 96ms, proxy.ts: 42ms, application-code: 43ms)
+✓ Compiled in 54ms
+ GET /purchase-orders 200 in 176ms (next.js: 25ms, proxy.ts: 39ms, application-code: 111ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 178ms (next.js: 94ms, proxy.ts: 39ms, application-code: 45ms)
+✓ Compiled in 84ms
+ GET /purchase-orders 200 in 111ms (next.js: 94ms, proxy.ts: 2ms, application-code: 15ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 152ms (next.js: 53ms, proxy.ts: 36ms, application-code: 63ms)
+✓ Compiled in 71ms
+ GET /purchase-orders 200 in 182ms (next.js: 31ms, proxy.ts: 42ms, application-code: 108ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 183ms (next.js: 104ms, proxy.ts: 42ms, application-code: 37ms)
+ GET /purchase-orders 200 in 28ms (next.js: 1873µs, proxy.ts: 2ms, application-code: 24ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 29ms (next.js: 5ms, proxy.ts: 3ms, application-code: 21ms)
+✓ Compiled in 96ms
+ GET /purchase-orders 200 in 184ms (next.js: 34ms, proxy.ts: 43ms, application-code: 107ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 185ms (next.js: 103ms, proxy.ts: 42ms, application-code: 40ms)
+✓ Compiled in 88ms
+ GET /purchase-orders 200 in 177ms (next.js: 27ms, proxy.ts: 36ms, application-code: 114ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 179ms (next.js: 100ms, proxy.ts: 35ms, application-code: 43ms)
+✓ Compiled in 92ms
+ GET /purchase-orders 200 in 121ms (next.js: 86ms, proxy.ts: 3ms, application-code: 32ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 155ms (next.js: 51ms, proxy.ts: 33ms, application-code: 71ms)
+✓ Compiled in 100ms
+ GET /purchase-orders 200 in 115ms (next.js: 93ms, proxy.ts: 2ms, application-code: 20ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 156ms (next.js: 54ms, proxy.ts: 35ms, application-code: 67ms)
+✓ Compiled in 67ms
+ GET /purchase-orders 200 in 183ms (next.js: 31ms, proxy.ts: 38ms, application-code: 115ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 186ms (next.js: 105ms, proxy.ts: 36ms, application-code: 44ms)
+✓ Compiled in 63ms
+ GET /purchase-orders 200 in 179ms (next.js: 29ms, proxy.ts: 38ms, application-code: 113ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 182ms (next.js: 104ms, proxy.ts: 39ms, application-code: 39ms)
+✓ Compiled in 65ms
+ GET /purchase-orders 200 in 195ms (next.js: 37ms, proxy.ts: 38ms, application-code: 121ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 197ms (next.js: 122ms, proxy.ts: 37ms, application-code: 38ms)
+✓ Compiled in 94ms
+ GET /purchase-orders 200 in 164ms (next.js: 99ms, proxy.ts: 40ms, application-code: 24ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 166ms (next.js: 62ms, proxy.ts: 38ms, application-code: 67ms)
+✓ Compiled in 68ms
+ GET /purchase-orders 200 in 182ms (next.js: 32ms, proxy.ts: 37ms, application-code: 112ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 182ms (next.js: 103ms, proxy.ts: 37ms, application-code: 42ms)
+✓ Compiled in 166ms
+ GET /api/combo-options 200 in 5.4s (next.js: 237ms, application-code: 5.2s)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/objects?kind=artwork 200 in 4.0s (next.js: 797ms, application-code: 3.2s)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/color-combos 200 in 6.1s (next.js: 846ms, application-code: 5.3s)
+ GET /api/spec-options 200 in 7.0s (next.js: 877ms, application-code: 6.1s)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/skus 200 in 2.8s (next.js: 811ms, application-code: 1958ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=colourways 200 in 8.3s (next.js: 958ms, proxy.ts: 306ms, application-code: 7.0s)
+ GET /api/combo-options 200 in 2.0s (next.js: 848ms, application-code: 1191ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/samples 200 in 2.0s (next.js: 1604ms, application-code: 439ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/objects?kind=artwork 200 in 310ms (next.js: 24ms, application-code: 286ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/color-combos 200 in 314ms (next.js: 50ms, application-code: 265ms)
+ GET /api/sourcing-options 200 in 5.4s (next.js: 1005ms, application-code: 4.4s)
+ GET /api/spec-options 200 in 426ms (next.js: 74ms, application-code: 352ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/supplier-requests 200 in 4.5s (next.js: 1011ms, application-code: 3.5s)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/samples 200 in 311ms (next.js: 36ms, application-code: 275ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/skus 200 in 322ms (next.js: 25ms, application-code: 297ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=spec 200 in 7.7s (next.js: 917ms, proxy.ts: 1084ms, application-code: 5.7s)
+ GET /api/sampling-options 200 in 2.5s (next.js: 781ms, application-code: 1721ms)
+ GET /api/sourcing-options 200 in 530ms (next.js: 21ms, application-code: 509ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/supplier-requests 200 in 398ms (next.js: 27ms, application-code: 371ms)
+ GET /api/sampling-options 200 in 598ms (next.js: 209ms, application-code: 388ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=sourcing 200 in 1629ms (next.js: 120ms, proxy.ts: 32ms, application-code: 1477ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=skus 200 in 1746ms (next.js: 336ms, proxy.ts: 33ms, application-code: 1377ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=sampling 200 in 1717ms (next.js: 652ms, proxy.ts: 65ms, application-code: 1000ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=colourways 200 in 1660ms (next.js: 719ms, proxy.ts: 251ms, application-code: 690ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=spec 200 in 1746ms (next.js: 704ms, proxy.ts: 368ms, application-code: 674ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=sourcing 200 in 584ms (next.js: 38ms, proxy.ts: 15ms, application-code: 532ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=sampling 200 in 649ms (next.js: 37ms, proxy.ts: 15ms, application-code: 597ms)
+ POST /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/samples 201 in 1861ms (next.js: 24ms, application-code: 1836ms)
+ GET /styles 200 in 147ms (next.js: 81ms, proxy.ts: 8ms, application-code: 59ms)
+ GET /api/styles 200 in 952ms (next.js: 83ms, application-code: 869ms)
+ GET /api/style-options 200 in 958ms (next.js: 179ms, application-code: 779ms)
+ GET /api/styles 200 in 271ms (next.js: 5ms, application-code: 267ms)
+ GET /api/style-options 200 in 265ms (next.js: 4ms, application-code: 261ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 416ms (next.js: 21ms, proxy.ts: 8ms, application-code: 387ms)
+ GET /api/combo-options 200 in 300ms (next.js: 6ms, application-code: 294ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/color-combos 200 in 281ms (next.js: 17ms, application-code: 264ms)
+ GET /api/combo-options 200 in 303ms (next.js: 5ms, application-code: 298ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/color-combos 200 in 293ms (next.js: 3ms, application-code: 290ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=colourways 200 in 934ms (next.js: 19ms, proxy.ts: 37ms, application-code: 878ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/objects?kind=artwork 200 in 242ms (next.js: 16ms, application-code: 226ms)
+ GET /api/spec-options 200 in 270ms (next.js: 5ms, application-code: 265ms)
+ GET /api/spec-options 200 in 219ms (next.js: 4ms, application-code: 215ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/objects?kind=artwork 200 in 228ms (next.js: 3ms, application-code: 225ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=spec 200 in 804ms (next.js: 38ms, proxy.ts: 14ms, application-code: 752ms)
+ GET /api/sourcing-options 200 in 740ms (next.js: 6ms, application-code: 734ms)
+ GET /api/sourcing-options 200 in 313ms (next.js: 2ms, application-code: 311ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/supplier-requests 200 in 1010ms (next.js: 20ms, application-code: 990ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=sourcing 200 in 1087ms (next.js: 79ms, proxy.ts: 23ms, application-code: 985ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/supplier-requests 200 in 294ms (next.js: 17ms, application-code: 277ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/skus 200 in 231ms (next.js: 17ms, application-code: 214ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=skus 200 in 421ms (next.js: 41ms, proxy.ts: 14ms, application-code: 366ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/skus 200 in 224ms (next.js: 3ms, application-code: 221ms)
+ GET /api/sampling-options 200 in 231ms (next.js: 16ms, application-code: 214ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/samples 200 in 223ms (next.js: 14ms, application-code: 210ms)
+ GET /api/sampling-options 200 in 217ms (next.js: 3ms, application-code: 214ms)
+ GET /api/styles/6675d94b-03ee-4a78-9c96-dadaf25627fc/samples 200 in 221ms (next.js: 3ms, application-code: 218ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 48ms (next.js: 18ms, proxy.ts: 9ms, application-code: 21ms)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc?tab=sampling 200 in 2.3s (next.js: 17ms, proxy.ts: 41ms, application-code: 2.2s)
+ GET /styles/6675d94b-03ee-4a78-9c96-dadaf25627fc 200 in 394ms (next.js: 11ms, proxy.ts: 6ms, application-code: 377ms)

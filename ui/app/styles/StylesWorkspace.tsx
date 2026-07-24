@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   ImageSquare,
+  Palette,
   PencilSimple,
   Plus,
   Trash,
@@ -334,18 +335,23 @@ export function StylesWorkspace({
         title="Styles"
         description="Create and manage the product records moving through the collection."
         actions={
-          <select
-            value={assignedFilter}
-            onChange={(e) => changeAssignmentFilter(e.target.value)}
-            aria-label="Filter by assignment"
-            className="worklist-filter"
-          >
-            <option value="">All styles</option>
-            <option value="designer">Styles @ Designer</option>
-            <option value="buyer">Styles @ Buyer</option>
-            <option value="technologist">Styles @ Technologist</option>
-            <option value="sourcing">Styles @ Sourcing</option>
-          </select>
+          <>
+            <select
+              value={assignedFilter}
+              onChange={(e) => changeAssignmentFilter(e.target.value)}
+              aria-label="Filter by assignment"
+              className="worklist-filter"
+            >
+              <option value="">All styles</option>
+              <option value="designer">Styles @ Designer</option>
+              <option value="buyer">Styles @ Buyer</option>
+              <option value="technologist">Styles @ Technologist</option>
+              <option value="sourcing">Styles @ Sourcing</option>
+            </select>
+            <Link href="/color-combos" className="ghost-button">
+              <Palette size={16} /> Browse all colourways
+            </Link>
+          </>
         }
       />
 

@@ -34,14 +34,18 @@ function QueueFilters({
   action,
   filters,
   states,
+  tab,
 }: {
   action: string;
   filters: QueueFilters;
   states: string[];
+  tab?: string;
 }) {
   const active = Boolean(filters.query || filters.state);
+  const clearHref = tab ? `${action}?tab=${tab}` : action;
   return (
     <form className="operational-filter-v2" action={action}>
+      {tab && <input type="hidden" name="tab" value={tab} />}
       <label>
         <span className="sr-only">Search records</span>
         <MagnifyingGlass size={16} />
@@ -67,7 +71,7 @@ function QueueFilters({
         Apply filters
       </button>
       {active && (
-        <Link href={action} className="operational-clear-v2">
+        <Link href={clearHref} className="operational-clear-v2">
           Clear
         </Link>
       )}
@@ -78,27 +82,36 @@ function QueueFilters({
 export function SupplierRequestQueue({
   requests,
   filters,
+  variant = "page",
+  filterAction = "/supplier-requests",
 }: {
   requests: DbSupplierRequestListItem[];
   filters: QueueFilters;
+  variant?: "page" | "embedded";
+  filterAction?: string;
 }) {
   const states = Array.from(new Set(requests.map((item) => item.state))).sort();
+  const embedded = variant === "embedded";
+  const Frame = embedded ? "div" : OperationalPage;
   return (
-    <OperationalPage>
-      <OperationalHeader
-        eyebrow="Sourcing operations"
-        title="Supplier requests"
-        description="Track every supplier request from product handoff through technical approval and quoting."
-      />
+    <Frame>
+      {!embedded && (
+        <OperationalHeader
+          eyebrow="Sourcing operations"
+          title="Supplier requests"
+          description="Track every supplier request from product handoff through technical approval and quoting."
+        />
+      )}
       <OperationalContent>
         <OperationalPanel
           title="Request queue"
           count={requests.length}
           actions={
             <QueueFilters
-              action="/supplier-requests"
+              action={filterAction}
               filters={filters}
               states={states}
+              tab={embedded ? "requests" : undefined}
             />
           }
         >
@@ -176,34 +189,43 @@ export function SupplierRequestQueue({
           )}
         </OperationalPanel>
       </OperationalContent>
-    </OperationalPage>
+    </Frame>
   );
 }
 
 export function SupplierQuoteQueue({
   quotes,
   filters,
+  variant = "page",
+  filterAction = "/supplier-quotes",
 }: {
   quotes: DbSupplierQuoteListItem[];
   filters: QueueFilters;
+  variant?: "page" | "embedded";
+  filterAction?: string;
 }) {
   const states = Array.from(new Set(quotes.map((item) => item.state))).sort();
+  const embedded = variant === "embedded";
+  const Frame = embedded ? "div" : OperationalPage;
   return (
-    <OperationalPage>
-      <OperationalHeader
-        eyebrow="Commercial comparison"
-        title="Supplier quotes"
-        description="Compare supplier offers, material totals, landed product cost, and selection state."
-      />
+    <Frame>
+      {!embedded && (
+        <OperationalHeader
+          eyebrow="Commercial comparison"
+          title="Supplier quotes"
+          description="Compare supplier offers, material totals, landed product cost, and selection state."
+        />
+      )}
       <OperationalContent>
         <OperationalPanel
           title="Quote queue"
           count={quotes.length}
           actions={
             <QueueFilters
-              action="/supplier-quotes"
+              action={filterAction}
               filters={filters}
               states={states}
+              tab={embedded ? "quotes" : undefined}
             />
           }
         >
@@ -283,6 +305,6 @@ export function SupplierQuoteQueue({
           )}
         </OperationalPanel>
       </OperationalContent>
-    </OperationalPage>
+    </Frame>
   );
 }

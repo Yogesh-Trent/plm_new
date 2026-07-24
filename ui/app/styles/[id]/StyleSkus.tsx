@@ -20,7 +20,13 @@ type Quote = { id: string; quote_code: string | null };
 
 const DEFAULT_SIZES = "XS,S,M,L,XL,XXL";
 
-export function StyleSkus({ styleId }: { styleId: string }) {
+export function StyleSkus({
+  styleId,
+  onCount,
+}: {
+  styleId: string;
+  onCount?: (count: number) => void;
+}) {
   const [skus, setSkus] = useState<Sku[]>([]);
   const [combos, setCombos] = useState<Combo[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
@@ -49,6 +55,11 @@ export function StyleSkus({ styleId }: { styleId: string }) {
       alive = false;
     };
   }, [styleId]);
+
+  // Report the live SKU count up to the parent for the tab badge.
+  useEffect(() => {
+    if (!loading) onCount?.(skus.length);
+  }, [skus, loading, onCount]);
 
   const toggle = (id: string) =>
     setPicked((c) => {

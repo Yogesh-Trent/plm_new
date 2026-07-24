@@ -21,7 +21,13 @@ const EMPTY = { name: "", colorwaySelection: "", pantoneCode: "", colorPalette: 
 
 // Color combos are a separate sub-process: a style has many colourways, each with
 // its own child code (<style_code>_NNN). Empty on style create, added here.
-export function ColorCombos({ styleId }: { styleId: string }) {
+export function ColorCombos({
+  styleId,
+  onCount,
+}: {
+  styleId: string;
+  onCount?: (count: number) => void;
+}) {
   const [combos, setCombos] = useState<Combo[]>([]);
   const [options, setOptions] = useState<ComboOptions>({
     colorwaySelections: [],
@@ -57,6 +63,11 @@ export function ColorCombos({ styleId }: { styleId: string }) {
       alive = false;
     };
   }, [styleId]);
+
+  // Report the live count up to the parent for the tab badge.
+  useEffect(() => {
+    if (!loading) onCount?.(combos.length);
+  }, [combos, loading, onCount]);
 
   const set = (patch: Partial<typeof EMPTY>) =>
     setForm((current) => ({ ...current, ...patch }));

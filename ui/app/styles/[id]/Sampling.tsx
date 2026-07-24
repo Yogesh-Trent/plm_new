@@ -17,7 +17,13 @@ type Options = { sealers: string[]; sampleTypes: string[]; inspectionTypes: stri
 const STATUSES = ["pending", "submitted", "approved", "rejected"];
 const EMPTY = { sealer: "", sampleType: "", vendor: "", comments: "" };
 
-export function Sampling({ styleId }: { styleId: string }) {
+export function Sampling({
+  styleId,
+  onCount,
+}: {
+  styleId: string;
+  onCount?: (count: number) => void;
+}) {
   const [samples, setSamples] = useState<Sample[]>([]);
   const [options, setOptions] = useState<Options | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,6 +50,11 @@ export function Sampling({ styleId }: { styleId: string }) {
       alive = false;
     };
   }, [styleId]);
+
+  // Report the live sample count up to the parent for the tab badge.
+  useEffect(() => {
+    if (!loading) onCount?.(samples.length);
+  }, [samples, loading, onCount]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();

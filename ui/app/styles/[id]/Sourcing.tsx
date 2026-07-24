@@ -229,7 +229,13 @@ function RequestQuotesInline({
 }
 
 // Phase 6 — Sourcing: supplier requests raised from this style.
-export function Sourcing({ styleId }: { styleId: string }) {
+export function Sourcing({
+  styleId,
+  onCount,
+}: {
+  styleId: string;
+  onCount?: (count: number) => void;
+}) {
   const [requests, setRequests] = useState<Request[]>([]);
   const [options, setOptions] = useState<Options | null>(null);
   const [loading, setLoading] = useState(true);
@@ -266,6 +272,11 @@ export function Sourcing({ styleId }: { styleId: string }) {
       alive = false;
     };
   }, [styleId]);
+
+  // Report the live request count up to the parent for the tab badge.
+  useEffect(() => {
+    if (!loading) onCount?.(requests.length);
+  }, [requests, loading, onCount]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();

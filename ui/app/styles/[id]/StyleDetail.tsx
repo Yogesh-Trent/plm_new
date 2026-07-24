@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Image as ImageIcon } from "@phosphor-icons/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,6 +41,7 @@ type Style = {
   assigned_role: string | null;
   created_by: string | null;
   created_at: string;
+  combo_count?: number;
 };
 
 type Options = {
@@ -111,6 +112,16 @@ function formatDate(iso: string | null) {
       });
 }
 
+const TABS = [
+  { key: "overview", label: "Overview" },
+  { key: "colourways", label: "Colourways" },
+  { key: "spec", label: "Spec & Quality" },
+  { key: "sourcing", label: "Sourcing" },
+  { key: "skus", label: "SKUs" },
+  { key: "sampling", label: "Sampling" },
+] as const;
+type TabKey = (typeof TABS)[number]["key"];
+
 export function StyleDetail({
   style,
   options,
@@ -158,6 +169,61 @@ export function StyleDetail({
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Tabs keep everything on ONE page: the tab bar swaps sections in place — no
+  // navigation. Each child sub-workspace fetches only once its tab is first
+  // opened, then stays mounted (hidden) so switching back is instant and nothing
+  // typed is lost. ?tab= is a client-side marker only (survives refresh /
+  // deep-link) — it never loads a new page.
+  const [activeTab, setActiveTab] = useState<TabKey>(() => {
+    if (typeof window === "undefined") return "overview";
+    const t = new URLSearchParams(window.location.search).get("tab");
+    return TABS.some((tab) => tab.key === t) ? (t as TabKey) : "overview";
+  });
+  const [visited, setVisited] = useState<Set<TabKey>>(
+    () => new Set<TabKey>([activeTab]),
+  );
+  // Per-tab item counts shown as badges. Colourways is seeded free from the
+  // style record; the others fill in when their tab is first opened and update
+  // live as items are added/removed (each child reports via onCount).
+  const [counts, setCounts] = useState<Partial<Record<TabKey, number>>>({
+    colourways: style.combo_count,
+  });
+  const makeCounter = useCallback(
+    (key: TabKey) => (count: number) =>
+      setCounts((current) =>
+        current[key] === count ? current : { ...current, [key]: count },
+      ),
+    [],
+  );
+  const countColourways = useMemo(
+    () => makeCounter("colourways"),
+    [makeCounter],
+  );
+  const countSourcing = useMemo(() => makeCounter("sourcing"), [makeCounter]);
+  const countSkus = useMemo(() => makeCounter("skus"), [makeCounter]);
+  const countSampling = useMemo(() => makeCounter("sampling"), [makeCounter]);
+
+  const selectTab = (key: TabKey) => {
+    setActiveTab(key);
+    setVisited((current) =>
+      current.has(key) ? current : new Set(current).add(key),
+    );
+    // Update the URL marker without a navigation/scroll jump.
+    const params = new URLSearchParams(window.location.search);
+    if (key === "overview") params.delete("tab");
+    else params.set("tab", key);
+    const qs = params.toString();
+    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false });
+  };
+
+  const onTabKeyDown = (event: React.KeyboardEvent, index: number) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    const dir = event.key === "ArrowRight" ? 1 : -1;
+    const next = (index + dir + TABS.length) % TABS.length;
+    selectTab(TABS[next].key);
+  };
 
   const set = (patch: Partial<StyleFormValues>) => {
     for (const [key, value] of Object.entries(patch)) {
@@ -307,6 +373,40 @@ export function StyleDetail({
           and break hydration, so saving is driven by the button below. */}
       <div className="styles-body detail-grid record-form-v3">
         <div className="detail-main">
+          <div className="record-tabs" role="tablist" aria-label="Style sections">
+            {TABS.map((tab, index) => {
+              const selected = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  role="tab"
+                  id={`style-tab-${tab.key}`}
+                  aria-selected={selected}
+                  aria-controls={`style-panel-${tab.key}`}
+                  tabIndex={selected ? 0 : -1}
+                  className={`record-tab${selected ? " is-active" : ""}`}
+                  onClick={() => selectTab(tab.key)}
+                  onKeyDown={(event) => onTabKeyDown(event, index)}
+                >
+                  {tab.label}
+                  {tab.key !== "overview" &&
+                    typeof counts[tab.key] === "number" && (
+                      <span className="record-tab-count">
+                        {counts[tab.key]}
+                      </span>
+                    )}
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            role="tabpanel"
+            id="style-panel-overview"
+            aria-labelledby="style-tab-overview"
+            hidden={activeTab !== "overview"}
+          >
           <section className="season-create">
             <h2>Identity</h2>
             <div className="season-fields">
@@ -519,16 +619,72 @@ export function StyleDetail({
               </label>
             </div>
           </section>
+          </div>
 
-          <ColorCombos styleId={style.id} />
+          <div
+            role="tabpanel"
+            id="style-panel-colourways"
+            aria-labelledby="style-tab-colourways"
+            hidden={activeTab !== "colourways"}
+          >
+            {visited.has("colourways") && (
+              <ColorCombos
+                styleId={style.id}
+                onCount={countColourways}
+              />
+            )}
+          </div>
 
-          <SpecQuality styleId={style.id} />
+          <div
+            role="tabpanel"
+            id="style-panel-spec"
+            aria-labelledby="style-tab-spec"
+            hidden={activeTab !== "spec"}
+          >
+            {visited.has("spec") && <SpecQuality styleId={style.id} />}
+          </div>
 
-          <Sourcing styleId={style.id} />
+          <div
+            role="tabpanel"
+            id="style-panel-sourcing"
+            aria-labelledby="style-tab-sourcing"
+            hidden={activeTab !== "sourcing"}
+          >
+            {visited.has("sourcing") && (
+              <Sourcing
+                styleId={style.id}
+                onCount={countSourcing}
+              />
+            )}
+          </div>
 
-          <StyleSkus styleId={style.id} />
+          <div
+            role="tabpanel"
+            id="style-panel-skus"
+            aria-labelledby="style-tab-skus"
+            hidden={activeTab !== "skus"}
+          >
+            {visited.has("skus") && (
+              <StyleSkus
+                styleId={style.id}
+                onCount={countSkus}
+              />
+            )}
+          </div>
 
-          <Sampling styleId={style.id} />
+          <div
+            role="tabpanel"
+            id="style-panel-sampling"
+            aria-labelledby="style-tab-sampling"
+            hidden={activeTab !== "sampling"}
+          >
+            {visited.has("sampling") && (
+              <Sampling
+                styleId={style.id}
+                onCount={countSampling}
+              />
+            )}
+          </div>
         </div>
 
         <aside className="detail-aside">

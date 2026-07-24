@@ -370,13 +370,21 @@
   gap: 4px;
   margin-top: 27px;
 }
-.workspace-nav-v2 > p {
+.workspace-nav-v2 > p,
+.workspace-nav-group-v2 > p {
   margin: 0 10px 9px;
   color: rgba(238, 240, 235, 0.38);
   font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.15em;
   text-transform: uppercase;
+}
+.workspace-nav-group-v2 {
+  display: grid;
+  gap: 4px;
+}
+.workspace-nav-group-v2 + .workspace-nav-group-v2 {
+  margin-top: 18px;
 }
 .workspace-nav-v2 a {
   position: relative;
@@ -1129,7 +1137,8 @@
 
 /* Nav section title */
 
-.workspace-nav-v2 > p {
+.workspace-nav-v2 > p,
+.workspace-nav-group-v2 > p {
   overflow: hidden;
   max-height: 30px;
   opacity: 1;
@@ -1140,7 +1149,8 @@
     padding 250ms ease 100ms;
 }
 
-.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 > p {
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-v2 > p,
+.workspace-shell-v2.is-rail-collapsed .workspace-nav-group-v2 > p {
   max-height: 0;
   opacity: 0;
   margin: 0;

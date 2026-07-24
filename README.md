@@ -156,14 +156,60 @@ detail page. All frontend-only, reusing existing endpoints.
   (`.inline-expand-row`, `.is-expanded-row`) using the existing paper palette.
   Verified: `tsc`, `npm run lint`, and `npm run build` all pass.
 
-**3. Break the Style-detail mega-page into tabs.**
-[`StyleDetail.tsx`](ui/app/styles/[id]/StyleDetail.tsx) stacks 3 field sections +
-5 independently-fetching sub-workspaces (ColorCombos, SpecQuality, Sourcing,
-StyleSkus, Sampling) on one long scroll, each with its own spinner, and the Save
-button floats far away in the navbar. Convert the 5 sub-workspaces to **tabs**
-(Overview · Colourways · Spec & Quality · Sourcing · SKUs · Sampling). Each tab
-fetches only when opened → fewer spinners, shorter page, Save always in view.
-This is the single biggest UX win.
+**3. Break the Style-detail mega-page into tabs.**  ✅ _Done._
+[`StyleDetail.tsx`](ui/app/styles/[id]/StyleDetail.tsx) used to stack 3 field
+sections + 5 independently-fetching sub-workspaces (ColorCombos, SpecQuality,
+Sourcing, StyleSkus, Sampling) on one long scroll, each firing its own fetch on
+mount (5 spinners at once) with the Save button far away in the navbar.
+
+- The page now has a **tab bar** — **Overview · Colourways · Spec & Quality ·
+  Sourcing · SKUs · Sampling** — that swaps sections **in place on the same page**
+  (no navigation, no new routes).
+- Each child sub-workspace **fetches only when its tab is first opened**, then
+  **stays mounted (hidden)** so switching back is instant with no re-fetch and no
+  lost input — the page still feels like one continuous record, not separate pages.
+- The active tab is mirrored to a client-side **`?tab=` marker** (via
+  `router.replace`, `scroll:false`) so refresh keeps your spot and tabs are
+  deep-linkable — it never triggers a page load.
+- The navbar **Save** button + unsaved-changes guard and the right **sidebar**
+  (Assignment / Image / meta, visible on all tabs) are unchanged. Child components
+  are reused as-is. Tab bar is keyboard-accessible (`role="tablist"`, arrow keys)
+  and styled with the paper palette (`.record-tabs` in
+  [`globals.css`](ui/app/globals.css)).
+- **Count badges** on the tabs show how many items each style has at a glance
+  (Colourways · Sourcing · SKUs · Sampling) without opening them — Colourways is
+  seeded free from the style record; the rest fill in when opened and update live
+  as you add/remove. Spec & Quality has no badge (it's a 4-kind wrapper with no
+  single count). The Colourways tab itself already provides full add / list /
+  edit / delete / status / "Add to BOM(s)" for a style's colourways.
+- Verified: `tsc`, `npm run lint`, and `npm run build` all pass.
+
+**3b. Consolidate the sidebar — fewer items, grouped by stage.**  ✅ _Done._
+The sidebar was a flat list of 8 links with "Supplier requests" and "Supplier
+quotes" as two separate items (they're one workflow stage — a quote belongs to a
+request). It's now **7 items in 3 labelled groups** in
+[`WorkspaceShell.tsx`](ui/app/components/WorkspaceShell.tsx):
+
+- **Plan** — Overview, Seasons (All role)
+- **Product** — Styles, BOM library
+- **Sourcing & orders** — Sourcing, Purchase orders
+
+**Colourways** were also dropped as a top-level item: a colourway always belongs
+to a style (one style → many colourways) and is fully managed under **Style →
+Colourways tab**, so a standalone nav item was redundant. The cross-style browse/
+search list stays at [`/color-combos`](ui/app/color-combos/), now reached via a
+**"Browse all colourways"** link on the Styles page header — no capability lost.
+
+"Supplier requests" + "Supplier quotes" merged into one **Sourcing** workspace at
+[`/sourcing`](ui/app/sourcing/page.tsx) with in-place **Requests | Quotes** tabs
+(same one-page tab pattern as the style detail — no new navigation). The old
+`/supplier-requests` and `/supplier-quotes` list routes now redirect to
+`/sourcing`; their per-record detail pages (`/[id]`) are unchanged, so every
+existing link still works. Verified: `tsc`, `npm run lint`, `npm run build` pass.
+
+> Note: this reorganises navigation only — **no style fields were removed**. The
+> style record still has all 17 fields (Identity, Classification, Production &
+> commercial); they live on the **Overview** tab (#3) instead of one long scroll.
 
 **4. Standardise delete confirmation.**
 Some deletes use the polished `ConfirmAction` dialog; others use raw
