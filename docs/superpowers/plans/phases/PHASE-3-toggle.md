@@ -1,7 +1,12 @@
 # Phase 3 — Theme Toggle Control & Placement
 
 **Part of:** [Dual-Theme System plan](../2026-07-24-dual-theme-apple-clean.md)
-**Status:** Pending (starts after Phase 2)
+**Status:** ✅ Complete — verified in-browser (top-bar toggle flips theme live, persists, a11y OK; 0 errors)
+
+> **Placement note:** the live top bar is `GlobalNavbar` (`.workspace-top-actions-v2`), not
+> `Dashboard.tsx`'s `Header` as the plan assumed. The compact toggle was placed in
+> `GlobalNavbar` (what every user sees), and also left in the legacy `Dashboard` header.
+> The labeled toggle is in `AdminWorkspace` per plan (admin role required to view it).
 
 ## Goal
 
