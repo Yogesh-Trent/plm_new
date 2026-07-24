@@ -298,6 +298,21 @@ individual attention.
 (nothing linked to them). Removed the route files and the stale `Workflow` entry
 in `GlobalNavbar`'s `SECTION_TITLES`.
 
+### UI refinement pass  ✅ _Done._
+
+A subtle polish over the existing warm/paper identity (no restructuring, additive
+CSS at the end of [`globals.css`](ui/app/globals.css)):
+
+- **Tables** — uppercase muted column headers, a quiet row-hover highlight,
+  cleaner last-row border.
+- **Buttons** — the primary button gained a hover (brighten + soft shadow) it was
+  missing; ghost/icon buttons highlight on hover; all get a 1px press feedback.
+- **Inputs** — softer brand focus ring (`box-shadow` instead of a hard outline)
+  across input/select/textarea, plus a hover border cue.
+- **Status pills** (when interactive) and **cards** get gentle hover feedback; the
+  card grid lifts slightly on hover.
+- All motion respects `prefers-reduced-motion`.
+
 ### Tier 3 — legacy prototype (only if kept in the demo)
 
 - **One progress source of truth.** Automation phase (server) and Manual phase

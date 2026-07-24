@@ -6821,3 +6821,127 @@ table.bulk-preview td {
     @apply font-sans;
   }
 }
+/* ─────────────────────────────────────────────────────────────────────────
+   UI refinement pass — subtle polish over the existing paper identity.
+   Additive only: hover/active feedback, smoother focus, gentle motion.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Tables: readable header, quiet row hover, ledger-style number alignment. */
+.season-table thead th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom-color: var(--line-strong);
+}
+.season-table tbody tr {
+  transition: background-color 0.12s ease;
+}
+.season-table tbody tr:hover td {
+  background: color-mix(in srgb, var(--soft) 60%, transparent);
+}
+.season-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Buttons: primary now has hover + press feedback; all get a subtle press. */
+.primary-button {
+  transition:
+    filter 0.14s ease,
+    transform 0.06s ease,
+    box-shadow 0.14s ease;
+}
+.primary-button:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--red) 22%, transparent);
+}
+.primary-button:active:not(:disabled),
+.ghost-button:active:not(:disabled),
+.icon-action:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ghost-button {
+  transition:
+    border-color 0.14s ease,
+    color 0.14s ease,
+    background-color 0.14s ease,
+    transform 0.06s ease;
+}
+.ghost-button:hover:not(:disabled) {
+  background: var(--soft);
+}
+.icon-action {
+  transition:
+    border-color 0.14s ease,
+    color 0.14s ease,
+    background-color 0.14s ease,
+    transform 0.06s ease;
+}
+.icon-action:hover:not(:disabled) {
+  background: var(--soft);
+}
+
+/* Inputs: softer brand focus ring (not a hard outline) + hover affordance. */
+.season-field input,
+.season-field select,
+.season-field textarea {
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+.season-field input:hover:not(:disabled),
+.season-field select:hover:not(:disabled),
+.season-field textarea:hover:not(:disabled) {
+  border-color: var(--line-strong);
+}
+.season-field input:focus-visible,
+.season-field select:focus-visible,
+.season-field textarea:focus-visible {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px var(--red-soft);
+}
+
+/* Status pills: gentle hover when they're interactive (toggle). */
+.status-pill {
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+button.status-pill:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  box-shadow: 0 1px 3px rgba(37, 39, 42, 0.08);
+}
+
+/* Cards: consistent hover lift for the card-grid + dashboard panels. */
+.record-card {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.record-card:hover {
+  box-shadow: 0 6px 20px rgba(37, 39, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-table tbody tr,
+  .primary-button,
+  .ghost-button,
+  .icon-action,
+  .season-field input,
+  .season-field select,
+  .season-field textarea,
+  .status-pill,
+  .record-card {
+    transition: none;
+  }
+  .primary-button:active:not(:disabled),
+  .ghost-button:active:not(:disabled),
+  .icon-action:active:not(:disabled),
+  .record-card:hover {
+    transform: none;
+  }
+}
