@@ -5629,6 +5629,13 @@ table.bulk-preview td {
   border-radius: 4px 4px 0 0;
 }
 
+.po-approve-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 12px;
+}
+
 /* Artwork multi-image upload (Spec & Quality → Artwork). */
 .artwork-images {
   margin: 6px 0 14px;

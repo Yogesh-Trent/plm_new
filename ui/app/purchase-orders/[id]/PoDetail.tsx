@@ -124,6 +124,49 @@ export function PoDetail({
     }
   };
 
+  // Walk the whole approval route in order, then issue — one click for the
+  // linear happy path instead of six sequential "Do" clicks + Issue.
+  const ROUTE_KEYS = [
+    "send_to_sourcing",
+    "sourcing_approval",
+    "submit_to_accounts",
+    "accounts_approved",
+    "send_to_merchandiser",
+    "merchandiser_acceptance",
+    "issue",
+  ] as const;
+
+  const approveAllAndIssue = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      let current = po;
+      for (const action of ROUTE_KEYS) {
+        // Skip steps already completed (their boolean flag is set).
+        if (action !== "issue" && (current as Record<string, unknown>)[action]) {
+          continue;
+        }
+        if (action === "issue" && (current.state === "issued" || current.state === "closed")) {
+          break;
+        }
+        const response = await fetch(`/api/supplier-pos/${po.id}/action`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action }),
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(data?.error ?? "Action failed.");
+        if (data.po) current = data.po;
+      }
+      setPo(current);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not complete routing.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const addOrder = async (event: React.FormEvent) => {
     event.preventDefault();
     setBusy(true);
@@ -295,6 +338,21 @@ export function PoDetail({
           <section className="season-create detail-meta">
             <h2>Approval routing</h2>
             {!canAction && <p className="styles-note" style={{ marginTop: 0 }}>Only Buyer / All can action this PO.</p>}
+            {canAction &&
+              po.state !== "issued" &&
+              po.state !== "closed" &&
+              !po.merchandiser_acceptance && (
+                <button
+                  type="button"
+                  className="primary-button po-approve-all"
+                  onClick={approveAllAndIssue}
+                  disabled={busy}
+                  title="Run every remaining approval step and issue the PO"
+                >
+                  <CheckCircle size={16} weight="fill" />{" "}
+                  {busy ? "Working…" : "Approve all remaining & issue"}
+                </button>
+              )}
             <ul className="po-steps">
               {steps.map((s) => (
                 <li key={s.key} className={s.done ? "po-step is-done" : "po-step"}>

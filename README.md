@@ -273,26 +273,30 @@ Under a style's **Spec & Quality → Artwork**, each artwork object can carry up
 
 ### Tier 2 — meaningful polish
 
-**5. Tame the wide tables.** Styles = 22 columns, Colourways = 16, Seasons = 11.
-Show 5–7 key columns by default (name/code, season, owner, status, progress,
-actions) and move the rest behind a "More columns" toggle or into the detail page.
-Kills the horizontal scroll that hides the row-action cell.
+**5. Tame the wide tables.**  ✅ _Done (Styles)._ The Styles list showed all 22
+columns (horizontal scroll that hid the row actions). It now shows **key columns
+by default** (Image, Name, Code, Colourways, Season, Status, Assigned, actions)
+with a **"More columns"** toggle that reveals the full set. The choice persists in
+`localStorage`. ([`StylesWorkspace.tsx`](ui/app/styles/StylesWorkspace.tsx).) The
+same pattern can be applied to Colourways/Seasons later.
 
-**6. Make the dashboard "Decision queue" actionable.** In
-[`RoleHome.tsx`](ui/app/components/RoleHome.tsx) the queue links point at whole
-list pages and the count is a crude `styles + open POs` sum. Deep-link each item
-to the specific record needing a decision (e.g. `/styles/[id]`,
-`/purchase-orders/[id]`) so one click lands on the actual work.
+**6. Make the dashboard "Decision queue" actionable.**  ✅ _Done._ In
+[`RoleHome.tsx`](ui/app/components/RoleHome.tsx) the queue items now **deep-link**:
+when exactly one record needs attention it opens that record (`/styles/[id]`,
+`/purchase-orders/[id]`) with an "Open <name>" hint; otherwise it links to the
+tightest filtered list (`/styles?assigned=<role>`) instead of the whole page.
 
-**7. Add "Approve all remaining" to the PO routing.** PO issue is 6 sequential
-one-at-a-time "Do" clicks + Issue ([`PoDetail.tsx`](ui/app/purchase-orders/[id]/PoDetail.tsx)).
-For the linear happy path, add a single "Approve remaining & issue" that walks the
-existing action endpoints in order — keep per-step buttons for when a stage needs
-attention.
+**7. Add "Approve all remaining" to the PO routing.**  ✅ _Done._
+[`PoDetail.tsx`](ui/app/purchase-orders/[id]/PoDetail.tsx) now has a single
+**"Approve all remaining & issue"** button that walks every not-yet-done step of
+the Sourcing → Accounts → Merch route in order and issues the PO — one click for
+the linear happy path. The per-step "Do" buttons remain for when a stage needs
+individual attention.
 
-**8. Retire (or wire up) the dead `/*/workflow` routes.** They redirect home yet
-are still titled in `GlobalNavbar`'s `SECTION_TITLES`. Either delete them or make
-them deep-link into the workspace.
+**8. Retire the dead `/*/workflow` routes.**  ✅ _Done._ The four
+`/{role}/workflow` pages only redirected to the role home and were orphaned
+(nothing linked to them). Removed the route files and the stale `Workflow` entry
+in `GlobalNavbar`'s `SECTION_TITLES`.
 
 ### Tier 3 — legacy prototype (only if kept in the demo)
 

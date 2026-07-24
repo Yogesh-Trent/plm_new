@@ -37,7 +37,6 @@ const SECTION_TITLES: Array<[string, string]> = [
   ["/supplier-quotes", "Sourcing"],
   ["/purchase-orders", "Purchase orders"],
   ["/all/process", "Seasons"],
-  ["/all/workflow", "Workflow"],
 ];
 
 function sectionTitle(pathname: string, role: Role) {

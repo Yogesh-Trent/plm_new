@@ -257,7 +257,17 @@ export async function RoleHome({ session }: { session: Session }) {
               <span className="workspace-count-v2">{attentionCount}</span>
             </div>
             <div className="workspace-queue-list-v2">
-              <Link href="/styles">
+              {/* Deep-link to the exact record when there's just one; otherwise
+                  to the tightest filtered list, not the whole page. */}
+              <Link
+                href={
+                  roleWork.length === 1
+                    ? `/styles/${roleWork[0].id}`
+                    : session.role === "all"
+                      ? "/styles"
+                      : `/styles?assigned=${session.role}`
+                }
+              >
                 <span className="queue-indicator-v2 is-warm">
                   <WarningCircle size={18} />
                 </span>
@@ -268,11 +278,21 @@ export async function RoleHome({ session }: { session: Session }) {
                       ? "style assignment"
                       : "style assignments"}
                   </strong>
-                  <small>Review product ownership and next action</small>
+                  <small>
+                    {roleWork.length === 1
+                      ? `Open ${roleWork[0].style_name || "the style"}`
+                      : "Review product ownership and next action"}
+                  </small>
                 </span>
                 <ArrowRight size={16} />
               </Link>
-              <Link href="/purchase-orders">
+              <Link
+                href={
+                  openPos.length === 1
+                    ? `/purchase-orders/${openPos[0].id}`
+                    : "/purchase-orders"
+                }
+              >
                 <span className="queue-indicator-v2">
                   <Clock size={18} />
                 </span>
@@ -281,7 +301,11 @@ export async function RoleHome({ session }: { session: Session }) {
                     {openPos.length} open purchase{" "}
                     {openPos.length === 1 ? "order" : "orders"}
                   </strong>
-                  <small>Check routing, capacity, and issue status</small>
+                  <small>
+                    {openPos.length === 1
+                      ? `Open ${openPos[0].po_number || "the order"}`
+                      : "Check routing, capacity, and issue status"}
+                  </small>
                 </span>
                 <ArrowRight size={16} />
               </Link>

@@ -132,6 +132,30 @@ export function StylesWorkspace({
   const [showForm, setShowForm] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [view, setView] = useRecordView("threadline-styles-view");
+  // Wide table (22 cols): show key columns by default, reveal the rest on demand.
+  const [showAllColumns, setShowAllColumns] = useState(false);
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem("threadline-styles-cols");
+    } catch {
+      /* ignore */
+    }
+    if (saved === "all") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowAllColumns(true);
+    }
+  }, []);
+  const toggleColumns = () =>
+    setShowAllColumns((v) => {
+      const next = !v;
+      try {
+        localStorage.setItem("threadline-styles-cols", next ? "all" : "key");
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
 
   useEffect(() => {
     let active = true;
@@ -683,7 +707,19 @@ export function StylesWorkspace({
           title="Styles"
           count={styles.length}
           actions={
-            <ViewToggle view={view} onChange={setView} label="styles" />
+            <>
+              {view === "table" && (
+                <button
+                  type="button"
+                  className="ghost-button"
+                  onClick={toggleColumns}
+                  aria-pressed={showAllColumns}
+                >
+                  {showAllColumns ? "Fewer columns" : "More columns"}
+                </button>
+              )}
+              <ViewToggle view={view} onChange={setView} label="styles" />
+            </>
           }
         >
           {loadError ? (
@@ -732,22 +768,26 @@ export function StylesWorkspace({
                     <th>Style code</th>
                     <th>Combos</th>
                     <th>Season</th>
-                    <th>Department</th>
-                    <th>Brand</th>
-                    <th>Product</th>
-                    <th>MATKL Desc 3</th>
-                    <th>Type</th>
-                    <th>Template</th>
-                    <th>Business unit</th>
-                    <th>Pack</th>
-                    <th>Drop</th>
-                    <th>Supplier request</th>
-                    <th>Issue date</th>
-                    <th>Color combo</th>
-                    <th>Vendors</th>
+                    {showAllColumns && (
+                      <>
+                        <th>Department</th>
+                        <th>Brand</th>
+                        <th>Product</th>
+                        <th>MATKL Desc 3</th>
+                        <th>Type</th>
+                        <th>Template</th>
+                        <th>Business unit</th>
+                        <th>Pack</th>
+                        <th>Drop</th>
+                        <th>Supplier request</th>
+                        <th>Issue date</th>
+                        <th>Color combo</th>
+                        <th>Vendors</th>
+                      </>
+                    )}
                     <th>Status</th>
                     <th>Assigned</th>
-                    <th>Created by</th>
+                    {showAllColumns && <th>Created by</th>}
                     <th aria-label="Actions" />
                   </tr>
                 </thead>
@@ -786,19 +826,23 @@ export function StylesWorkspace({
                         </Link>
                       </td>
                       <td>{cell(style.season_name)}</td>
-                      <td>{cell(style.department)}</td>
-                      <td>{cell(style.brand)}</td>
-                      <td>{cell(style.product_type)}</td>
-                      <td>{cell(style.matkl_description_3)}</td>
-                      <td>{cell(style.style_type)}</td>
-                      <td>{cell(style.template)}</td>
-                      <td>{cell(style.business_unit)}</td>
-                      <td>{cell(style.pack)}</td>
-                      <td>{cell(style.drop_name)}</td>
-                      <td>{cell(style.supplier_request)}</td>
-                      <td>{formatDate(style.issue_date)}</td>
-                      <td>{cell(style.color_combo)}</td>
-                      <td>{cell(style.vendors)}</td>
+                      {showAllColumns && (
+                        <>
+                          <td>{cell(style.department)}</td>
+                          <td>{cell(style.brand)}</td>
+                          <td>{cell(style.product_type)}</td>
+                          <td>{cell(style.matkl_description_3)}</td>
+                          <td>{cell(style.style_type)}</td>
+                          <td>{cell(style.template)}</td>
+                          <td>{cell(style.business_unit)}</td>
+                          <td>{cell(style.pack)}</td>
+                          <td>{cell(style.drop_name)}</td>
+                          <td>{cell(style.supplier_request)}</td>
+                          <td>{formatDate(style.issue_date)}</td>
+                          <td>{cell(style.color_combo)}</td>
+                          <td>{cell(style.vendors)}</td>
+                        </>
+                      )}
                       <td>
                         <button
                           type="button"
@@ -825,7 +869,7 @@ export function StylesWorkspace({
                           "—"
                         )}
                       </td>
-                      <td>{cell(style.created_by)}</td>
+                      {showAllColumns && <td>{cell(style.created_by)}</td>}
                       <td>
                         <div className="season-row-actions">
                           <Link
