@@ -1,0 +1,42 @@
+/* Apple Clean theme. Paper & Ink keeps the :root defaults from globals.css;
+   nothing here touches :root, so the default look is unchanged. All rules are
+   scoped under .theme-apple. */
+
+.theme-apple {
+  --ink: #1d1d1f;
+  --ink-soft: #424245;
+  --muted: #6e6e73;
+  --line: #e5e5e7;
+  --line-strong: #d2d2d7;
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --soft: #f5f5f7;
+  --red: #0071e3;
+  --red-soft: #ecf4ff;
+  --green: #1d8a4e;
+  --orange: #b25000;
+  --focus: #0071e3;
+  --radius: 12px;
+
+  /* shadcn oklch tokens → cool neutral surfaces + blue primary */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.21 0.01 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.01 265);
+  --primary: oklch(0.58 0.16 250);
+  --primary-foreground: oklch(0.99 0 0);
+  --border: oklch(0.92 0.004 265);
+  --input: oklch(0.92 0.004 265);
+  --ring: oklch(0.58 0.16 250);
+
+  /* Apple-only tokens consumed by rules below */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-raised: 0 4px 16px rgba(0, 0, 0, 0.08), 0 24px 48px rgba(0, 0, 0, 0.1);
+  --heading-font: var(--font-sans), "SF Pro Display", -apple-system, "Segoe UI",
+    sans-serif;
+}
+
+/* App-wide background flips from warm cream to Apple's cool gray. */
+.theme-apple body {
+  background: #f5f5f7;
+}

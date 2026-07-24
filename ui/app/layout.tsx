@@ -5,6 +5,7 @@ import { ThemeScript } from "./components/ThemeScript";
 import { ThemeProvider } from "./components/ThemeProvider";
 import "./globals.css";
 import "./workspace.css";
+import "./themes.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
